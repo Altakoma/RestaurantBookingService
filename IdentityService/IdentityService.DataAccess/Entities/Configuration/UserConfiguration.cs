@@ -16,6 +16,11 @@ namespace IdentityService.DataAccess.Entities.Configuration
             builder.Property(u => u.Login).HasMaxLength(50);
             builder.Property(u => u.Password).HasMaxLength(50);
 
+            builder.Property(u => u.UserRoleId).IsRequired();
+            builder.Property(u => u.Login).IsRequired();
+            builder.Property(u => u.Name).IsRequired();
+            builder.Property(u => u.Password).IsRequired();
+
             builder.HasOne(u => u.UserRole).WithMany(ur => ur.Users)
                 .HasForeignKey(u => u.UserRoleId)
                 .OnDelete(DeleteBehavior.SetNull);

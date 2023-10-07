@@ -29,11 +29,5 @@ namespace IdentityService.DataAccess.Repositories
 
             return role;
         }
-
-        public async Task<bool> InsertAsync(UserRole item)
-        {
-            await _identityDbContext.AddAsync(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
-        }
     }
 }

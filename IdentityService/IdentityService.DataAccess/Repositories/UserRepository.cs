@@ -36,6 +36,15 @@ namespace IdentityService.DataAccess.Repositories
             return user;
         }
 
+        public async Task<User?> GetUserAsync(string login, string password)
+        {
+            var user = await _identityDbContext.Users
+                .FirstOrDefaultAsync(u => u.Login == login &&
+                u.Password == password);
+
+            return user;
+        }
+
         public async Task<bool> InsertAsync(User item)
         {
             await _identityDbContext.AddAsync(item);

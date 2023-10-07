@@ -2,7 +2,7 @@
 
 namespace IdentityService.DataAccess.Repositories.Interfaces
 {
-    public interface IUserRoleRepository : ICreateReadRepository<UserRole>
+    public interface IUserRoleRepository : IReadRepository<UserRole>
     {
     }
 }
