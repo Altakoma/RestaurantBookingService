@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using IdentityService.BusinessLogic.DTOs.TokenDTOs;
 using IdentityService.BusinessLogic.DTOs.UserDTOs;
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
+using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces;
 
@@ -11,15 +13,20 @@ namespace IdentityService.BusinessLogic.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly ITokenGenerator _tokenGenerator;
+        private readonly IRefreshTokenService _refreshTokenService;
 
         public UserService(IUserRepository userRepository,
-            IMapper mapper)
+            IMapper mapper, ITokenGenerator tokenGenerator,
+            IRefreshTokenService refreshTokenService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _tokenGenerator = tokenGenerator;
+            _refreshTokenService = refreshTokenService;
         }
 
-        public async Task<string> DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
 
@@ -39,8 +46,6 @@ namespace IdentityService.BusinessLogic.Services
                 throw new DbOperationException(
                     nameof(DeleteAsync), id.ToString(), typeof(User));
             }
-
-            return $"User having {id} key has been succesfully deleted";
         }
 
         public async Task<ICollection<ReadUserDTO>?> GetAllAsync()
@@ -66,34 +71,61 @@ namespace IdentityService.BusinessLogic.Services
             return readUserDTO;
         }
 
-        public async Task<string> InsertAsync(InsertUserDTO item)
+        public async Task<TokensDTO> GetUserAsync(string login, string password)
+        {
+            var user = await _userRepository.GetUserAsync(login, password);
+
+            if (user is null)
+            {
+                throw new NotFoundException(login, typeof(User));
+            }
+
+            (var tokenDTO, var refreshToken) = _tokenGenerator
+                .GenerateToken(user.Name, user.UserRole.Name, user.Id);
+
+            await _refreshTokenService.SaveToken(refreshToken);
+
+            return tokenDTO;
+        }
+
+        public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item)
         {
             var user = _mapper.Map<User>(item);
 
-            var isInserted = await _userRepository.InsertAsync(user);
+            (user, var isInserted) = await _userRepository.InsertAsync(user);
 
-            if (isInserted)
+            if (!isInserted)
             {
                 throw new DbOperationException(
                     nameof(InsertAsync), user.Id.ToString(), typeof(User));
             }
 
-            return $"User having {user.Id} key has been succesfully inserted";
+            user = await _userRepository.GetByIdAsync(user.Id);
+
+            var readUserDTO = _mapper.Map<ReadUserDTO>(user);
+
+            return readUserDTO;
         }
 
-        public async Task<string> UpdateAsync(UpdateUserDTO item)
+        public async Task<ReadUserDTO> UpdateAsync(int id, UpdateUserDTO item)
         {
             var user = _mapper.Map<User>(item);
 
+            user.Id = id;
+
             var isUpdated = await _userRepository.UpdateAsync(user);
 
-            if (isUpdated)
+            if (!isUpdated)
             {
                 throw new DbOperationException(
                     nameof(UpdateAsync), user.Id.ToString(), typeof(User));
             }
 
-            return $"User having {user.Id} key has been succesfully updated";
+            user = await _userRepository.GetByIdAsync(id);
+
+            var readUserDTO = _mapper.Map<ReadUserDTO>(user);
+
+            return readUserDTO;
         }
     }
 }

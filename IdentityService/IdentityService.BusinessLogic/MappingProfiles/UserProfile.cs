@@ -8,6 +8,7 @@ namespace IdentityService.BusinessLogic.MappingProfiles
     {
         public UserProfile()
         {
+            CreateMap<UpdateUserDTO, User>();
             CreateMap<InsertUserDTO, User>();
             CreateMap<User, ReadUserDTO>();
             CreateMap<User, UpdateUserDTO>();

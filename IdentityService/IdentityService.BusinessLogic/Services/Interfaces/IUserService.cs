@@ -1,14 +1,16 @@
-﻿using IdentityService.BusinessLogic.DTOs.UserDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
+using IdentityService.BusinessLogic.DTOs.UserDTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.BusinessLogic.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<string> InsertAsync(InsertUserDTO item);
+        Task<ReadUserDTO> InsertAsync(InsertUserDTO insertUserDTO);
         Task<ReadUserDTO?> GetByIdAsync(int id);
+        Task<TokensDTO> GetUserAsync(string login, string password);
         Task<ICollection<ReadUserDTO>?> GetAllAsync();
-        Task<string> UpdateAsync(UpdateUserDTO item);
-        Task<string> DeleteAsync(int id);
+        Task<ReadUserDTO> UpdateAsync(int id, UpdateUserDTO updateUserDTO);
+        Task DeleteAsync(int id);
     }
 }
