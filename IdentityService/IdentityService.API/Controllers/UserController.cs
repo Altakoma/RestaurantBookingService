@@ -7,6 +7,7 @@ namespace IdentityService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -25,7 +26,6 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var readUserDTOs = await _userService.GetAllAsync();

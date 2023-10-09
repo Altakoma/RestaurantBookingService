@@ -50,8 +50,8 @@ namespace IdentityService.API
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = false,
-                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                RequireExpirationTime = true,
             };
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,6 +59,8 @@ namespace IdentityService.API
             {
                 options.TokenValidationParameters = tokenValidationParams;
             });
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddSingleton(tokenValidationParams);
             builder.Services.AddSingleton<Seed>();
@@ -87,7 +89,7 @@ namespace IdentityService.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
