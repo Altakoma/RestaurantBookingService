@@ -2,6 +2,8 @@
 using IdentityService.BusinessLogic.DTOs.UserDTOs;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Text.Encodings.Web;
 
 namespace IdentityService.API.Controllers
 {
@@ -36,9 +38,9 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken(TokensDTO tokensDTO)
+        public async Task<IActionResult> RefreshToken()
         {
-            var generatedTokenDTO = await _refreshTokenService.VerifyAndGenerateToken(tokensDTO);
+            var generatedTokenDTO = await _refreshTokenService.VerifyAndGenerateToken();
 
             return Ok(generatedTokenDTO);
         }

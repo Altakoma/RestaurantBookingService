@@ -7,7 +7,7 @@
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development",
             "JWTSecret": "7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD",
-            "JWTExpirationTime": "00:00:15",
+            "JWTExpirationTime": "00:02:59",
             "DefaultConnection": "Data Source=USER-PC;Initial Catalog=RestaurantIdentityService;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
         },
       "dotnetRunMessages": true,
