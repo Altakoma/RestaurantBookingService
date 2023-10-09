@@ -10,5 +10,6 @@
         public string Password { get; set; } = null!;
 
         public UserRole UserRole { get; set; } = null!;
+        public RefreshToken RefreshToken { get; set; } = null!;
     }
 }

@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace IdentityServiceDataAccess.DatabaseContext
+﻿namespace IdentityService.DataAccess.DatabaseContext
 {
-    public partial class IdentityDbContext : DbContext
+    public partial class IdentityDbContext
     {
         public async Task<bool> SaveChangesToDbAsync()
         {

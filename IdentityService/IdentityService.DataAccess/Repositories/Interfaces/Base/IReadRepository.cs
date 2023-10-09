@@ -1,4 +1,4 @@
-﻿namespace IdentityService.DataAccess.Repositories.Interfaces
+﻿namespace IdentityService.DataAccess.Repositories.Interfaces.Base
 {
     public interface IReadRepository<T>
     {

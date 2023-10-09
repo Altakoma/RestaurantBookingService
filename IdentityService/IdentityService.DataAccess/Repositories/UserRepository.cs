@@ -1,6 +1,6 @@
-﻿using IdentityService.DataAccess.Entities;
+﻿using IdentityService.DataAccess.DatabaseContext;
+using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces;
-using IdentityServiceDataAccess.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories
@@ -22,7 +22,7 @@ namespace IdentityService.DataAccess.Repositories
 
         public async Task<ICollection<User>?> GetAllAsync()
         {
-            var users = await _identityDbContext.Users
+            var users = await _identityDbContext.Users.Include(u => u.UserRole)
                 .Select(u => u).ToListAsync();
 
             return users;
@@ -30,7 +30,7 @@ namespace IdentityService.DataAccess.Repositories
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            var user = await _identityDbContext.Users
+            var user = await _identityDbContext.Users.Include(u => u.UserRole)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             return user;
@@ -38,17 +38,19 @@ namespace IdentityService.DataAccess.Repositories
 
         public async Task<User?> GetUserAsync(string login, string password)
         {
-            var user = await _identityDbContext.Users
+            var user = await _identityDbContext.Users.Include(u => u.UserRole)
                 .FirstOrDefaultAsync(u => u.Login == login &&
                 u.Password == password);
 
             return user;
         }
 
-        public async Task<bool> InsertAsync(User item)
+        public async Task<(User, bool)> InsertAsync(User item)
         {
             await _identityDbContext.AddAsync(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
+            bool isInserted = await _identityDbContext.SaveChangesToDbAsync();
+
+            return (item, isInserted);
         }
 
         public async Task<bool> UpdateAsync(User item)

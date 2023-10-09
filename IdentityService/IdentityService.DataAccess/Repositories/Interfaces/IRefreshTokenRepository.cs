@@ -3,7 +3,8 @@ using IdentityService.DataAccess.Repositories.Interfaces.Base;
 
 namespace IdentityService.DataAccess.Repositories.Interfaces
 {
-    public interface IUserRoleRepository : IReadRepository<UserRole>
+    public interface IRefreshTokenRepository : ICreateUpdateDeleteRepository<RefreshToken>
     {
+        Task<RefreshToken?> GetByUserIdAsync(int id);
     }
 }

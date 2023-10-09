@@ -23,7 +23,7 @@ namespace IdentityService.DataAccess.Entities.Configuration
 
             builder.HasOne(u => u.UserRole).WithMany(ur => ur.Users)
                 .HasForeignKey(u => u.UserRoleId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
