@@ -20,6 +20,16 @@ namespace IdentityService.DataAccess.Repositories
             return await _identityDbContext.SaveChangesToDbAsync();
         }
 
+        public async Task<User?> GetUserByRefreshToken(string refreshToken)
+        {
+            var token = await _identityDbContext.RefreshTokens.AsNoTracking()
+                .Include(r => r.User)
+                .Include(r => r.User.UserRole)
+                .FirstOrDefaultAsync(r => r.Token == refreshToken);
+
+            return token?.User;
+        }
+
         public async Task<RefreshToken?> GetByUserIdAsync(int id)
         {
             var refreshToken = await _identityDbContext

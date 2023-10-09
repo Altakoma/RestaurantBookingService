@@ -9,7 +9,6 @@ namespace IdentityService.DataAccess.Entities.Configuration
         {
             builder.ToTable("RefreshToken");
 
-            builder.Property(r => r.IsUsed).IsRequired();
             builder.Property(r => r.isRevoked).IsRequired();
             builder.Property(r => r.AddedDate).IsRequired();
             builder.Property(r => r.ExpirationDate).IsRequired();
