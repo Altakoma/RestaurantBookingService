@@ -8,7 +8,7 @@ namespace IdentityService.BusinessLogic.Services.Interfaces
     {
         Task<ReadUserDTO> InsertAsync(InsertUserDTO insertUserDTO);
         Task<ReadUserDTO?> GetByIdAsync(int id);
-        Task<TokensDTO> GetUserAsync(string login, string password);
+        Task<TokenDTO> GetUserAsync(string login, string password);
         Task<ICollection<ReadUserDTO>?> GetAllAsync();
         Task<ReadUserDTO> UpdateAsync(int id, UpdateUserDTO updateUserDTO);
         Task DeleteAsync(int id);

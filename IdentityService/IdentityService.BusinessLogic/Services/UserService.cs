@@ -71,7 +71,7 @@ namespace IdentityService.BusinessLogic.Services
             return readUserDTO;
         }
 
-        public async Task<TokensDTO> GetUserAsync(string login, string password)
+        public async Task<TokenDTO> GetUserAsync(string login, string password)
         {
             var user = await _userRepository.GetUserAsync(login, password);
 
@@ -84,6 +84,7 @@ namespace IdentityService.BusinessLogic.Services
                 .GenerateToken(user.Name, user.UserRole.Name, user.Id);
 
             await _refreshTokenService.SaveToken(refreshToken);
+            _refreshTokenService.SetRefreshTokenCookie(refreshToken.Token);
 
             return tokenDTO;
         }

@@ -1,6 +1,5 @@
 ﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
 using IdentityService.DataAccess.Entities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,7 +14,7 @@ namespace IdentityService.BusinessLogic.TokenGenerators
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         }
 
-        public (TokensDTO, RefreshToken) GenerateToken(string name,
+        public (TokenDTO, RefreshToken) GenerateToken(string name,
             string roleName, int userId)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -45,17 +44,15 @@ namespace IdentityService.BusinessLogic.TokenGenerators
             var refreshToken = new RefreshToken
             {
                 UserId = userId,
-                Token = GetRandomRefreshToken(20),
-                IsUsed = false,
+                Token = GetRandomRefreshToken(40),
                 isRevoked = false,
                 AddedDate = DateTime.Now,
                 ExpirationDate = DateTime.Now.AddMinutes(20),
             };
 
-            var tokenDTO = new TokensDTO
+            var tokenDTO = new TokenDTO
             {
                 EncodedToken = jwtTokenHandler.WriteToken(token),
-                RefreshToken = refreshToken.Token,
             };
 
             return (tokenDTO, refreshToken);

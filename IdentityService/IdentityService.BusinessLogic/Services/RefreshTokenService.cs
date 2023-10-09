@@ -4,8 +4,10 @@ using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 
 namespace IdentityService.BusinessLogic.Services
 {
@@ -14,14 +16,17 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository,
             TokenValidationParameters tokenValidationParams,
-            ITokenGenerator tokenGenerator)
+            ITokenGenerator tokenGenerator,
+            IHttpContextAccessor httpContextAccessor)
         {
             _refreshTokenRepository = refreshTokenRepository;
             _tokenValidationParameters = tokenValidationParams;
             _tokenGenerator = tokenGenerator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task DeleteAsync(int id)
@@ -64,43 +69,46 @@ namespace IdentityService.BusinessLogic.Services
             await _refreshTokenRepository.UpdateAsync(item);
         }
 
-        public async Task<TokensDTO?> VerifyAndGenerateToken(TokensDTO tokensDTO)
+        public void SetRefreshTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.Now.AddMinutes(20),
+            };
+
+            _httpContextAccessor.HttpContext.Response
+                .Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+        }
+
+        public async Task<TokenDTO?> VerifyAndGenerateToken()
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-            var tokenInVerification = jwtTokenHandler
-                .ValidateToken(tokensDTO.EncodedToken,
-                _tokenValidationParameters, out SecurityToken validatedToken);
+            var refreshTokenString = _httpContextAccessor.HttpContext.Request
+                .Cookies.FirstOrDefault(c => c.Key == "RefreshToken").Value;
 
-            if (validatedToken is JwtSecurityToken jwtSecurityToken)
+            if (refreshTokenString is null)
             {
-                var result = jwtSecurityToken.Header.Alg.Equals(
-                    SecurityAlgorithms.HmacSha256,
-                    StringComparison.CurrentCultureIgnoreCase);
-
-                if (!result)
-                {
-                    return null;
-                }
-
-                var name = jwtSecurityToken.Claims
-                    .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)!.Value;
-                var roleName = jwtSecurityToken.Claims
-                    .FirstOrDefault(x => x.Type == "role")!.Value;
-                var userId = int.Parse(jwtSecurityToken.Claims
-                    .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)!.Value);
-
-                (tokensDTO, var refreshToken) = _tokenGenerator
-                    .GenerateToken(name, roleName, userId);
-
-                await SaveToken(refreshToken);
-
-                return tokensDTO;
+                throw new NotFoundException("RefreshToken", typeof(Cookie));
             }
-            else
+
+            var user = await _refreshTokenRepository
+                .GetUserByRefreshToken(refreshTokenString);
+
+            if (user is null)
             {
-                return null;
+                throw new NotFoundException("refreshToken", typeof(User));
             }
+
+            (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
+                .GenerateToken(user.Name, user.UserRole.Name, user.Id);
+
+            await SaveToken(refreshToken);
+
+            SetRefreshTokenCookie(refreshToken.Token);
+
+            return tokenDTO;
         }
     }
 }

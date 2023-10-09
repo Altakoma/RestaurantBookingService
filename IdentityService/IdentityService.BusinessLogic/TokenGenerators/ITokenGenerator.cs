@@ -5,6 +5,6 @@ namespace IdentityService.BusinessLogic.TokenGenerators
 {
     public interface ITokenGenerator
     {
-        (TokensDTO, RefreshToken) GenerateToken(string name, string roleName, int accountId);
+        (TokenDTO, RefreshToken) GenerateToken(string name, string roleName, int accountId);
     }
 }
