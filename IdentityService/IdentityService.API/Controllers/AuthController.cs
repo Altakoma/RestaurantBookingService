@@ -27,9 +27,9 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LogInAsync(string login, string password)
+        public async Task<IActionResult> LogInAsync([FromBody] LoginDTO loginDTO)
         {
-            var tokensDTO = await _userService.GetUserAsync(login, password);
+            var tokensDTO = await _userService.GetUserAsync(loginDTO.Login, loginDTO.Password);
 
             return Ok(tokensDTO);
         }
