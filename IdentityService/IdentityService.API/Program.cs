@@ -1,4 +1,5 @@
 using IdentityService.API.Configurations;
+using IdentityService.API.Middlewares;
 using IdentityService.DataAccess;
 
 namespace IdentityService.API
@@ -21,6 +22,8 @@ namespace IdentityService.API
             app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

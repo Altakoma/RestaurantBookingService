@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using IdentityService.BusinessLogic.DTOs.TokenDTOs;
 using IdentityService.BusinessLogic.DTOs.UserDTOs;
 using IdentityService.BusinessLogic.Exceptions;
+using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.Entities;
@@ -15,15 +17,18 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IValidator<InsertUserDTO> _insertUserValidator;
 
         public UserService(IUserRepository userRepository,
             IMapper mapper, ITokenGenerator tokenGenerator,
-            IRefreshTokenService refreshTokenService)
+            IRefreshTokenService refreshTokenService,
+            IValidator<InsertUserDTO> insertUserValidator)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
             _refreshTokenService = refreshTokenService;
+            _insertUserValidator = insertUserValidator;
         }
 
         public async Task DeleteAsync(int id)
@@ -91,6 +96,8 @@ namespace IdentityService.BusinessLogic.Services
 
         public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item)
         {
+            await _insertUserValidator.ValidateAndThrowArgumentException(item);
+
             var user = _mapper.Map<User>(item);
 
             (user, var isInserted) = await _userRepository.InsertAsync(user);

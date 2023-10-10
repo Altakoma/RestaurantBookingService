@@ -23,6 +23,8 @@ namespace IdentityService.API.Configurations
 
             services.AddSwagger();
 
+            services.AddFluentValidation();
+
             services.AddJwtTokenAuthConfiguration(builder);
 
             services.AddAuthorization();
