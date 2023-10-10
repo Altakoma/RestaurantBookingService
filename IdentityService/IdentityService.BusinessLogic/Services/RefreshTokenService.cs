@@ -41,7 +41,7 @@ namespace IdentityService.BusinessLogic.Services
             await _refreshTokenRepository.DeleteAsync(refreshToken);
         }
 
-        public async Task<RefreshToken?> GetByUserId(int id)
+        public async Task<RefreshToken?> GetByUserIdAsync(int id)
         {
             var token = await _refreshTokenRepository.GetByUserIdAsync(id);
             return token;
@@ -52,9 +52,9 @@ namespace IdentityService.BusinessLogic.Services
             await _refreshTokenRepository.InsertAsync(item);
         }
 
-        public async Task SaveToken(RefreshToken token)
+        public async Task SaveTokenAsync(RefreshToken token)
         {
-            if (await GetByUserId(token.UserId) is null)
+            if (await GetByUserIdAsync(token.UserId) is null)
             {
                 await InsertAsync(token);
             }
@@ -81,7 +81,7 @@ namespace IdentityService.BusinessLogic.Services
                 .Cookies.Append("RefreshToken", refreshToken, cookieOptions);
         }
 
-        public async Task<TokenDTO?> VerifyAndGenerateToken()
+        public async Task<TokenDTO?> VerifyAndGenerateTokenAsync()
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -94,7 +94,7 @@ namespace IdentityService.BusinessLogic.Services
             }
 
             var user = await _refreshTokenRepository
-                .GetUserByRefreshToken(refreshTokenString);
+                .GetUserByRefreshTokenAsync(refreshTokenString);
 
             if (user is null)
             {
@@ -104,7 +104,7 @@ namespace IdentityService.BusinessLogic.Services
             (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
                 .GenerateToken(user.Name, user.UserRole.Name, user.Id);
 
-            await SaveToken(refreshToken);
+            await SaveTokenAsync(refreshToken);
 
             SetRefreshTokenCookie(refreshToken.Token);
 

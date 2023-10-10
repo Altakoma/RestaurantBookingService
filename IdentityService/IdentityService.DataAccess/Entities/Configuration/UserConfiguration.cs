@@ -1,5 +1,4 @@
-﻿using IdentityService.DataAccess.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IdentityService.DataAccess.Entities.Configuration

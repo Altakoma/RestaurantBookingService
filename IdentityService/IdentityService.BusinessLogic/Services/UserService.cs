@@ -83,7 +83,7 @@ namespace IdentityService.BusinessLogic.Services
             (var tokenDTO, var refreshToken) = _tokenGenerator
                 .GenerateToken(user.Name, user.UserRole.Name, user.Id);
 
-            await _refreshTokenService.SaveToken(refreshToken);
+            await _refreshTokenService.SaveTokenAsync(refreshToken);
             _refreshTokenService.SetRefreshTokenCookie(refreshToken.Token);
 
             return tokenDTO;

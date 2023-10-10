@@ -17,8 +17,8 @@ namespace IdentityService.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}", Name = nameof(GetUserById))]
-        public async Task<IActionResult> GetUserById(int id)
+        [HttpGet("{id}", Name = nameof(GetUserByIdAsync))]
+        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
             var readUserDTO = await _userService.GetByIdAsync(id);
 
@@ -26,7 +26,7 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsersAsync()
         {
             var readUserDTOs = await _userService.GetAllAsync();
 
@@ -34,7 +34,7 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UpdateUserDTO updateUserDTO)
+        public async Task<IActionResult> UpdateUserAsync(int id, UpdateUserDTO updateUserDTO)
         {
             var readUserDTO = await _userService.UpdateAsync(id, updateUserDTO);
 
@@ -42,7 +42,7 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUserAsync(int id)
         {
             await _userService.DeleteAsync(id);
 

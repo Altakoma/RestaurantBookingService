@@ -1,9 +1,6 @@
-﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
-using IdentityService.BusinessLogic.DTOs.UserDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.UserDTOs;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text.Encodings.Web;
 
 namespace IdentityService.API.Controllers
 {
@@ -21,16 +18,16 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(InsertUserDTO insertUserDTO)
+        public async Task<IActionResult> RegisterAsync(InsertUserDTO insertUserDTO)
         {
             var readUserDTO = await _userService.InsertAsync(insertUserDTO);
 
-            return CreatedAtRoute(nameof(UserController.GetUserById),
+            return CreatedAtRoute(nameof(UserController.GetUserByIdAsync),
                 new { id = readUserDTO.Id }, readUserDTO);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LogIn(string login, string password)
+        public async Task<IActionResult> LogInAsync(string login, string password)
         {
             var tokensDTO = await _userService.GetUserAsync(login, password);
 
@@ -38,9 +35,9 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken()
+        public async Task<IActionResult> RefreshTokenAsync()
         {
-            var generatedTokenDTO = await _refreshTokenService.VerifyAndGenerateToken();
+            var generatedTokenDTO = await _refreshTokenService.VerifyAndGenerateTokenAsync();
 
             return Ok(generatedTokenDTO);
         }

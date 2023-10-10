@@ -1,5 +1,4 @@
-﻿using IdentityService.BusinessLogic.Services;
-using IdentityService.BusinessLogic.Services.Interfaces;
+﻿using IdentityService.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers
@@ -15,8 +14,8 @@ namespace IdentityService.API.Controllers
             _userRoleService = userRoleService;
         }
 
-        [HttpGet("{id}", Name = nameof(GetUserRoleById))]
-        public async Task<IActionResult> GetUserRoleById(int id)
+        [HttpGet("{id}", Name = nameof(GetUserRoleByIdAsync))]
+        public async Task<IActionResult> GetUserRoleByIdAsync(int id)
         {
             var readUserRoleDTO = await _userRoleService.GetByIdAsync(id);
 
@@ -24,7 +23,7 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUserRoles()
+        public async Task<IActionResult> GetAllUserRolesAsync()
         {
             var readUserRoleDTOs = await _userRoleService.GetAllAsync();
 
