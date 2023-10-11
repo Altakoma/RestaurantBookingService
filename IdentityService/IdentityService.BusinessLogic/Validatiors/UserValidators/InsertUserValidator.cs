@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using IdentityService.BusinessLogic.DTOs.UserDTOs;
+using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Exceptions;
 
 namespace IdentityService.BusinessLogic.Validatiors.UserValidators

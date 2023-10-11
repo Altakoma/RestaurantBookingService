@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.DataAccess.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

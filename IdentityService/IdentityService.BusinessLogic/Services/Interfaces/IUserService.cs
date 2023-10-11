@@ -1,6 +1,5 @@
-﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
-using IdentityService.BusinessLogic.DTOs.UserDTOs;
-using Microsoft.AspNetCore.Mvc;
+﻿using IdentityService.BusinessLogic.DTOs.Token;
+using IdentityService.BusinessLogic.DTOs.User;
 
 namespace IdentityService.BusinessLogic.Services.Interfaces
 {

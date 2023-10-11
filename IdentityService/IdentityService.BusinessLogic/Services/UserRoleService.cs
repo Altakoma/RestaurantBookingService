@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using IdentityService.BusinessLogic.DTOs.UserRoleDTOs;
+using IdentityService.BusinessLogic.DTOs.UserRole;
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.DataAccess.Entities;

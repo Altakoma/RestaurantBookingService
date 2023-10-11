@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using IdentityService.BusinessLogic.DTOs.TokenDTOs;
-using IdentityService.BusinessLogic.DTOs.UserDTOs;
+using IdentityService.BusinessLogic.DTOs.Token;
+using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;

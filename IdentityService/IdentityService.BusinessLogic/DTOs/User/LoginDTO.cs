@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.DTOs.UserDTOs
+﻿namespace IdentityService.BusinessLogic.DTOs.User
 {
     public class LoginDTO
     {

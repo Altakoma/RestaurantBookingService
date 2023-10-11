@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.DTOs.UserRoleDTOs
+﻿namespace IdentityService.BusinessLogic.DTOs.UserRole
 {
     public class ReadUserRoleDTO
     {

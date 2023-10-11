@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.ExceptionDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.Exception;
 using IdentityService.BusinessLogic.Exceptions;
 
 namespace IdentityService.API.Middlewares

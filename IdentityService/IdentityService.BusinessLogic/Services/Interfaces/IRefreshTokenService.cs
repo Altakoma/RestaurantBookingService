@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.BusinessLogic.Services.Interfaces

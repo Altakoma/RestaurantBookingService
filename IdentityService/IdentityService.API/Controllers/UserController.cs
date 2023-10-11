@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.UserDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

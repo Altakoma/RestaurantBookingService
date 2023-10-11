@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.DTOs.ExceptionDTOs
+﻿namespace IdentityService.BusinessLogic.DTOs.Exception
 {
     public class ExceptionDTO
     {

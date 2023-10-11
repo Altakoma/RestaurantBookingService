@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.UserRoleDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.UserRole;
 
 namespace IdentityService.BusinessLogic.Services.Interfaces
 {

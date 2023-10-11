@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.DTOs.TokenDTOs
+﻿namespace IdentityService.BusinessLogic.DTOs.Token
 {
     public class TokenDTO
     {

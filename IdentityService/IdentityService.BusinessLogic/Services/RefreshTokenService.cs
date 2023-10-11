@@ -1,4 +1,4 @@
-﻿using IdentityService.BusinessLogic.DTOs.TokenDTOs;
+﻿using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
