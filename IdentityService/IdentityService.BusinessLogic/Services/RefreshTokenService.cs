@@ -41,9 +41,15 @@ namespace IdentityService.BusinessLogic.Services
             await _refreshTokenRepository.DeleteAsync(refreshToken);
         }
 
-        public async Task<RefreshToken?> GetByUserIdAsync(int id)
+        public async Task<RefreshToken> GetByUserIdAsync(int id)
         {
             var token = await _refreshTokenRepository.GetByUserIdAsync(id);
+
+            if (token is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(RefreshToken));
+            }
+
             return token;
         }
 
@@ -81,7 +87,7 @@ namespace IdentityService.BusinessLogic.Services
                 .Cookies.Append("RefreshToken", refreshToken, cookieOptions);
         }
 
-        public async Task<TokenDTO?> VerifyAndGenerateTokenAsync()
+        public async Task<TokenDTO> VerifyAndGenerateTokenAsync()
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 

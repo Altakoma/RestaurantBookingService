@@ -53,7 +53,7 @@ namespace IdentityService.BusinessLogic.Services
             }
         }
 
-        public async Task<ICollection<ReadUserDTO>?> GetAllAsync()
+        public async Task<ICollection<ReadUserDTO>> GetAllAsync()
         {
             var users = await _userRepository.GetAllAsync();
 
@@ -62,7 +62,7 @@ namespace IdentityService.BusinessLogic.Services
             return readUserDTOs;
         }
 
-        public async Task<ReadUserDTO?> GetByIdAsync(int id)
+        public async Task<ReadUserDTO> GetByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
 

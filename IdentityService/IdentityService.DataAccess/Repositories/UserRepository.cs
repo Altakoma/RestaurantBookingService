@@ -20,7 +20,7 @@ namespace IdentityService.DataAccess.Repositories
             return await _identityDbContext.SaveChangesToDbAsync();
         }
 
-        public async Task<ICollection<User>?> GetAllAsync()
+        public async Task<ICollection<User>> GetAllAsync()
         {
             var users = await _identityDbContext.Users.Include(u => u.UserRole)
                 .Select(u => u).ToListAsync();

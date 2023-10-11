@@ -14,7 +14,7 @@ namespace IdentityService.DataAccess.Repositories
             _identityDbContext = identityDbContext;
         }
 
-        public async Task<ICollection<UserRole>?> GetAllAsync()
+        public async Task<ICollection<UserRole>> GetAllAsync()
         {
             var roles = await _identityDbContext.UserRoles
                 .Select(ur => ur).ToListAsync();

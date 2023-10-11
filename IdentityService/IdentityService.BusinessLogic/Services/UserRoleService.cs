@@ -19,7 +19,7 @@ namespace IdentityService.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<ReadUserRoleDTO>?> GetAllAsync()
+        public async Task<ICollection<ReadUserRoleDTO>> GetAllAsync()
         {
             var userRoles = await _userRoleRepository.GetAllAsync();
 
@@ -28,7 +28,7 @@ namespace IdentityService.BusinessLogic.Services
             return readUserRoleDTOs;
         }
 
-        public async Task<ReadUserRoleDTO?> GetByIdAsync(int id)
+        public async Task<ReadUserRoleDTO> GetByIdAsync(int id)
         {
             var userRole = await _userRoleRepository.GetByIdAsync(id);
 
