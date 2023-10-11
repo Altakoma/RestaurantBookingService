@@ -9,6 +9,8 @@ namespace IdentityService.BusinessLogic.TokenGenerators
 {
     public class JwtGenerator : ITokenGenerator
     {
+        private const string CharsForGeneration = "XCVBNMASDFGHJKLQWERTYUIOP123456789zxcvbnmmasdfghjklqwertyuiop_";
+
         private SymmetricSecurityKey GetSymmetricSecurityKey(string key)
         {
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -61,9 +63,9 @@ namespace IdentityService.BusinessLogic.TokenGenerators
         private string GetRandomRefreshToken(int length)
         {
             var random = new Random();
-            var chars = "XCVBNMASDFGHJKLQWERTYUIOP123456789zxcvbnmmasdfghjklqwertyuiop_";
 
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Repeat(CharsForGeneration, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
