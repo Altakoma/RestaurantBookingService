@@ -38,7 +38,13 @@ namespace IdentityService.BusinessLogic.Services
                 throw new NotFoundException(id.ToString(), typeof(RefreshToken));
             }
 
-            await _refreshTokenRepository.DeleteAsync(refreshToken);
+            bool isDeleted = await _refreshTokenRepository.DeleteAsync(refreshToken);
+
+            if (!isDeleted)
+            {
+                throw new DbOperationException(
+                    nameof(DeleteAsync), id.ToString(), typeof(RefreshToken));
+            }
         }
 
         public async Task<RefreshToken> GetByUserIdAsync(int id)
@@ -55,7 +61,14 @@ namespace IdentityService.BusinessLogic.Services
 
         public async Task InsertAsync(RefreshToken item)
         {
-            await _refreshTokenRepository.InsertAsync(item);
+            (var refreshToken, bool isInserted) = 
+                await _refreshTokenRepository.InsertAsync(item);
+
+            if (!isInserted)
+            {
+                throw new DbOperationException(nameof(InsertAsync),
+                    item.UserId.ToString(), typeof(RefreshToken));
+            }
         }
 
         public async Task SaveTokenAsync(RefreshToken token)
@@ -72,7 +85,13 @@ namespace IdentityService.BusinessLogic.Services
 
         public async Task UpdateAsync(RefreshToken item)
         {
-            await _refreshTokenRepository.UpdateAsync(item);
+            bool isUpdated = await _refreshTokenRepository.UpdateAsync(item);
+
+            if (!isUpdated)
+            {
+                throw new DbOperationException(nameof(UpdateAsync),
+                    item.UserId.ToString(), typeof(RefreshToken));
+            }
         }
 
         public void SetRefreshTokenCookie(string refreshToken)
@@ -104,7 +123,7 @@ namespace IdentityService.BusinessLogic.Services
 
             if (user is null)
             {
-                throw new NotFoundException("refreshToken", typeof(User));
+                throw new NotFoundException(nameof(refreshTokenString), typeof(User));
             }
 
             (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
