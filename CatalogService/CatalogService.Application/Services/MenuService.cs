@@ -10,12 +10,14 @@ namespace CatalogService.Application.Services
     public class MenuService : IMenuService
     {
         private readonly IMenuRepository _menuRepository;
+        private readonly IRestaurantRepository _restaurantRepository;
         private readonly IMapper _mapper;
 
         public MenuService(IMenuRepository menuRepository,
-            IMapper mapper)
+            IRestaurantRepository restaurantRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _restaurantRepository = restaurantRepository;
             _mapper = mapper;
         }
 
@@ -25,7 +27,7 @@ namespace CatalogService.Application.Services
 
             if (menu is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Menu));
+                throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
             }
 
             bool isDeleted = await _menuRepository.DeleteAsync(menu);
@@ -46,13 +48,22 @@ namespace CatalogService.Application.Services
             return readMenuDTOs;
         }
 
+        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id)
+        {
+            ICollection<Menu> menu = await _menuRepository.GetAllByRestaurantIdAsync(id);
+
+            var readMenuDTOs = _mapper.Map<ICollection<ReadMenuDTO>>(menu);
+
+            return readMenuDTOs;
+        }
+
         public async Task<ReadMenuDTO> GetByIdAsync(int id)
         {
             Menu? menu = await _menuRepository.GetByIdAsync(id);
 
             if (menu is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Menu));
+                throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
             }
 
             var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
@@ -73,6 +84,8 @@ namespace CatalogService.Application.Services
                     menu.Id.ToString(), typeof(Menu));
             }
 
+            menu = await _menuRepository.GetByIdAsync(menu.Id);
+
             var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
 
             return readMenuDTO;
@@ -81,6 +94,7 @@ namespace CatalogService.Application.Services
         public async Task<ReadMenuDTO> UpdateAsync(int id, UpdateMenuDTO item)
         {
             var menu = _mapper.Map<Menu>(item);
+            menu.Id = id;
 
             bool isUpdated = await _menuRepository.UpdateAsync(menu);
 

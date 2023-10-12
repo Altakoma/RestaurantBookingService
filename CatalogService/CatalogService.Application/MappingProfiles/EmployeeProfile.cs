@@ -8,7 +8,10 @@ namespace CatalogService.Application.MappingProfiles
     {
         public EmployeeProfile()
         {
-            CreateMap<Employee, EmployeeDTO>().ReverseMap();
+            CreateMap<Employee, ReadEmployeeDTO>()
+                .ForMember(re => re.RestaurantName, conf => conf.MapFrom(e => e.Restaurant.Name));
+            CreateMap<InsertEmployeeDTO, Employee>();
+            CreateMap<UpdateEmployeeDTO, Employee>();
         }
     }
 }

@@ -3,8 +3,9 @@
     public class Employee
     {
         public int Id { get; set; }
+        public int RestaurantId { get; set; }
         public string Name { get; set; } = null!;
 
-        public ICollection<Restaurant> Restaurants { get; set; } = null!;
+        public Restaurant Restaurant { get; set; } = null!;
     }
 }

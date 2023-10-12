@@ -18,7 +18,8 @@ namespace CatalogService.Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllEmployees()
         {
-            ICollection<EmployeeDTO> employeeDTOs = await _employeeService.GetAllAsync();
+            ICollection<ReadEmployeeDTO> employeeDTOs =
+                await _employeeService.GetAllAsync();
 
             return Ok(employeeDTOs);
         }
@@ -26,24 +27,28 @@ namespace CatalogService.Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(int id)
         {
-            EmployeeDTO employeeDTO = await _employeeService.GetByIdAsync(id);
+            ReadEmployeeDTO employeeDTO = await _employeeService
+                .GetByIdAsync(id);
 
             return Ok(employeeDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertEmployee(EmployeeDTO employeeDTO)
+        public async Task<IActionResult> InsertEmployee(InsertEmployeeDTO employeeDTO)
         {
-            employeeDTO = await _employeeService.InsertAsync(employeeDTO);
+            ReadEmployeeDTO readEmployeeDTO =
+                await _employeeService.InsertAsync(employeeDTO);
 
-            return CreatedAtAction(nameof(GetEmployee), employeeDTO, employeeDTO.Id);
+            return CreatedAtAction(nameof(GetEmployee), new { employeeDTO.Id },
+                employeeDTO);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id,
             UpdateEmployeeDTO updateEmployeeDTO)
         {
-            EmployeeDTO employeeDTO = await _employeeService.UpdateAsync(id, updateEmployeeDTO);
+            ReadEmployeeDTO employeeDTO =
+                await _employeeService.UpdateAsync(id, updateEmployeeDTO);
 
             return Ok(employeeDTO);
         }

@@ -38,8 +38,7 @@ namespace CatalogService.Presentation.Controllers
             ReadMenuDTO readMenuDTO = await _menuService
                 .InsertAsync(insertMenuDTO);
 
-            return CreatedAtAction(nameof(GetFood), readMenuDTO,
-                readMenuDTO.Id);
+            return CreatedAtAction(nameof(GetFood), new { readMenuDTO.Id }, readMenuDTO);
         }
 
         [HttpPut("{id}")]

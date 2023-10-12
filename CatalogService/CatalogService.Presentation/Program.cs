@@ -1,5 +1,6 @@
 using CatalogService.Infrastructure.Data;
 using CatalogService.Presentation.Configurations;
+using CatalogService.Presentation.Middlewares;
 
 namespace CatalogService.Presentation
 {
@@ -24,6 +25,8 @@ namespace CatalogService.Presentation
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.MapControllers();
 

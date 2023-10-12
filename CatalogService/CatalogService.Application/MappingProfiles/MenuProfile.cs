@@ -8,7 +8,9 @@ namespace CatalogService.Application.MappingProfiles
     {
         public MenuProfile()
         {
-            CreateMap<Menu, ReadMenuDTO>();
+            CreateMap<Menu, ReadMenuDTO>()
+                .ForMember(m => m.FoodTypeDTO, conf => conf.MapFrom(m => m.FoodType))
+                .ForMember(m => m.RestaurantName, conf => conf.MapFrom(r => r.Restaurant.Name));
             CreateMap<UpdateMenuDTO, Menu>();
             CreateMap<InsertMenuDTO, Menu>();
         }

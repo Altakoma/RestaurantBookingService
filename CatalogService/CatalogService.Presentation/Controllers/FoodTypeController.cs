@@ -38,8 +38,8 @@ namespace CatalogService.Presentation.Controllers
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
                 .InsertAsync(foodTypeDTO);
 
-            return CreatedAtAction(nameof(GetEmployee), readFoodTypeDTO,
-                readFoodTypeDTO.Id);
+            return CreatedAtAction(nameof(GetEmployee), new { readFoodTypeDTO.Id },
+                readFoodTypeDTO);
         }
 
         [HttpPut("{id}")]

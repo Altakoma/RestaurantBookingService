@@ -22,7 +22,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
 
         public async Task<ICollection<Menu>> GetAllAsync()
         {
-            var menu = await _dbContext.Menu
+            var menu = await _dbContext.Menu.Include(m => m.FoodType)
                 .Select(u => u).ToListAsync();
 
             return menu;
@@ -30,8 +30,9 @@ namespace CatalogService.Infrastructure.Data.Repositories
 
         public async Task<Menu?> GetByIdAsync(int id)
         {
-            var menu = await _dbContext.Menu
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var menu = await _dbContext.Menu.Include(m => m.FoodType)
+                .Include(m => m.Restaurant)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             return menu;
         }
@@ -48,6 +49,14 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             _dbContext.Update(item);
             return await _dbContext.SaveChangesToDbAsync();
+        }
+
+        public async Task<ICollection<Menu>> GetAllByRestaurantIdAsync(int id)
+        {
+            ICollection<Menu> menu = await _dbContext.Menu.Include(m => m.FoodType)
+                .Where(m => m.RestaurantId == id).ToListAsync();
+
+            return menu;
         }
     }
 }

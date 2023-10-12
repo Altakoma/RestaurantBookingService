@@ -15,7 +15,7 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext.Configurations
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedNever();
 
-            builder.HasMany(e => e.Restaurants).WithMany(r => r.Employees);
+            builder.HasOne(e => e.Restaurant).WithMany(r => r.Employees);
         }
     }
 }

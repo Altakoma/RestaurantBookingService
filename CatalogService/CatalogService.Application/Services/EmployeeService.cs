@@ -25,7 +25,8 @@ namespace CatalogService.Application.Services
 
             if (employee is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Employee));
+                throw new NotFoundException(nameof(Employee),
+                    id.ToString(), typeof(Employee));
             }
 
             bool isDeleted = await _employeeRepository.DeleteAsync(employee);
@@ -37,30 +38,44 @@ namespace CatalogService.Application.Services
             }
         }
 
-        public async Task<ICollection<EmployeeDTO>> GetAllAsync()
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllAsync()
         {
-            ICollection<Employee> employees = await _employeeRepository.GetAllAsync();
+            ICollection<Employee> employees =
+                await _employeeRepository.GetAllAsync();
 
-            var employeeDTOs = _mapper.Map<ICollection<EmployeeDTO>>(employees);
+            var readEmployeeDTOs = _mapper
+                .Map<ICollection<ReadEmployeeDTO>>(employees);
 
-            return employeeDTOs;
+            return readEmployeeDTOs;
         }
 
-        public async Task<EmployeeDTO> GetByIdAsync(int id)
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id)
+        {
+            ICollection<Employee> employees =
+                await _employeeRepository.GetAllByRestaurantIdAsync(id);
+
+            var readEmployeeDTOs =
+                _mapper.Map<ICollection<ReadEmployeeDTO>>(employees);
+
+            return readEmployeeDTOs;
+        }
+
+        public async Task<ReadEmployeeDTO> GetByIdAsync(int id)
         {
             Employee? employee = await _employeeRepository.GetByIdAsync(id);
 
             if (employee is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Employee));
+                throw new NotFoundException(nameof(Employee),
+                    id.ToString(), typeof(Employee));
             }
 
-            var employeeDTO = _mapper.Map<EmployeeDTO>(employee);
+            var readEmployeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
 
-            return employeeDTO;
+            return readEmployeeDTO;
         }
 
-        public async Task<EmployeeDTO> InsertAsync(EmployeeDTO item)
+        public async Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item)
         {
             var employee = _mapper.Map<Employee>(item);
 
@@ -73,26 +88,28 @@ namespace CatalogService.Application.Services
                     employee.Id.ToString(), typeof(Employee));
             }
 
-            item = _mapper.Map<EmployeeDTO>(employee);
+            var readEmployeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
 
-            return item;
+            return readEmployeeDTO;
         }
 
-        public async Task<EmployeeDTO> UpdateAsync(int id, UpdateEmployeeDTO item)
+        public async Task<ReadEmployeeDTO> UpdateAsync(int id,
+            UpdateEmployeeDTO item)
         {
             var employee = _mapper.Map<Employee>(item);
+            employee.Id = id;
 
             bool isUpdated = await _employeeRepository.UpdateAsync(employee);
 
             if (!isUpdated)
             {
-                throw new DbOperationException(nameof(UpdateAsync), id.ToString(),
-                    typeof(Employee));
+                throw new DbOperationException(nameof(UpdateAsync),
+                    id.ToString(), typeof(Employee));
             }
 
             employee = await _employeeRepository.GetByIdAsync(id);
 
-            var employeeDTO = _mapper.Map<EmployeeDTO>(employee);
+            var employeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
 
             return employeeDTO;
         }

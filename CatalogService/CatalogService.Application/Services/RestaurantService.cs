@@ -25,7 +25,7 @@ namespace CatalogService.Application.Services
 
             if (restaurant is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Restaurant));
+                throw new NotFoundException(nameof(Restaurant), id.ToString(), typeof(Restaurant));
             }
 
             bool isDeleted = await _restaurantRepository.DeleteAsync(restaurant);
@@ -52,7 +52,7 @@ namespace CatalogService.Application.Services
 
             if (restaurant is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(Restaurant));
+                throw new NotFoundException(nameof(Restaurant), id.ToString(), typeof(Restaurant));
             }
 
             var readRestaurantDTO = _mapper.Map<ReadRestaurantDTO>(restaurant);
@@ -81,6 +81,7 @@ namespace CatalogService.Application.Services
         public async Task<ReadRestaurantDTO> UpdateAsync(int id, UpdateRestaurantDTO item)
         {
             var restaurant = _mapper.Map<Restaurant>(item);
+            restaurant.Id = id;
 
             bool isUpdated = await _restaurantRepository.UpdateAsync(restaurant);
 

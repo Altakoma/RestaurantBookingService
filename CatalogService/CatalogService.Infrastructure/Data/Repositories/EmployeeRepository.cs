@@ -22,15 +22,23 @@ namespace CatalogService.Infrastructure.Data.Repositories
 
         public async Task<ICollection<Employee>> GetAllAsync()
         {
-            var employees = await _dbContext.Employees
+            var employees = await _dbContext.Employees.Include(e => e.Restaurant)
                 .Select(u => u).ToListAsync();
+
+            return employees;
+        }
+
+        public async Task<ICollection<Employee>> GetAllByRestaurantIdAsync(int id)
+        {
+            var employees = await _dbContext.Employees.Include(e => e.Restaurant)
+                .Where(e => e.RestaurantId == id).ToListAsync();
 
             return employees;
         }
 
         public async Task<Employee?> GetByIdAsync(int id)
         {
-            var employee = await _dbContext.Employees
+            var employee = await _dbContext.Employees.Include(e => e.Restaurant)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             return employee;

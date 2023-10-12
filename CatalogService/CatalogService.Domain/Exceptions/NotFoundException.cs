@@ -2,8 +2,8 @@
 {
     public class NotFoundException : Exception
     {
-        public NotFoundException(string key, Type type)
-            : base((ExceptionMessages.NotFoundExceptionMessage, type.Name, key).ToString())
+        public NotFoundException(string keyOwner, string key, Type type)
+            : base((ExceptionMessages.NotFoundExceptionMessage, type.Name, key, keyOwner).ToString())
         {
         }
     }

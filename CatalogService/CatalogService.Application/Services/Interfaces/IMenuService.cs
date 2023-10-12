@@ -9,5 +9,6 @@ namespace CatalogService.Application.Services.Interfaces
         Task DeleteAsync(int id);
         Task<ReadMenuDTO> GetByIdAsync(int id);
         Task<ICollection<ReadMenuDTO>> GetAllAsync();
+        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id);
     }
 }

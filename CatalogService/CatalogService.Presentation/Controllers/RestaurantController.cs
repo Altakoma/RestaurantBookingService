@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.DTOs.Employee;
+using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
 using CatalogService.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,15 @@ namespace CatalogService.Presentation.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly IRestaurantService _restaurantService;
+        private readonly IMenuService _menuService;
+        private readonly IEmployeeService _employeeService;
 
-        public RestaurantController(IRestaurantService restaurantService)
+        public RestaurantController(IRestaurantService restaurantService,
+            IMenuService menuService, IEmployeeService employeeService)
         {
             _restaurantService = restaurantService;
+            _menuService = menuService;
+            _employeeService = employeeService;
         }
 
         [HttpGet]
@@ -41,8 +47,8 @@ namespace CatalogService.Presentation.Controllers
             ReadRestaurantDTO readRestaurantDTO = await _restaurantService
                 .InsertAsync(insertRestaurantDTO);
 
-            return CreatedAtAction(nameof(GetRestaurant), readRestaurantDTO,
-                readRestaurantDTO.Id);
+            return CreatedAtAction(nameof(GetRestaurant), new { readRestaurantDTO.Id },
+                readRestaurantDTO);
         }
 
         [HttpPut("{id}")]
@@ -61,6 +67,24 @@ namespace CatalogService.Presentation.Controllers
             await _restaurantService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+        [HttpGet("{id}/menu")]
+        public async Task<IActionResult> GetMenu(int id)
+        {
+            ICollection<ReadMenuDTO> readMenuDTOs =
+                await _menuService.GetAllByRestaurantIdAsync(id);
+
+            return Ok(readMenuDTOs);
+        }
+
+        [HttpGet("{id}/employee")]
+        public async Task<IActionResult> GetEmployees(int id)
+        {
+            ICollection<ReadEmployeeDTO> readEmployeeDTOs =
+                await _employeeService.GetAllByRestaurantIdAsync(id);
+
+            return Ok(readEmployeeDTOs);
         }
     }
 }

@@ -17,8 +17,8 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext.Configurations
             builder.Property(r => r.Street).HasMaxLength(50);
             builder.Property(r => r.House).HasMaxLength(50);
 
-            builder.HasMany(r => r.Menu).WithMany(m => m.Restaurants);
-            builder.HasMany(r => r.Employees).WithMany(e => e.Restaurants);
+            builder.HasMany(r => r.Menu).WithOne(m => m.Restaurant);
+            builder.HasMany(r => r.Employees).WithOne(e => e.Restaurant);
         }
     }
 }

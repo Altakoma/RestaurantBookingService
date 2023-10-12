@@ -14,7 +14,7 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext.Configurations
 
             builder.Property(m => m.FoodName).HasMaxLength(100);
 
-            builder.HasMany(m => m.Restaurants).WithMany(r => r.Menu);
+            builder.HasOne(m => m.Restaurant).WithMany(r => r.Menu);
             builder.HasOne(m => m.FoodType).WithMany(ft => ft.Menu);
         }
     }

@@ -4,10 +4,11 @@ namespace CatalogService.Application.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<EmployeeDTO> InsertAsync(EmployeeDTO item);
-        Task<EmployeeDTO> UpdateAsync(int id, UpdateEmployeeDTO item);
+        Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item);
+        Task<ReadEmployeeDTO> UpdateAsync(int id, UpdateEmployeeDTO item);
         Task DeleteAsync(int id);
-        Task<EmployeeDTO> GetByIdAsync(int id);
-        Task<ICollection<EmployeeDTO>> GetAllAsync();
+        Task<ReadEmployeeDTO> GetByIdAsync(int id);
+        Task<ICollection<ReadEmployeeDTO>> GetAllAsync();
+        Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id);
     }
 }

@@ -25,7 +25,7 @@ namespace CatalogService.Application.Services
 
             if (foodType is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(FoodType));
+                throw new NotFoundException(nameof(FoodType), id.ToString(), typeof(FoodType));
             }
 
             bool isDeleted = await _foodTypeRepository.DeleteAsync(foodType);
@@ -52,7 +52,7 @@ namespace CatalogService.Application.Services
 
             if (foodType is null)
             {
-                throw new NotFoundException(id.ToString(), typeof(FoodType));
+                throw new NotFoundException(nameof(FoodType), id.ToString(), typeof(FoodType));
             }
 
             var foodTypeDTO = _mapper.Map<ReadFoodTypeDTO>(foodType);
@@ -81,6 +81,7 @@ namespace CatalogService.Application.Services
         public async Task<ReadFoodTypeDTO> UpdateAsync(int id, FoodTypeDTO item)
         {
             var foodType = _mapper.Map<FoodType>(item);
+            foodType.Id = id;
 
             bool isUpdated = await _foodTypeRepository.UpdateAsync(foodType);
 
