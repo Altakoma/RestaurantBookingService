@@ -6,7 +6,7 @@ namespace IdentityService.BusinessLogic.Services.Interfaces
     public interface IRefreshTokenService
     {
         Task<TokenDTO> VerifyAndGenerateTokenAsync();
-        Task<RefreshToken> GetByUserIdAsync(int id);
+        Task<RefreshToken?> GetByUserIdAsync(int id);
         Task InsertAsync(RefreshToken token);
         Task UpdateAsync(RefreshToken token);
         Task DeleteAsync(int id);

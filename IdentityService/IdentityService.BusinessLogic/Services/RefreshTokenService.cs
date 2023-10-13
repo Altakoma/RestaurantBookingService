@@ -47,14 +47,9 @@ namespace IdentityService.BusinessLogic.Services
             }
         }
 
-        public async Task<RefreshToken> GetByUserIdAsync(int id)
+        public async Task<RefreshToken?> GetByUserIdAsync(int id)
         {
             var token = await _refreshTokenRepository.GetByUserIdAsync(id);
-
-            if (token is null)
-            {
-                throw new NotFoundException(id.ToString(), typeof(RefreshToken));
-            }
 
             return token;
         }
