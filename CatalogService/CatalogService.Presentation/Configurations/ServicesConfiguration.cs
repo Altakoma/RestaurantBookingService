@@ -20,13 +20,13 @@ namespace CatalogService.Presentation.Configurations
 
             services.AddSwagger();
 
-            services.AddAuthorization();
-
             services.AddSingleton<Seed>();
 
             services.AddMapper();
 
             services.AddJwtTokenAuthConfiguration(builder);
+
+            services.AddAuthorization();
 
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();

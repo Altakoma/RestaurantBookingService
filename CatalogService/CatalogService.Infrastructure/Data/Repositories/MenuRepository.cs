@@ -23,6 +23,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         public async Task<ICollection<Menu>> GetAllAsync()
         {
             var menu = await _dbContext.Menu.Include(m => m.FoodType)
+                .Include(m => m.Restaurant)
                 .Select(u => u).ToListAsync();
 
             return menu;

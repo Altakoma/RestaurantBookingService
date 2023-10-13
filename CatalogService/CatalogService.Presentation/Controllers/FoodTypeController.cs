@@ -1,11 +1,13 @@
 ﻿using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogService.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class FoodTypeController : ControllerBase
     {
         private readonly IFoodTypeService _foodTypeService;
