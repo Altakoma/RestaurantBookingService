@@ -8,7 +8,13 @@ namespace IdentityService.BusinessLogic.MappingProfiles
     {
         public UserRoleProfile()
         {
-            CreateMap<UserRole, ReadUserRoleDTO>();
+            CreateMap<UserRole, ReadUserRoleDTO>()
+                .ForMember(
+                readUserRoleDTO => readUserRoleDTO.Id,
+                configuration => configuration.MapFrom(userRole => userRole.Id))
+                .ForMember(
+                readUserRoleDTO => readUserRoleDTO.Name,
+                configuration => configuration.MapFrom(userRole => userRole.Name));
         }
     }
 }

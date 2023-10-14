@@ -1,5 +1,8 @@
-﻿using IdentityService.BusinessLogic.DTOs.User;
+﻿using IdentityService.BusinessLogic.DTOs.Exception;
+using IdentityService.BusinessLogic.DTOs.Token;
+using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Services.Interfaces;
+using IdentityService.DataAccess.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,34 +20,50 @@ namespace IdentityService.API.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}", Name = nameof(GetUserByIdAsync))]
-        public async Task<IActionResult> GetUserByIdAsync(int id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> GetUserByIdAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            var readUserDTO = await _userService.GetByIdAsync(id);
+            ReadUserDTO readUserDTO =
+                await _userService.GetByIdAsync(id, cancellationToken);
 
             return Ok(readUserDTO);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsersAsync()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadUserDTO>))]
+        public async Task<IActionResult> GetAllUsersAsync(
+            CancellationToken cancellationToken)
         {
-            var readUserDTOs = await _userService.GetAllAsync();
+            ICollection<ReadUserDTO> readUserDTOs =
+                await _userService.GetAllAsync(cancellationToken);
 
             return Ok(readUserDTOs);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserAsync(int id, UpdateUserDTO updateUserDTO)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] int id,
+            [FromBody] UpdateUserDTO updateUserDTO,
+            CancellationToken cancellationToken)
         {
-            var readUserDTO = await _userService.UpdateAsync(id, updateUserDTO);
+            ReadUserDTO readUserDTO =
+                await _userService.UpdateAsync(
+                    id, updateUserDTO, cancellationToken);
 
             return Ok(readUserDTO);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            await _userService.DeleteAsync(id);
+            await _userService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }

@@ -1,62 +1,78 @@
-﻿using IdentityService.DataAccess.DatabaseContext;
+﻿using AutoMapper;
+using IdentityService.DataAccess.DatabaseContext;
+using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
+using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
+using IdentityService.DataAccess.Repositories.Interfaces.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : WriteRepository<User>, IUserRepository
     {
         private readonly IdentityDbContext _identityDbContext;
+        private readonly IMapper _mapper;
 
-        public UserRepository(IdentityDbContext identityDbContext)
+        public UserRepository(IdentityDbContext identityDbContext,
+            IMapper mapper) : base(identityDbContext)
         {
             _identityDbContext = identityDbContext;
+            _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(User item)
+        public async Task<ICollection<ReadUserDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            _identityDbContext.Remove(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
-        }
-
-        public async Task<ICollection<User>> GetAllAsync()
-        {
-            var users = await _identityDbContext.Users.Include(u => u.UserRole)
-                .Select(u => u).ToListAsync();
+            var users = await _mapper.ProjectTo<ReadUserDTO>(
+                _identityDbContext.Users
+                .AsNoTracking()
+                .Include(user => user.UserRole)
+                .Select(user => user))
+                .ToListAsync(cancellationToken);
 
             return users;
         }
 
-        public async Task<User?> GetByIdAsync(int id)
+        public async Task<ReadUserDTO?> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var user = await _identityDbContext.Users.Include(u => u.UserRole)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await _mapper.ProjectTo<ReadUserDTO>(
+                _identityDbContext.Users
+                .AsNoTracking()
+                .Include(user => user.UserRole)
+                .Where(user => user.Id == id))
+                .SingleOrDefaultAsync(cancellationToken);
 
             return user;
         }
 
-        public async Task<User?> GetUserAsync(string login, string password)
+        public async Task<ReadUserDTO?> GetUserAsync(string login, string password,
+            CancellationToken cancellationToken)
         {
-            var user = await _identityDbContext.Users.Include(u => u.UserRole)
-                .FirstOrDefaultAsync(u => u.Login == login &&
-                u.Password == password);
+            var user = await _mapper.ProjectTo<ReadUserDTO>(
+                _identityDbContext.Users
+                .AsNoTracking()
+                .Include(user => user.UserRole)
+                .Where(user => user.Login == login &&
+                       user.Password == password))
+                .SingleOrDefaultAsync(cancellationToken);
 
             return user;
         }
 
-        public async Task<(User, bool)> InsertAsync(User item)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await _identityDbContext.AddAsync(item);
-            bool isInserted = await _identityDbContext.SaveChangesToDbAsync();
+            User? user = await _identityDbContext.Users
+                .FirstOrDefaultAsync(user => user.Id == id,
+                cancellationToken);
 
-            return (item, isInserted);
-        }
+            if (user is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(User));
+            }
 
-        public async Task<bool> UpdateAsync(User item)
-        {
-            _identityDbContext.Update(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
+            base.Delete(user);
         }
     }
 }

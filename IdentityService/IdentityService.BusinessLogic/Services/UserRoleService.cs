@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using IdentityService.BusinessLogic.DTOs.UserRole;
-using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.DataAccess.Entities;
+using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
 
 namespace IdentityService.BusinessLogic.Services
@@ -19,18 +19,23 @@ namespace IdentityService.BusinessLogic.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<ReadUserRoleDTO>> GetAllAsync()
+        public async Task<ICollection<ReadUserRoleDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            var userRoles = await _userRoleRepository.GetAllAsync();
+            var userRoles = await _userRoleRepository
+                                  .GetAllAsync(cancellationToken);
 
-            var readUserRoleDTOs = _mapper.Map<ICollection<ReadUserRoleDTO>>(userRoles);
+            var readUserRoleDTOs = _mapper
+                                   .Map<ICollection<ReadUserRoleDTO>>(userRoles);
 
             return readUserRoleDTOs;
         }
 
-        public async Task<ReadUserRoleDTO> GetByIdAsync(int id)
+        public async Task<ReadUserRoleDTO> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var userRole = await _userRoleRepository.GetByIdAsync(id);
+            var userRole = await _userRoleRepository
+                                 .GetByIdAsync(id, cancellationToken);
 
             if (userRole is null)
             {

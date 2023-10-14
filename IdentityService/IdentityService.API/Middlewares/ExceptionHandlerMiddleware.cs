@@ -1,63 +1,59 @@
 ﻿using IdentityService.BusinessLogic.DTOs.Exception;
 using IdentityService.BusinessLogic.Exceptions;
+using IdentityService.DataAccess.Exceptions;
 
 namespace IdentityService.API.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
         public ExceptionHandlerMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                await next.Invoke(context);
+                await _next.Invoke(context);
             }
             catch (Exception generalException)
             {
-                string exceptionType;
-                object? data = null;
+                (int statusCode, string exceptionType) =
+                    GetStatusCodeAndExceptionTypeName(generalException);
 
-                switch (generalException)
-                {
-                    case ArgumentException concreteException:
-                        context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                        exceptionType = typeof(ArgumentException).ToString();
-                        data = concreteException.InnerException;
-                        break;
-
-                    case NotFoundException:
-                        context.Response.StatusCode = StatusCodes.Status404NotFound;
-                        exceptionType = typeof(NotFoundException).ToString();
-                        break;
-
-                    case DbOperationException:
-                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                        exceptionType = typeof(DbOperationException).ToString();
-                        break;
-
-                    default:
-                        exceptionType = typeof(Exception).ToString();
-                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                        data = generalException.InnerException;
-                        break;
-                }
+                context.Response.StatusCode = statusCode;
 
                 var exceptionDTO = new ExceptionDTO
                 {
                     Message = generalException.Message,
                     ExceptionType = exceptionType,
-                    Data = data,
+                    Data = generalException.InnerException,
                 };
 
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsJsonAsync(exceptionDTO);
+            }
+        }
+
+        private (int, string) GetStatusCodeAndExceptionTypeName(Exception exception)
+        {
+            switch (exception)
+            {
+                case ArgumentException:
+                    return (StatusCodes.Status400BadRequest, nameof(ArgumentException));
+
+                case NotFoundException:
+                    return (StatusCodes.Status404NotFound, nameof(NotFoundException));
+
+                case DbOperationException:
+                    return (StatusCodes.Status500InternalServerError, nameof(DbOperationException));
+
+                default:
+                    return (StatusCodes.Status500InternalServerError, nameof(Exception));
             }
         }
     }

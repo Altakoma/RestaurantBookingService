@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.Exceptions
+﻿namespace IdentityService.DataAccess.Exceptions
 {
     public static class ExceptionMessages
     {

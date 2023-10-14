@@ -5,12 +5,10 @@ namespace IdentityService.BusinessLogic.Services.Interfaces
 {
     public interface IRefreshTokenService
     {
-        Task<TokenDTO> VerifyAndGenerateTokenAsync();
-        Task<RefreshToken?> GetByUserIdAsync(int id);
-        Task InsertAsync(RefreshToken token);
-        Task UpdateAsync(RefreshToken token);
-        Task DeleteAsync(int id);
-        Task SaveTokenAsync(RefreshToken token);
-        void SetRefreshTokenCookie(string refreshToken);
+        string RefreshTokenCookie { get; set; }
+        Task<TokenDTO> VerifyAndGenerateTokenAsync(CancellationToken cancellationToken);
+        Task<RefreshToken?> GetByUserIdAsync(int id, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task SaveTokenAsync(RefreshToken token, CancellationToken cancellationToken);
     }
 }
