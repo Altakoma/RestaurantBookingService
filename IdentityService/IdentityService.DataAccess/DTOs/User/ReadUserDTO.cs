@@ -1,4 +1,4 @@
-﻿namespace IdentityService.BusinessLogic.DTOs.User
+﻿namespace IdentityService.DataAccess.DTOs.User
 {
     public class ReadUserDTO
     {

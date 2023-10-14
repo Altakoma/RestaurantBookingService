@@ -1,5 +1,8 @@
-﻿using IdentityService.BusinessLogic.DTOs.User;
+﻿using IdentityService.BusinessLogic.DTOs.Exception;
+using IdentityService.BusinessLogic.DTOs.Token;
+using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Services.Interfaces;
+using IdentityService.DataAccess.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers
@@ -11,33 +14,48 @@ namespace IdentityService.API.Controllers
         private readonly IUserService _userService;
         private readonly IRefreshTokenService _refreshTokenService;
 
-        public AuthController(IUserService userService, IRefreshTokenService refreshTokenService)
+        public AuthController(IUserService userService,
+            IRefreshTokenService refreshTokenService)
         {
             _userService = userService;
             _refreshTokenService = refreshTokenService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterAsync(InsertUserDTO insertUserDTO)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> RegisterAsync(
+            [FromBody] InsertUserDTO insertUserDTO,
+            CancellationToken cancellationToken)
         {
-            var readUserDTO = await _userService.InsertAsync(insertUserDTO);
+            ReadUserDTO readUserDTO = await _userService
+                .InsertAsync(insertUserDTO, cancellationToken);
 
             return CreatedAtRoute(nameof(UserController.GetUserByIdAsync),
                 new { id = readUserDTO.Id }, readUserDTO);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LogInAsync([FromBody] LoginDTO loginDTO)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> LogInAsync(
+            [FromBody] LoginDTO loginDTO,
+            CancellationToken cancellationToken)
         {
-            var tokensDTO = await _userService.GetUserAsync(loginDTO.Login, loginDTO.Password);
+            TokenDTO tokensDTO = await _userService.GetUserAsync(
+                    loginDTO.Login, loginDTO.Password, cancellationToken);
 
             return Ok(tokensDTO);
         }
 
         [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshTokenAsync()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> RefreshTokenAsync(
+            CancellationToken cancellationToken)
         {
-            var generatedTokenDTO = await _refreshTokenService.VerifyAndGenerateTokenAsync();
+            TokenDTO generatedTokenDTO = await _refreshTokenService
+                .VerifyAndGenerateTokenAsync(cancellationToken);
 
             return Ok(generatedTokenDTO);
         }

@@ -1,4 +1,6 @@
-﻿using IdentityService.BusinessLogic.Services.Interfaces;
+﻿using IdentityService.BusinessLogic.DTOs.Exception;
+using IdentityService.BusinessLogic.DTOs.UserRole;
+using IdentityService.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers
@@ -14,18 +16,26 @@ namespace IdentityService.API.Controllers
             _userRoleService = userRoleService;
         }
 
-        [HttpGet("{id}", Name = nameof(GetUserRoleByIdAsync))]
-        public async Task<IActionResult> GetUserRoleByIdAsync(int id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserRoleDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> GetUserRoleByIdAsync(
+            [FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            var readUserRoleDTO = await _userRoleService.GetByIdAsync(id);
+            ReadUserRoleDTO readUserRoleDTO = await _userRoleService
+                                        .GetByIdAsync(id, cancellationToken);
 
             return Ok(readUserRoleDTO);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUserRolesAsync()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadUserRoleDTO>))]
+        public async Task<IActionResult> GetAllUserRolesAsync(
+            CancellationToken cancellationToken)
         {
-            var readUserRoleDTOs = await _userRoleService.GetAllAsync();
+            ICollection<ReadUserRoleDTO> readUserRoleDTOs = await _userRoleService
+                                         .GetAllAsync(cancellationToken);
 
             return Ok(readUserRoleDTOs);
         }

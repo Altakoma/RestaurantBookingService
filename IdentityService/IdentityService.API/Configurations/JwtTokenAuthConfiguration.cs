@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using IdentityService.BusinessLogic.TokenGenerators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -6,18 +7,21 @@ namespace IdentityService.API.Configurations
 {
     public static class JwtTokenAuthConfiguration
     {
-        public static IServiceCollection AddJwtTokenAuthConfiguration(this IServiceCollection services,
+        public static IServiceCollection AddJwtTokenAuthConfiguration(
+            this IServiceCollection services,
             WebApplicationBuilder builder)
         {
             byte[] key;
 
             if (builder.Environment.IsDevelopment())
             {
-                key = Encoding.UTF8.GetBytes(builder.Configuration["JWTSecret"]!);
+                key = Encoding.UTF8.GetBytes(
+                    builder.Configuration[JwtGenerator.JWTSecretVariableName]!);
             }
             else
             {
-                key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecret")!);
+                key = Encoding.UTF8.GetBytes(
+                    Environment.GetEnvironmentVariable(JwtGenerator.JWTSecretVariableName)!);
             }
 
             var tokenValidationParams = new TokenValidationParameters

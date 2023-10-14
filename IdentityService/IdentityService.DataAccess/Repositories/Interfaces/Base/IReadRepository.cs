@@ -2,7 +2,7 @@
 {
     public interface IReadRepository<T>
     {
-        Task<T?> GetByIdAsync(int id);
-        Task<ICollection<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<ICollection<T>> GetAllAsync(CancellationToken cancellationToken);
     }
 }

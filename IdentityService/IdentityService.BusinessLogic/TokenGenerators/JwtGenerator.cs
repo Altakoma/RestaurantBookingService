@@ -9,6 +9,9 @@ namespace IdentityService.BusinessLogic.TokenGenerators
 {
     public class JwtGenerator : ITokenGenerator
     {
+        public const string JWTSecretVariableName = "JWTSecret";
+        public const string JWTExpirationTimeVariableName = "JWTExpirationTime";
+
         private const string CharsForGeneration = "XCVBNMASDFGHJKLQWERTYUIOP123456789zxcvbnmmasdfghjklqwertyuiop_";
 
         private SymmetricSecurityKey GetSymmetricSecurityKey(string key)
@@ -21,25 +24,8 @@ namespace IdentityService.BusinessLogic.TokenGenerators
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-            var claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Name, name),
-                new Claim(ClaimTypes.Role, roleName),
-                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            };
-
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(claims),
-
-                IssuedAt = DateTime.Now.ToUniversalTime(),
-
-                Expires = DateTime.UtcNow.Add(TimeSpan.Parse(
-                    Environment.GetEnvironmentVariable("JWTExpirationTime")!)),
-
-                SigningCredentials = new SigningCredentials(
-                    GetSymmetricSecurityKey(Environment.GetEnvironmentVariable("JWTSecret")!),
-                    SecurityAlgorithms.HmacSha256),
-            };
+            SecurityTokenDescriptor tokenDescriptor =
+                GetTokenDescriptor(name, roleName, userId);
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
@@ -58,6 +44,32 @@ namespace IdentityService.BusinessLogic.TokenGenerators
             };
 
             return (tokenDTO, refreshToken);
+        }
+
+        private SecurityTokenDescriptor GetTokenDescriptor(string name,
+            string roleName, int userId)
+        {
+            var claims = new List<Claim> {
+                new Claim(JwtRegisteredClaimNames.Name, name),
+                new Claim(ClaimTypes.Role, roleName),
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            };
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(claims),
+
+                IssuedAt = DateTime.Now.ToUniversalTime(),
+
+                Expires = DateTime.UtcNow.Add(TimeSpan.Parse(
+                    Environment.GetEnvironmentVariable(JWTExpirationTimeVariableName)!)),
+
+                SigningCredentials = new SigningCredentials(
+                    GetSymmetricSecurityKey(Environment.GetEnvironmentVariable(JWTSecretVariableName)!),
+                    SecurityAlgorithms.HmacSha256),
+            };
+
+            return tokenDescriptor;
         }
 
         private string GetRandomRefreshToken(int length)

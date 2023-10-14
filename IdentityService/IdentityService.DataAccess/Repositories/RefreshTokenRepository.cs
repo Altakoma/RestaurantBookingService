@@ -1,56 +1,51 @@
-﻿using IdentityService.DataAccess.DatabaseContext;
+﻿using AutoMapper;
+using IdentityService.DataAccess.DatabaseContext;
+using IdentityService.DataAccess.DTOs.RefreshToken;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces;
+using IdentityService.DataAccess.Repositories.Interfaces.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories
 {
-    public class RefreshTokenRepository : IRefreshTokenRepository
+    public class RefreshTokenRepository :
+        WriteRepository<RefreshToken>,
+        IRefreshTokenRepository
     {
         private readonly IdentityDbContext _identityDbContext;
+        private readonly IMapper _mapper;
 
-        public RefreshTokenRepository(IdentityDbContext identityDbContext)
+        public RefreshTokenRepository(IdentityDbContext identityDbContext,
+            IMapper mapper) : base(identityDbContext)
         {
             _identityDbContext = identityDbContext;
+            _mapper = mapper;
         }
 
-        public async Task<bool> DeleteAsync(RefreshToken item)
+        public async Task<CreationRefreshTokenDTO?> GetCreationRefreshTokenDTOAsync(string token,
+            CancellationToken cancellationToken)
         {
-            _identityDbContext.Remove(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
+            var creationRefreshTokenDTO = await _mapper.ProjectTo<CreationRefreshTokenDTO>(
+                _identityDbContext.RefreshTokens
+                .AsNoTracking()
+                .Include(refreshToken => refreshToken.User)
+                .Include(refreshToken => refreshToken.User.UserRole)
+                .Where(refreshToken => refreshToken.Token == token))
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return creationRefreshTokenDTO;
         }
 
-        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        public async Task<RefreshToken?> GetByUserIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var token = await _identityDbContext.RefreshTokens.AsNoTracking()
-                .Include(r => r.User)
-                .Include(r => r.User.UserRole)
-                .FirstOrDefaultAsync(r => r.Token == refreshToken);
-
-            return token?.User;
-        }
-
-        public async Task<RefreshToken?> GetByUserIdAsync(int id)
-        {
-            var refreshToken = await _identityDbContext
-                .RefreshTokens.AsNoTracking()
-                .FirstOrDefaultAsync(r => r.UserId == id);
+            var refreshToken = await _identityDbContext.RefreshTokens
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    refreshToken => refreshToken.UserId == id,
+                    cancellationToken);
 
             return refreshToken;
-        }
-
-        public async Task<(RefreshToken, bool)> InsertAsync(RefreshToken item)
-        {
-            await _identityDbContext.AddAsync(item);
-            bool isInserted = await _identityDbContext.SaveChangesToDbAsync();
-
-            return (item, isInserted);
-        }
-
-        public async Task<bool> UpdateAsync(RefreshToken item)
-        {
-            _identityDbContext.Update(item);
-            return await _identityDbContext.SaveChangesToDbAsync();
         }
     }
 }

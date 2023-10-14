@@ -2,21 +2,46 @@
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
+using IdentityService.DataAccess.DTOs.RefreshToken;
 using IdentityService.DataAccess.Entities;
+using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 
 namespace IdentityService.BusinessLogic.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
+        public const string RefreshTokenCookieName = "RefreshToken";
+
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly TokenValidationParameters _tokenValidationParameters;
+
+        public string RefreshTokenCookie
+        {
+            get
+            {
+                var refreshTokenString = _httpContextAccessor.HttpContext.Request
+                .Cookies.FirstOrDefault(c => c.Key == RefreshTokenCookieName).Value;
+
+                return refreshTokenString;
+            }
+            set
+            {
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.Now.AddMinutes(20),
+                };
+
+                _httpContextAccessor.HttpContext.Response
+                    .Cookies.Append(RefreshTokenCookieName, value, cookieOptions);
+            }
+        }
 
         public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository,
             TokenValidationParameters tokenValidationParams,
@@ -29,16 +54,20 @@ namespace IdentityService.BusinessLogic.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var refreshToken = await _refreshTokenRepository.GetByUserIdAsync(id);
+            var refreshToken = await _refreshTokenRepository
+                                     .GetByUserIdAsync(id, cancellationToken);
 
             if (refreshToken is null)
             {
                 throw new NotFoundException(id.ToString(), typeof(RefreshToken));
             }
 
-            bool isDeleted = await _refreshTokenRepository.DeleteAsync(refreshToken);
+            _refreshTokenRepository.Delete(refreshToken);
+
+            bool isDeleted = await _refreshTokenRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
             {
@@ -47,86 +76,59 @@ namespace IdentityService.BusinessLogic.Services
             }
         }
 
-        public async Task<RefreshToken?> GetByUserIdAsync(int id)
+        public async Task<RefreshToken?> GetByUserIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var token = await _refreshTokenRepository.GetByUserIdAsync(id);
+            var token = await _refreshTokenRepository
+                              .GetByUserIdAsync(id, cancellationToken);
 
             return token;
         }
 
-        public async Task InsertAsync(RefreshToken item)
+        public async Task SaveTokenAsync(RefreshToken token,
+            CancellationToken cancellationToken)
         {
-            (var refreshToken, bool isInserted) = 
-                await _refreshTokenRepository.InsertAsync(item);
+            RefreshToken? refreshToken = await GetByUserIdAsync(
+                                         token.UserId, cancellationToken);
 
-            if (!isInserted)
+            if (refreshToken is null)
             {
-                throw new DbOperationException(nameof(InsertAsync),
-                    item.UserId.ToString(), typeof(RefreshToken));
-            }
-        }
-
-        public async Task SaveTokenAsync(RefreshToken token)
-        {
-            if (await GetByUserIdAsync(token.UserId) is null)
-            {
-                await InsertAsync(token);
+                await _refreshTokenRepository
+                      .InsertAsync(token, cancellationToken);
             }
             else
             {
-                await UpdateAsync(token);
+                _refreshTokenRepository.Update(token);
             }
         }
 
-        public async Task UpdateAsync(RefreshToken item)
+        public async Task<TokenDTO> VerifyAndGenerateTokenAsync(
+            CancellationToken cancellationToken)
         {
-            bool isUpdated = await _refreshTokenRepository.UpdateAsync(item);
-
-            if (!isUpdated)
-            {
-                throw new DbOperationException(nameof(UpdateAsync),
-                    item.UserId.ToString(), typeof(RefreshToken));
-            }
-        }
-
-        public void SetRefreshTokenCookie(string refreshToken)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.Now.AddMinutes(20),
-            };
-
-            _httpContextAccessor.HttpContext.Response
-                .Cookies.Append("RefreshToken", refreshToken, cookieOptions);
-        }
-
-        public async Task<TokenDTO> VerifyAndGenerateTokenAsync()
-        {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-            var refreshTokenString = _httpContextAccessor.HttpContext.Request
-                .Cookies.FirstOrDefault(c => c.Key == "RefreshToken").Value;
+            string refreshTokenString = RefreshTokenCookie;
 
             if (refreshTokenString is null)
             {
-                throw new NotFoundException("RefreshToken", typeof(Cookie));
+                throw new NotFoundException(RefreshTokenCookieName, typeof(Cookie));
             }
 
-            var user = await _refreshTokenRepository
-                .GetUserByRefreshTokenAsync(refreshTokenString);
+            CreationRefreshTokenDTO? creationRefreshTokenDTO = await _refreshTokenRepository
+                .GetCreationRefreshTokenDTOAsync(refreshTokenString, cancellationToken);
 
-            if (user is null)
+            if (creationRefreshTokenDTO is null)
             {
                 throw new NotFoundException(nameof(refreshTokenString), typeof(User));
             }
 
             (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
-                .GenerateToken(user.Name, user.UserRole.Name, user.Id);
+                .GenerateToken(creationRefreshTokenDTO.Name,
+                creationRefreshTokenDTO.UserRoleName, creationRefreshTokenDTO.Id);
 
-            await SaveTokenAsync(refreshToken);
+            await SaveTokenAsync(refreshToken, cancellationToken);
 
-            SetRefreshTokenCookie(refreshToken.Token);
+            await _refreshTokenRepository.SaveChangesToDbAsync(cancellationToken);
+
+            RefreshTokenCookie = refreshToken.Token;
 
             return tokenDTO;
         }

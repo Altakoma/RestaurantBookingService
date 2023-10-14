@@ -6,7 +6,9 @@ using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
+using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
+using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
 
 namespace IdentityService.BusinessLogic.Services
@@ -20,7 +22,8 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IValidator<InsertUserDTO> _insertUserValidator;
 
         public UserService(IUserRepository userRepository,
-            IMapper mapper, ITokenGenerator tokenGenerator,
+            IMapper mapper,
+            ITokenGenerator tokenGenerator,
             IRefreshTokenService refreshTokenService,
             IValidator<InsertUserDTO> insertUserValidator)
         {
@@ -31,20 +34,13 @@ namespace IdentityService.BusinessLogic.Services
             _insertUserValidator = insertUserValidator;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            await _userRepository.DeleteAsync(id, cancellationToken);
 
-            bool isDeleted;
-
-            if (user is not null)
-            {
-                isDeleted = await _userRepository.DeleteAsync(user);
-            }
-            else
-            {
-                throw new NotFoundException(id.ToString(), typeof(User));
-            }
+            bool isDeleted = await _userRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
             {
@@ -53,18 +49,19 @@ namespace IdentityService.BusinessLogic.Services
             }
         }
 
-        public async Task<ICollection<ReadUserDTO>> GetAllAsync()
+        public async Task<ICollection<ReadUserDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            var users = await _userRepository.GetAllAsync();
-
-            var readUserDTOs = _mapper.Map<ICollection<ReadUserDTO>>(users);
+            ICollection<ReadUserDTO> readUserDTOs = await _userRepository
+                                            .GetAllAsync(cancellationToken);
 
             return readUserDTOs;
         }
 
-        public async Task<ReadUserDTO> GetByIdAsync(int id)
+        public async Task<ReadUserDTO> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            ReadUserDTO? user = await _userRepository.GetByIdAsync(id, cancellationToken);
 
             if (user is null)
             {
@@ -76,31 +73,39 @@ namespace IdentityService.BusinessLogic.Services
             return readUserDTO;
         }
 
-        public async Task<TokenDTO> GetUserAsync(string login, string password)
+        public async Task<TokenDTO> GetUserAsync(string login,
+            string password, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserAsync(login, password);
+            ReadUserDTO? user = await _userRepository
+                                      .GetUserAsync(login, password, cancellationToken);
 
             if (user is null)
             {
                 throw new NotFoundException(login, typeof(User));
             }
 
-            (var tokenDTO, var refreshToken) = _tokenGenerator
-                .GenerateToken(user.Name, user.UserRole.Name, user.Id);
+            (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
+                .GenerateToken(user.Name, user.UserRoleName, user.Id);
 
-            await _refreshTokenService.SaveTokenAsync(refreshToken);
-            _refreshTokenService.SetRefreshTokenCookie(refreshToken.Token);
+            await _refreshTokenService
+                  .SaveTokenAsync(refreshToken, cancellationToken);
+
+            _refreshTokenService.RefreshTokenCookie = refreshToken.Token;
 
             return tokenDTO;
         }
 
-        public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item)
+        public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item,
+            CancellationToken cancellationToken)
         {
             await _insertUserValidator.ValidateAndThrowArgumentException(item);
 
             var user = _mapper.Map<User>(item);
 
-            (user, var isInserted) = await _userRepository.InsertAsync(user);
+            user = await _userRepository.InsertAsync(user, cancellationToken);
+
+            bool isInserted = await _userRepository
+                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)
             {
@@ -108,20 +113,28 @@ namespace IdentityService.BusinessLogic.Services
                     nameof(InsertAsync), user.Id.ToString(), typeof(User));
             }
 
-            user = await _userRepository.GetByIdAsync(user.Id);
+            ReadUserDTO? readUserDTO = await _userRepository
+                .GetByIdAsync(user.Id, cancellationToken);
 
-            var readUserDTO = _mapper.Map<ReadUserDTO>(user);
+            if (readUserDTO is null)
+            {
+                throw new NotFoundException(user.Id.ToString(), typeof(User));
+            }
 
             return readUserDTO;
         }
 
-        public async Task<ReadUserDTO> UpdateAsync(int id, UpdateUserDTO item)
+        public async Task<ReadUserDTO> UpdateAsync(int id,
+            UpdateUserDTO item, CancellationToken cancellationToken)
         {
             var user = _mapper.Map<User>(item);
 
             user.Id = id;
 
-            var isUpdated = await _userRepository.UpdateAsync(user);
+            _userRepository.Update(user);
+
+            bool isUpdated = await _userRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isUpdated)
             {
@@ -129,9 +142,13 @@ namespace IdentityService.BusinessLogic.Services
                     nameof(UpdateAsync), user.Id.ToString(), typeof(User));
             }
 
-            user = await _userRepository.GetByIdAsync(id);
+            ReadUserDTO? readUserDTO = await _userRepository
+                .GetByIdAsync(id, cancellationToken);
 
-            var readUserDTO = _mapper.Map<ReadUserDTO>(user);
+            if (readUserDTO is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(User));
+            }
 
             return readUserDTO;
         }

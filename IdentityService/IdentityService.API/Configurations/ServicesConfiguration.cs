@@ -41,7 +41,7 @@ namespace IdentityService.API.Configurations
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
-            services.AddTransient<ITokenGenerator, JwtGenerator>();
+            services.AddSingleton<ITokenGenerator, JwtGenerator>();
 
             return services;
         }
