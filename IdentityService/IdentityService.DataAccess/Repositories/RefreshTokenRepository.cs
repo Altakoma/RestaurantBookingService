@@ -28,8 +28,6 @@ namespace IdentityService.DataAccess.Repositories
             var creationRefreshTokenDTO = await _mapper.ProjectTo<CreationRefreshTokenDTO>(
                 _identityDbContext.RefreshTokens
                 .AsNoTracking()
-                .Include(refreshToken => refreshToken.User)
-                .Include(refreshToken => refreshToken.User.UserRole)
                 .Where(refreshToken => refreshToken.Token == token))
                 .SingleOrDefaultAsync(cancellationToken);
 

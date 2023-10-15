@@ -27,7 +27,6 @@ namespace IdentityService.DataAccess.Repositories
             var users = await _mapper.ProjectTo<ReadUserDTO>(
                 _identityDbContext.Users
                 .AsNoTracking()
-                .Include(user => user.UserRole)
                 .Select(user => user))
                 .ToListAsync(cancellationToken);
 
@@ -40,7 +39,6 @@ namespace IdentityService.DataAccess.Repositories
             var user = await _mapper.ProjectTo<ReadUserDTO>(
                 _identityDbContext.Users
                 .AsNoTracking()
-                .Include(user => user.UserRole)
                 .Where(user => user.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
@@ -53,7 +51,6 @@ namespace IdentityService.DataAccess.Repositories
             var user = await _mapper.ProjectTo<ReadUserDTO>(
                 _identityDbContext.Users
                 .AsNoTracking()
-                .Include(user => user.UserRole)
                 .Where(user => user.Login == login &&
                        user.Password == password))
                 .SingleOrDefaultAsync(cancellationToken);
