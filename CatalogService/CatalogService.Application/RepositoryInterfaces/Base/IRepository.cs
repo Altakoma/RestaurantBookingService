@@ -1,11 +1,11 @@
 ﻿namespace CatalogService.Application.RepositoryInterfaces.Base
 {
-    public interface IRepository<T>
+    public interface IRepository<T, U>
     {
         Task<(T, bool)> InsertAsync(T item);
-        Task<bool> UpdateAsync(T item);
-        Task<bool> DeleteAsync(T item);
-        Task<T?> GetByIdAsync(int id);
-        Task<ICollection<T>> GetAllAsync();
+        void Update(T item);
+        void Delete(T item);
+        Task<U?> GetByIdAsync(int id);
+        Task<ICollection<U>> GetAllAsync();
     }
 }
