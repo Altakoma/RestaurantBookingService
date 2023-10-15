@@ -6,6 +6,7 @@ using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
+using IdentityService.BusinessLogic.Validatiors.UserValidators;
 using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
@@ -20,18 +21,21 @@ namespace IdentityService.BusinessLogic.Services
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IValidator<InsertUserDTO> _insertUserValidator;
+        private readonly IValidator<UpdateUserDTO> _updateUserValidator;
 
         public UserService(IUserRepository userRepository,
             IMapper mapper,
             ITokenGenerator tokenGenerator,
             IRefreshTokenService refreshTokenService,
-            IValidator<InsertUserDTO> insertUserValidator)
+            IValidator<InsertUserDTO> insertUserValidator,
+            IValidator<UpdateUserDTO> updateUserValidator)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
             _refreshTokenService = refreshTokenService;
             _insertUserValidator = insertUserValidator;
+            _updateUserValidator = updateUserValidator;
         }
 
         public async Task DeleteAsync(int id,
@@ -52,8 +56,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ICollection<ReadUserDTO>> GetAllAsync(
             CancellationToken cancellationToken)
         {
-            ICollection<ReadUserDTO> readUserDTOs = await _userRepository
-                                            .GetAllAsync(cancellationToken);
+            ICollection<ReadUserDTO> readUserDTOs = 
+                await _userRepository.GetAllAsync(cancellationToken);
 
             return readUserDTOs;
         }
@@ -61,7 +65,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            ReadUserDTO? user = await _userRepository.GetByIdAsync(id, cancellationToken);
+            ReadUserDTO? user = await _userRepository
+                                      .GetByIdAsync(id, cancellationToken);
 
             if (user is null)
             {
@@ -77,7 +82,7 @@ namespace IdentityService.BusinessLogic.Services
             string password, CancellationToken cancellationToken)
         {
             ReadUserDTO? user = await _userRepository
-                                      .GetUserAsync(login, password, cancellationToken);
+                .GetUserAsync(login, password, cancellationToken);
 
             if (user is null)
             {
@@ -127,6 +132,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> UpdateAsync(int id,
             UpdateUserDTO item, CancellationToken cancellationToken)
         {
+            await _updateUserValidator.ValidateAndThrowArgumentException(item);
+
             var user = _mapper.Map<User>(item);
 
             user.Id = id;

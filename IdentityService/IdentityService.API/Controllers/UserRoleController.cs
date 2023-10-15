@@ -23,8 +23,8 @@ namespace IdentityService.API.Controllers
             [FromRoute] int id,
             CancellationToken cancellationToken)
         {
-            ReadUserRoleDTO readUserRoleDTO = await _userRoleService
-                                        .GetByIdAsync(id, cancellationToken);
+            ReadUserRoleDTO readUserRoleDTO = 
+                await _userRoleService.GetByIdAsync(id, cancellationToken);
 
             return Ok(readUserRoleDTO);
         }
@@ -34,8 +34,8 @@ namespace IdentityService.API.Controllers
         public async Task<IActionResult> GetAllUserRolesAsync(
             CancellationToken cancellationToken)
         {
-            ICollection<ReadUserRoleDTO> readUserRoleDTOs = await _userRoleService
-                                         .GetAllAsync(cancellationToken);
+            ICollection<ReadUserRoleDTO> readUserRoleDTOs = 
+                await _userRoleService.GetAllAsync(cancellationToken);
 
             return Ok(readUserRoleDTOs);
         }

@@ -2,7 +2,9 @@
 {
     public static class ExceptionMessages
     {
-        public const string NotEnteredProperty = "Please ensure you have entered your {PropertyName}";
+        public const string NotEnteredPropertyMessage = "Please ensure you have entered your {0}";
+
+        public const string DetectionZeroPropertyMessage = "Please ensure you didn't put 0 in {0}";
 
         public const string NotFoundExceptionMessage = "Object of type {0} having {1} key wasn't found";
 
