@@ -8,8 +8,18 @@ namespace CatalogService.Application.MappingProfiles
     {
         public FoodTypeProfile()
         {
-            CreateMap<FoodType, ReadFoodTypeDTO>();
-            CreateMap<FoodTypeDTO, FoodType>();
+            CreateMap<FoodType, ReadFoodTypeDTO>()
+                .ForMember(
+                readFoodTypeDTO => readFoodTypeDTO.Id,
+                configuration => configuration.MapFrom(foodType => foodType.Id))
+                .ForMember(
+                readFoodTypeDTO => readFoodTypeDTO.Name,
+                configuration => configuration.MapFrom(foodType => foodType.Name));
+
+            CreateMap<FoodTypeDTO, FoodType>()
+                .ForMember(
+                foodType => foodType.Name,
+                configuration => configuration.MapFrom(foodTypeDTO => foodTypeDTO.Name));
         }
     }
 }

@@ -4,11 +4,11 @@ namespace CatalogService.Application.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item);
-        Task<ReadEmployeeDTO> UpdateAsync(int id, UpdateEmployeeDTO item);
-        Task DeleteAsync(int id);
-        Task<ReadEmployeeDTO> GetByIdAsync(int id);
-        Task<ICollection<ReadEmployeeDTO>> GetAllAsync();
-        Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id);
+        Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item, CancellationToken cancellationToken);
+        Task<ReadEmployeeDTO> UpdateAsync(int id, UpdateEmployeeDTO item, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<ReadEmployeeDTO> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<ICollection<ReadEmployeeDTO>> GetAllAsync(CancellationToken cancellationToken);
+        Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id, CancellationToken cancellationToken);
     }
 }

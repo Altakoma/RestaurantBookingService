@@ -1,61 +1,64 @@
-﻿using CatalogService.Application.RepositoryInterfaces;
+﻿using AutoMapper;
+using CatalogService.Application.DTOs.Employee;
+using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
+using CatalogService.Domain.Exceptions;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
+using CatalogService.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository : WriteRepository<Employee>, IEmployeeRepository
     {
-        private readonly CatalogServiceDbContext _dbContext;
-
-        public EmployeeRepository(CatalogServiceDbContext dbContext)
+        public EmployeeRepository(CatalogServiceDbContext dbContext,
+            IMapper mapper) : base(dbContext, mapper)
         {
-            _dbContext = dbContext;
         }
 
-        public async Task<bool> DeleteAsync(Employee item)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            _dbContext.Remove(item);
-            return await _dbContext.SaveChangesToDbAsync();
+            Employee? employee = await _dbContext.Employees
+                .FirstOrDefaultAsync(employee => employee.Id == id);
+
+            if (employee is null)
+            {
+                throw new NotFoundException(nameof(Employee), id.ToString(),
+                    typeof(Employee));
+            }
+
+            Delete(employee);
         }
 
-        public async Task<ICollection<Employee>> GetAllAsync()
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            var employees = await _dbContext.Employees.Include(e => e.Restaurant)
-                .Select(u => u).ToListAsync();
+            var readEmployeeDTOs = await _mapper.ProjectTo<ReadEmployeeDTO>(
+                _dbContext.Employees.Select(employee => employee))
+                .ToListAsync();
 
-            return employees;
+            return readEmployeeDTOs;
         }
 
-        public async Task<ICollection<Employee>> GetAllByRestaurantIdAsync(int id)
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var employees = await _dbContext.Employees.Include(e => e.Restaurant)
-                .Where(e => e.RestaurantId == id).ToListAsync();
+            var readEmployeeDTOs = await _mapper.ProjectTo<ReadEmployeeDTO>(
+                _dbContext.Employees
+                .Where(employee => employee.RestaurantId == id))
+                .ToListAsync();
 
-            return employees;
+            return readEmployeeDTOs;
         }
 
-        public async Task<Employee?> GetByIdAsync(int id)
+        public async Task<ReadEmployeeDTO?> GetByIdAsync(int id, 
+            CancellationToken cancellationToken)
         {
-            var employee = await _dbContext.Employees.Include(e => e.Restaurant)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var readEmployeeDTO = await _mapper.ProjectTo<ReadEmployeeDTO>(
+                _dbContext.Employees.Where(employee => employee.Id == id))
+                .SingleOrDefaultAsync();
 
-            return employee;
-        }
-
-        public async Task<(Employee, bool)> InsertAsync(Employee item)
-        {
-            await _dbContext.AddAsync(item);
-            bool isInserted = await _dbContext.SaveChangesToDbAsync();
-
-            return (item, isInserted);
-        }
-
-        public async Task<bool> UpdateAsync(Employee item)
-        {
-            _dbContext.Update(item);
-            return await _dbContext.SaveChangesToDbAsync();
+            return readEmployeeDTO;
         }
     }
 }

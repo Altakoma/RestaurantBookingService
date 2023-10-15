@@ -4,11 +4,11 @@ namespace CatalogService.Application.Services.Interfaces
 {
     public interface IMenuService
     {
-        Task<ReadMenuDTO> InsertAsync(InsertMenuDTO item);
-        Task<ReadMenuDTO> UpdateAsync(int id, UpdateMenuDTO item);
-        Task DeleteAsync(int id);
-        Task<ReadMenuDTO> GetByIdAsync(int id);
-        Task<ICollection<ReadMenuDTO>> GetAllAsync();
-        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id);
+        Task<ReadMenuDTO> InsertAsync(InsertMenuDTO item, CancellationToken cancellationToken);
+        Task<ReadMenuDTO> UpdateAsync(int id, UpdateMenuDTO item, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<ReadMenuDTO> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<ICollection<ReadMenuDTO>> GetAllAsync(CancellationToken cancellationToken);
+        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id, CancellationToken cancellationToken);
     }
 }

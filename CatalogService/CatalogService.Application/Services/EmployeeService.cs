@@ -19,68 +19,72 @@ namespace CatalogService.Application.Services
             _mapper = mapper;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            Employee? employee = await _employeeRepository.GetByIdAsync(id);
+            ReadEmployeeDTO? readEmployeeDTO =
+                await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
-            if (employee is null)
+            if (readEmployeeDTO is null)
             {
                 throw new NotFoundException(nameof(Employee),
                     id.ToString(), typeof(Employee));
             }
 
-            bool isDeleted = await _employeeRepository.DeleteAsync(employee);
+            await _employeeRepository.DeleteAsync(id, cancellationToken);
+
+            bool isDeleted = await _employeeRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
             {
-                throw new DbOperationException(nameof(DeleteAsync), id.ToString(),
-                    typeof(Employee));
+                throw new DbOperationException(nameof(DeleteAsync),
+                    id.ToString(), typeof(Employee));
             }
         }
 
-        public async Task<ICollection<ReadEmployeeDTO>> GetAllAsync()
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            ICollection<Employee> employees =
-                await _employeeRepository.GetAllAsync();
-
-            var readEmployeeDTOs = _mapper
-                .Map<ICollection<ReadEmployeeDTO>>(employees);
+            ICollection<ReadEmployeeDTO> readEmployeeDTOs =
+                await _employeeRepository.GetAllAsync(cancellationToken);
 
             return readEmployeeDTOs;
         }
 
-        public async Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(int id)
+        public async Task<ICollection<ReadEmployeeDTO>> GetAllByRestaurantIdAsync(
+            int id, CancellationToken cancellationToken)
         {
-            ICollection<Employee> employees =
-                await _employeeRepository.GetAllByRestaurantIdAsync(id);
-
-            var readEmployeeDTOs =
-                _mapper.Map<ICollection<ReadEmployeeDTO>>(employees);
+            ICollection<ReadEmployeeDTO> readEmployeeDTOs = await _employeeRepository
+                .GetAllByRestaurantIdAsync(id, cancellationToken);
 
             return readEmployeeDTOs;
         }
 
-        public async Task<ReadEmployeeDTO> GetByIdAsync(int id)
+        public async Task<ReadEmployeeDTO> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            Employee? employee = await _employeeRepository.GetByIdAsync(id);
+            ReadEmployeeDTO? readEmployeeDTO =
+                await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
-            if (employee is null)
+            if (readEmployeeDTO is null)
             {
                 throw new NotFoundException(nameof(Employee),
                     id.ToString(), typeof(Employee));
             }
-
-            var readEmployeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
 
             return readEmployeeDTO;
         }
 
-        public async Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item)
+        public async Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item,
+            CancellationToken cancellationToken)
         {
             var employee = _mapper.Map<Employee>(item);
 
-            (employee, bool isInserted) = await _employeeRepository
-                .InsertAsync(employee);
+            employee = await _employeeRepository
+                             .InsertAsync(employee, cancellationToken);
+
+            bool isInserted = await _employeeRepository
+                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)
             {
@@ -94,12 +98,15 @@ namespace CatalogService.Application.Services
         }
 
         public async Task<ReadEmployeeDTO> UpdateAsync(int id,
-            UpdateEmployeeDTO item)
+            UpdateEmployeeDTO item, CancellationToken cancellationToken)
         {
             var employee = _mapper.Map<Employee>(item);
             employee.Id = id;
 
-            bool isUpdated = await _employeeRepository.UpdateAsync(employee);
+            _employeeRepository.Update(employee);
+
+            bool isUpdated = await _employeeRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isUpdated)
             {
@@ -107,11 +114,16 @@ namespace CatalogService.Application.Services
                     id.ToString(), typeof(Employee));
             }
 
-            employee = await _employeeRepository.GetByIdAsync(id);
+            ReadEmployeeDTO? readEmployeeDTO =
+                await _employeeRepository.GetByIdAsync(id, cancellationToken);
 
-            var employeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
+            if (readEmployeeDTO is null)
+            {
+                throw new NotFoundException(nameof(Employee),
+                    id.ToString(), typeof(Employee));
+            }
 
-            return employeeDTO;
+            return readEmployeeDTO;
         }
     }
 }

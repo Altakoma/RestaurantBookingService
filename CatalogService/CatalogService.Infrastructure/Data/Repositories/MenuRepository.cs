@@ -1,63 +1,62 @@
-﻿using CatalogService.Application.RepositoryInterfaces;
+﻿using AutoMapper;
+using CatalogService.Application.DTOs.Menu;
+using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
+using CatalogService.Domain.Exceptions;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
+using CatalogService.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class MenuRepository : IMenuRepository
+    public class MenuRepository : WriteRepository<Menu>, IMenuRepository
     {
-        private readonly CatalogServiceDbContext _dbContext;
-
-        public MenuRepository(CatalogServiceDbContext dbContext)
+        public MenuRepository(CatalogServiceDbContext dbContext,
+            IMapper mapper) : base(dbContext, mapper)
         {
-            _dbContext = dbContext;
         }
 
-        public async Task<bool> DeleteAsync(Menu item)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            _dbContext.Remove(item);
-            return await _dbContext.SaveChangesToDbAsync();
+            Menu? menu = await _dbContext.Menu
+                .FirstOrDefaultAsync(menu => menu.Id == id);
+
+            if (menu is null)
+            {
+                throw new NotFoundException(nameof(Employee), id.ToString(),
+                    typeof(Employee));
+            }
+
+            Delete(menu);
         }
 
-        public async Task<ICollection<Menu>> GetAllAsync()
+        public async Task<ICollection<ReadMenuDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            var menu = await _dbContext.Menu.Include(m => m.FoodType)
-                .Include(m => m.Restaurant)
-                .Select(u => u).ToListAsync();
+            var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
+                _dbContext.Menu.Select(menu => menu))
+                .ToListAsync();
 
-            return menu;
+            return readMenuDTOs;
         }
 
-        public async Task<Menu?> GetByIdAsync(int id)
+        public async Task<ReadMenuDTO?> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var menu = await _dbContext.Menu.Include(m => m.FoodType)
-                .Include(m => m.Restaurant)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var readMenuDTO = await _mapper.ProjectTo<ReadMenuDTO>(
+                _dbContext.Menu.Where(menu => menu.Id == id))
+                .SingleOrDefaultAsync();
 
-            return menu;
+            return readMenuDTO;
         }
 
-        public async Task<(Menu, bool)> InsertAsync(Menu item)
+        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id)
         {
-            await _dbContext.AddAsync(item);
-            bool isInserted = await _dbContext.SaveChangesToDbAsync();
+            var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
+                _dbContext.Menu.Where(menu => menu.RestaurantId == id))
+                .ToListAsync();
 
-            return (item, isInserted);
-        }
-
-        public async Task<bool> UpdateAsync(Menu item)
-        {
-            _dbContext.Update(item);
-            return await _dbContext.SaveChangesToDbAsync();
-        }
-
-        public async Task<ICollection<Menu>> GetAllByRestaurantIdAsync(int id)
-        {
-            ICollection<Menu> menu = await _dbContext.Menu.Include(m => m.FoodType)
-                .Where(m => m.RestaurantId == id).ToListAsync();
-
-            return menu;
+            return readMenuDTOs;
         }
     }
 }

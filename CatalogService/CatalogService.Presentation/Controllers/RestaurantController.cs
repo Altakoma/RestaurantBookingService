@@ -25,66 +25,73 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRestaurants()
+        public async Task<IActionResult> GetAllRestaurantsAsync(
+            CancellationToken cancellationToken)
         {
             ICollection<ReadRestaurantDTO> readRestaurantDTOs =
-                await _restaurantService.GetAllAsync();
+                await _restaurantService.GetAllAsync(cancellationToken);
 
             return Ok(readRestaurantDTOs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRestaurant(int id)
+        public async Task<IActionResult> GetRestaurantAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .GetByIdAsync(id);
+            ReadRestaurantDTO readRestaurantDTO =
+                await _restaurantService.GetByIdAsync(id, cancellationToken);
 
             return Ok(readRestaurantDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertRestaurant(
-            InsertRestaurantDTO insertRestaurantDTO)
+        public async Task<IActionResult> InsertRestaurantAsync(
+            [FromBody] InsertRestaurantDTO insertRestaurantDTO,
+            CancellationToken cancellationToken)
         {
             ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .InsertAsync(insertRestaurantDTO);
+                .InsertAsync(insertRestaurantDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetRestaurant), new { readRestaurantDTO.Id },
-                readRestaurantDTO);
+            return CreatedAtAction(nameof(GetRestaurantAsync),
+                                   new { readRestaurantDTO.Id }, readRestaurantDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRestaurant(int id,
-            UpdateRestaurantDTO updateRestaurantDTO)
+        public async Task<IActionResult> UpdateRestaurantAsync([FromRoute] int id,
+            [FromBody] UpdateRestaurantDTO updateRestaurantDTO,
+            CancellationToken cancellationToken)
         {
             ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .UpdateAsync(id, updateRestaurantDTO);
+                .UpdateAsync(id, updateRestaurantDTO, cancellationToken);
 
             return Ok(readRestaurantDTO);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRestaurant(int id)
+        public async Task<IActionResult> DeleteRestaurantAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            await _restaurantService.DeleteAsync(id);
+            await _restaurantService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }
 
         [HttpGet("{id}/menu")]
-        public async Task<IActionResult> GetMenu(int id)
+        public async Task<IActionResult> GetMenuAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
             ICollection<ReadMenuDTO> readMenuDTOs =
-                await _menuService.GetAllByRestaurantIdAsync(id);
+                await _menuService.GetAllByRestaurantIdAsync(id, cancellationToken);
 
             return Ok(readMenuDTOs);
         }
 
         [HttpGet("{id}/employee")]
-        public async Task<IActionResult> GetEmployees(int id)
+        public async Task<IActionResult> GetEmployeesAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            ICollection<ReadEmployeeDTO> readEmployeeDTOs =
-                await _employeeService.GetAllByRestaurantIdAsync(id);
+            ICollection<ReadEmployeeDTO> readEmployeeDTOs =await _employeeService
+                .GetAllByRestaurantIdAsync(id, cancellationToken);
 
             return Ok(readEmployeeDTOs);
         }

@@ -1,53 +1,53 @@
-﻿using CatalogService.Application.RepositoryInterfaces;
+﻿using AutoMapper;
+using CatalogService.Application.DTOs.FoodType;
+using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
+using CatalogService.Domain.Exceptions;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
+using CatalogService.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class FoodTypeRepository : IFoodTypeRepository
+    public class FoodTypeRepository : WriteRepository<FoodType>, IFoodTypeRepository
     {
-        private readonly CatalogServiceDbContext _dbContext;
-
-        public FoodTypeRepository(CatalogServiceDbContext dbContext)
+        public FoodTypeRepository(CatalogServiceDbContext dbContext,
+            IMapper mapper) : base(dbContext, mapper)
         {
-            _dbContext = dbContext;
         }
 
-        public async Task<bool> DeleteAsync(FoodType item)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            _dbContext.Remove(item);
-            return await _dbContext.SaveChangesToDbAsync();
+            FoodType? foodType = await _dbContext.FoodTypes
+                .FirstOrDefaultAsync(foodType => foodType.Id == id);
+
+            if (foodType is null)
+            {
+                throw new NotFoundException(nameof(Employee), id.ToString(),
+                    typeof(Employee));
+            }
+
+            Delete(foodType);
         }
 
-        public async Task<ICollection<FoodType>> GetAllAsync()
+        public async Task<ICollection<ReadFoodTypeDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            var foodTypes = await _dbContext.FoodTypes
-                .Select(u => u).ToListAsync();
+            var readFoodTypeDTOs = await _mapper.ProjectTo<ReadFoodTypeDTO>(
+                _dbContext.FoodTypes.Select(foodType => foodType))
+                .ToListAsync();
 
-            return foodTypes;
+            return readFoodTypeDTOs;
         }
 
-        public async Task<FoodType?> GetByIdAsync(int id)
+        public async Task<ReadFoodTypeDTO?> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            var foodType = await _dbContext.FoodTypes
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var readFoodTypeDTO = await _mapper.ProjectTo<ReadFoodTypeDTO>(
+                _dbContext.FoodTypes.Where(foodType => foodType.Id == id))
+                .SingleOrDefaultAsync();
 
-            return foodType;
-        }
-
-        public async Task<(FoodType, bool)> InsertAsync(FoodType item)
-        {
-            await _dbContext.AddAsync(item);
-            bool isInserted = await _dbContext.SaveChangesToDbAsync();
-
-            return (item, isInserted);
-        }
-
-        public async Task<bool> UpdateAsync(FoodType item)
-        {
-            _dbContext.Update(item);
-            return await _dbContext.SaveChangesToDbAsync();
+            return readFoodTypeDTO;
         }
     }
 }

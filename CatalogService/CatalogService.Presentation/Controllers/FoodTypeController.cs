@@ -18,46 +18,53 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFoodTypes()
+        public async Task<IActionResult> GetAllFoodTypesAsync(
+            CancellationToken cancellationToken)
         {
             ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
-                await _foodTypeService.GetAllAsync();
+                await _foodTypeService.GetAllAsync(cancellationToken);
 
             return Ok(readFoodTypeDTOs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployee(int id)
+        public async Task<IActionResult> GetEmployeeAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService.GetByIdAsync(id);
+            ReadFoodTypeDTO readFoodTypeDTO =
+                await _foodTypeService.GetByIdAsync(id, cancellationToken);
 
             return Ok(readFoodTypeDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertFoodType(FoodTypeDTO foodTypeDTO)
+        public async Task<IActionResult> InsertFoodTypeAsync(
+            [FromBody] FoodTypeDTO foodTypeDTO,
+            CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
-                .InsertAsync(foodTypeDTO);
+                .InsertAsync(foodTypeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetEmployee), new { readFoodTypeDTO.Id },
-                readFoodTypeDTO);
+            return CreatedAtAction(nameof(GetEmployeeAsync),
+                                   new { readFoodTypeDTO.Id }, readFoodTypeDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFoodType(int id,
-            FoodTypeDTO foodTypeDTO)
+        public async Task<IActionResult> UpdateFoodTypeAsync([FromRoute] int id,
+            [FromBody] FoodTypeDTO foodTypeDTO,
+            CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO readFoodTypeDTO =
-                await _foodTypeService.UpdateAsync(id, foodTypeDTO);
+                await _foodTypeService.UpdateAsync(id, foodTypeDTO, cancellationToken);
 
             return Ok(readFoodTypeDTO);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFoodType(int id)
+        public async Task<IActionResult> DeleteFoodTypeAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            await _foodTypeService.DeleteAsync(id);
+            await _foodTypeService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }

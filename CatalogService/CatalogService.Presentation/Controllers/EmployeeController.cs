@@ -18,47 +18,53 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployees()
+        public async Task<IActionResult> GetAllEmployeesAsync(
+            CancellationToken cancellationToken)
         {
             ICollection<ReadEmployeeDTO> employeeDTOs =
-                await _employeeService.GetAllAsync();
+                await _employeeService.GetAllAsync(cancellationToken);
 
             return Ok(employeeDTOs);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployee(int id)
+        public async Task<IActionResult> GetEmployeeAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
             ReadEmployeeDTO employeeDTO = await _employeeService
-                .GetByIdAsync(id);
+                .GetByIdAsync(id, cancellationToken);
 
             return Ok(employeeDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertEmployee(InsertEmployeeDTO employeeDTO)
+        public async Task<IActionResult> InsertEmployeeAsync(
+            [FromBody] InsertEmployeeDTO employeeDTO,
+            CancellationToken cancellationToken)
         {
             ReadEmployeeDTO readEmployeeDTO =
-                await _employeeService.InsertAsync(employeeDTO);
+                await _employeeService.InsertAsync(employeeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetEmployee), new { employeeDTO.Id },
-                employeeDTO);
+            return CreatedAtAction(nameof(GetEmployeeAsync),
+                                   new { employeeDTO.Id },employeeDTO);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id,
-            UpdateEmployeeDTO updateEmployeeDTO)
+        public async Task<IActionResult> UpdateEmployeeAsync([FromRoute] int id,
+            [FromBody] UpdateEmployeeDTO updateEmployeeDTO,
+            CancellationToken cancellationToken)
         {
-            ReadEmployeeDTO employeeDTO =
-                await _employeeService.UpdateAsync(id, updateEmployeeDTO);
+            ReadEmployeeDTO employeeDTO = await _employeeService.UpdateAsync(id,
+                                           updateEmployeeDTO, cancellationToken);
 
             return Ok(employeeDTO);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployeeAsync([FromRoute] int id,
+            CancellationToken cancellationToken)
         {
-            await _employeeService.DeleteAsync(id);
+            await _employeeService.DeleteAsync(id, cancellationToken);
 
             return NoContent();
         }

@@ -19,16 +19,21 @@ namespace CatalogService.Application.Services
             _mapper = mapper;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            FoodType? foodType = await _foodTypeRepository.GetByIdAsync(id);
+            ReadFoodTypeDTO? readFoodTypeDTO =
+                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
 
-            if (foodType is null)
+            if (readFoodTypeDTO is null)
             {
-                throw new NotFoundException(nameof(FoodType), id.ToString(), typeof(FoodType));
+                throw new NotFoundException(nameof(FoodType), id.ToString(),
+                    typeof(FoodType));
             }
 
-            bool isDeleted = await _foodTypeRepository.DeleteAsync(foodType);
+            await _foodTypeRepository.DeleteAsync(id, cancellationToken);
+
+            bool isDeleted = await _foodTypeRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
             {
@@ -37,35 +42,40 @@ namespace CatalogService.Application.Services
             }
         }
 
-        public async Task<ICollection<ReadFoodTypeDTO>> GetAllAsync()
+        public async Task<ICollection<ReadFoodTypeDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            ICollection<FoodType> foodTypes = await _foodTypeRepository.GetAllAsync();
+            ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
+                await _foodTypeRepository.GetAllAsync(cancellationToken);
 
-            var foodTypeDTOs = _mapper.Map<ICollection<ReadFoodTypeDTO>>(foodTypes);
-
-            return foodTypeDTOs;
+            return readFoodTypeDTOs;
         }
 
-        public async Task<ReadFoodTypeDTO> GetByIdAsync(int id)
+        public async Task<ReadFoodTypeDTO> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            FoodType? foodType = await _foodTypeRepository.GetByIdAsync(id);
+            ReadFoodTypeDTO? readFoodTypeDTO =
+                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
 
-            if (foodType is null)
+            if (readFoodTypeDTO is null)
             {
-                throw new NotFoundException(nameof(FoodType), id.ToString(), typeof(FoodType));
+                throw new NotFoundException(nameof(FoodType),
+                    id.ToString(), typeof(FoodType));
             }
 
-            var foodTypeDTO = _mapper.Map<ReadFoodTypeDTO>(foodType);
-
-            return foodTypeDTO;
+            return readFoodTypeDTO;
         }
 
-        public async Task<ReadFoodTypeDTO> InsertAsync(FoodTypeDTO item)
+        public async Task<ReadFoodTypeDTO> InsertAsync(FoodTypeDTO item,
+            CancellationToken cancellationToken)
         {
             var foodType = _mapper.Map<FoodType>(item);
 
-            (foodType, bool isInserted) = await _foodTypeRepository
-                .InsertAsync(foodType);
+            foodType = await _foodTypeRepository
+                             .InsertAsync(foodType, cancellationToken);
+
+            bool isInserted = await _foodTypeRepository
+                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)
             {
@@ -78,22 +88,31 @@ namespace CatalogService.Application.Services
             return readFoodTypeDTO;
         }
 
-        public async Task<ReadFoodTypeDTO> UpdateAsync(int id, FoodTypeDTO item)
+        public async Task<ReadFoodTypeDTO> UpdateAsync(int id,
+            FoodTypeDTO item, CancellationToken cancellationToken)
         {
             var foodType = _mapper.Map<FoodType>(item);
             foodType.Id = id;
 
-            bool isUpdated = await _foodTypeRepository.UpdateAsync(foodType);
+            _foodTypeRepository.Update(foodType);
+
+            bool isUpdated = await _foodTypeRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isUpdated)
             {
-                throw new DbOperationException(nameof(UpdateAsync), id.ToString(),
-                    typeof(FoodType));
+                throw new DbOperationException(nameof(UpdateAsync),
+                    id.ToString(), typeof(FoodType));
             }
 
-            foodType = await _foodTypeRepository.GetByIdAsync(id);
+            ReadFoodTypeDTO? readFoodType = 
+                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
 
-            var readFoodType = _mapper.Map<ReadFoodTypeDTO>(foodType);
+            if (readFoodType is null)
+            {
+                throw new NotFoundException(nameof(FoodType), id.ToString(),
+                    typeof(FoodType));
+            }
 
             return readFoodType;
         }

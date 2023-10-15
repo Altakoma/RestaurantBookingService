@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace CatalogService.Infrastructure.Data.ApplicationDbContext
 {
-    public partial class CatalogServiceDbContext : DbContext
+    public class CatalogServiceDbContext : DbContext
     {
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Menu> Menu { get; set; }

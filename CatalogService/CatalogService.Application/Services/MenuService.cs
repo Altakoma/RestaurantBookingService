@@ -21,16 +21,21 @@ namespace CatalogService.Application.Services
             _mapper = mapper;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            Menu? menu = await _menuRepository.GetByIdAsync(id);
+            ReadMenuDTO? readMenuDTO = await _menuRepository
+                                             .GetByIdAsync(id, cancellationToken);
 
-            if (menu is null)
+            if (readMenuDTO is null)
             {
-                throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
+                throw new NotFoundException(nameof(Menu), id.ToString(),
+                    typeof(Menu));
             }
 
-            bool isDeleted = await _menuRepository.DeleteAsync(menu);
+            await _menuRepository.DeleteAsync(id, cancellationToken);
+
+            bool isDeleted = await _menuRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
             {
@@ -39,44 +44,49 @@ namespace CatalogService.Application.Services
             }
         }
 
-        public async Task<ICollection<ReadMenuDTO>> GetAllAsync()
+        public async Task<ICollection<ReadMenuDTO>> GetAllAsync(
+            CancellationToken cancellationToken)
         {
-            ICollection<Menu> menu = await _menuRepository.GetAllAsync();
-
-            var readMenuDTOs = _mapper.Map<ICollection<ReadMenuDTO>>(menu);
+            ICollection<ReadMenuDTO> readMenuDTOs = 
+                await _menuRepository.GetAllAsync(cancellationToken);
 
             return readMenuDTOs;
         }
 
-        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id)
+        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            ICollection<Menu> menu = await _menuRepository.GetAllByRestaurantIdAsync(id);
-
-            var readMenuDTOs = _mapper.Map<ICollection<ReadMenuDTO>>(menu);
+            ICollection<ReadMenuDTO> readMenuDTOs =
+                await _menuRepository.GetAllByRestaurantIdAsync(id);
 
             return readMenuDTOs;
         }
 
-        public async Task<ReadMenuDTO> GetByIdAsync(int id)
+        public async Task<ReadMenuDTO> GetByIdAsync(int id,
+            CancellationToken cancellationToken)
         {
-            Menu? menu = await _menuRepository.GetByIdAsync(id);
+            ReadMenuDTO? readMenuDTO = 
+                await _menuRepository.GetByIdAsync(id, cancellationToken);
 
-            if (menu is null)
+            if (readMenuDTO is null)
             {
-                throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
+                throw new NotFoundException(nameof(Menu),
+                    id.ToString(), typeof(Menu));
             }
-
-            var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
 
             return readMenuDTO;
         }
 
-        public async Task<ReadMenuDTO> InsertAsync(InsertMenuDTO item)
+        public async Task<ReadMenuDTO> InsertAsync(InsertMenuDTO item,
+            CancellationToken cancellationToken)
         {
             var menu = _mapper.Map<Menu>(item);
 
-            (menu, bool isInserted) = await _menuRepository
-                .InsertAsync(menu);
+            menu = await _menuRepository
+                         .InsertAsync(menu, cancellationToken);
+
+            bool isInserted = await _menuRepository
+                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)
             {
@@ -84,29 +94,43 @@ namespace CatalogService.Application.Services
                     menu.Id.ToString(), typeof(Menu));
             }
 
-            menu = await _menuRepository.GetByIdAsync(menu.Id);
+            ReadMenuDTO? readMenuDTO = 
+                await _menuRepository.GetByIdAsync(menu.Id, cancellationToken);
 
-            var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
+            if (readMenuDTO is null)
+            {
+                throw new NotFoundException(nameof(Menu), menu.Id.ToString(),
+                    typeof(Menu));
+            }
 
             return readMenuDTO;
         }
 
-        public async Task<ReadMenuDTO> UpdateAsync(int id, UpdateMenuDTO item)
+        public async Task<ReadMenuDTO> UpdateAsync(int id,
+            UpdateMenuDTO item, CancellationToken cancellationToken)
         {
             var menu = _mapper.Map<Menu>(item);
             menu.Id = id;
 
-            bool isUpdated = await _menuRepository.UpdateAsync(menu);
+            _menuRepository.Update(menu);
+
+            bool isUpdated = await _menuRepository
+                                   .SaveChangesToDbAsync(cancellationToken);
 
             if (!isUpdated)
             {
-                throw new DbOperationException(nameof(UpdateAsync), id.ToString(),
-                    typeof(Menu));
+                throw new DbOperationException(nameof(UpdateAsync),
+                    id.ToString(), typeof(Menu));
             }
 
-            menu = await _menuRepository.GetByIdAsync(id);
+            ReadMenuDTO? readMenuDTO = await _menuRepository
+                                             .GetByIdAsync(id, cancellationToken);
 
-            var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
+            if (readMenuDTO is null)
+            {
+                throw new NotFoundException(nameof(Menu), id.ToString(),
+                    typeof(Menu));
+            }
 
             return readMenuDTO;
         }
