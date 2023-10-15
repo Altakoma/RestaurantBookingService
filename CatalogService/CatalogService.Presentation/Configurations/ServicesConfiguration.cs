@@ -24,6 +24,8 @@ namespace CatalogService.Presentation.Configurations
 
             services.AddMapper();
 
+            services.AddFluentValidation();
+
             services.AddJwtTokenAuthConfiguration(builder);
 
             services.AddAuthorization();

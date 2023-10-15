@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.DTOs.Employee;
+using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
 using CatalogService.Application.Services.Interfaces;
@@ -25,6 +26,7 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadRestaurantDTO>))]
         public async Task<IActionResult> GetAllRestaurantsAsync(
             CancellationToken cancellationToken)
         {
@@ -35,6 +37,8 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadRestaurantDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> GetRestaurantAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -45,6 +49,9 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadRestaurantDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> InsertRestaurantAsync(
             [FromBody] InsertRestaurantDTO insertRestaurantDTO,
             CancellationToken cancellationToken)
@@ -57,6 +64,10 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadRestaurantDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> UpdateRestaurantAsync([FromRoute] int id,
             [FromBody] UpdateRestaurantDTO updateRestaurantDTO,
             CancellationToken cancellationToken)
@@ -68,6 +79,9 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> DeleteRestaurantAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -77,6 +91,7 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet("{id}/menu")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadMenuDTO>))]
         public async Task<IActionResult> GetMenuAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -87,10 +102,11 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet("{id}/employee")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadEmployeeDTO>))]
         public async Task<IActionResult> GetEmployeesAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
-            ICollection<ReadEmployeeDTO> readEmployeeDTOs =await _employeeService
+            ICollection<ReadEmployeeDTO> readEmployeeDTOs = await _employeeService
                 .GetAllByRestaurantIdAsync(id, cancellationToken);
 
             return Ok(readEmployeeDTOs);

@@ -6,6 +6,6 @@ namespace CatalogService.Application.RepositoryInterfaces
 {
     public interface IMenuRepository : IRepository<Menu, ReadMenuDTO>
     {
-        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id);
+        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id, CancellationToken cancellationToken);
     }
 }

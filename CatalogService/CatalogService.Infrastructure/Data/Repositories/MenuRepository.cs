@@ -6,6 +6,7 @@ using CatalogService.Domain.Exceptions;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
@@ -19,7 +20,8 @@ namespace CatalogService.Infrastructure.Data.Repositories
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             Menu? menu = await _dbContext.Menu
-                .FirstOrDefaultAsync(menu => menu.Id == id);
+                .FirstOrDefaultAsync(menu => menu.Id == id,
+                cancellationToken);
 
             if (menu is null)
             {
@@ -35,7 +37,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
                 _dbContext.Menu.Select(menu => menu))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readMenuDTOs;
         }
@@ -45,16 +47,17 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readMenuDTO = await _mapper.ProjectTo<ReadMenuDTO>(
                 _dbContext.Menu.Where(menu => menu.Id == id))
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(cancellationToken);
 
             return readMenuDTO;
         }
 
-        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id)
+        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id,
+            CancellationToken cancellationToken)
         {
             var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
                 _dbContext.Menu.Where(menu => menu.RestaurantId == id))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readMenuDTOs;
         }

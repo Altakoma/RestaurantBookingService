@@ -19,7 +19,8 @@ namespace CatalogService.Infrastructure.Data.Repositories
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             FoodType? foodType = await _dbContext.FoodTypes
-                .FirstOrDefaultAsync(foodType => foodType.Id == id);
+                .FirstOrDefaultAsync(foodType => foodType.Id == id,
+                                     cancellationToken);
 
             if (foodType is null)
             {
@@ -35,7 +36,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readFoodTypeDTOs = await _mapper.ProjectTo<ReadFoodTypeDTO>(
                 _dbContext.FoodTypes.Select(foodType => foodType))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readFoodTypeDTOs;
         }
@@ -45,7 +46,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readFoodTypeDTO = await _mapper.ProjectTo<ReadFoodTypeDTO>(
                 _dbContext.FoodTypes.Where(foodType => foodType.Id == id))
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(cancellationToken);
 
             return readFoodTypeDTO;
         }

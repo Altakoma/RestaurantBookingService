@@ -19,7 +19,8 @@ namespace CatalogService.Infrastructure.Data.Repositories
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             Employee? employee = await _dbContext.Employees
-                .FirstOrDefaultAsync(employee => employee.Id == id);
+                .FirstOrDefaultAsync(employee => employee.Id == id,
+                                     cancellationToken);
 
             if (employee is null)
             {
@@ -35,7 +36,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readEmployeeDTOs = await _mapper.ProjectTo<ReadEmployeeDTO>(
                 _dbContext.Employees.Select(employee => employee))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readEmployeeDTOs;
         }
@@ -46,7 +47,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
             var readEmployeeDTOs = await _mapper.ProjectTo<ReadEmployeeDTO>(
                 _dbContext.Employees
                 .Where(employee => employee.RestaurantId == id))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readEmployeeDTOs;
         }
@@ -56,7 +57,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readEmployeeDTO = await _mapper.ProjectTo<ReadEmployeeDTO>(
                 _dbContext.Employees.Where(employee => employee.Id == id))
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(cancellationToken);
 
             return readEmployeeDTO;
         }

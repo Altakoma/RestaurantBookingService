@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.DTOs.Menu;
+﻿using CatalogService.Application.DTOs.Exception;
+using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadMenuDTO>))]
         public async Task<IActionResult> GetAllFoodAsync(
             CancellationToken cancellationToken)
         {
@@ -28,6 +30,8 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadMenuDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> GetFoodAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -38,6 +42,9 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadMenuDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> InsertFoodAsync(
             [FromBody] InsertMenuDTO insertMenuDTO,
             CancellationToken cancellationToken)
@@ -50,6 +57,10 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadMenuDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> UpdateFoodAsync([FromRoute] int id,
             [FromBody] UpdateMenuDTO updateMenuDTO,
             CancellationToken cancellationToken)
@@ -61,6 +72,9 @@ namespace CatalogService.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> DeleteFoodAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.Menu;
+using CatalogService.Application.Extensions;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Application.Services.Interfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
+using FluentValidation;
 
 namespace CatalogService.Application.Services
 {
@@ -12,13 +14,20 @@ namespace CatalogService.Application.Services
         private readonly IMenuRepository _menuRepository;
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<InsertMenuDTO> _insertMenuDTOValidator;
+        private readonly IValidator<UpdateMenuDTO> _updateMenuDTOValidator;
 
         public MenuService(IMenuRepository menuRepository,
-            IRestaurantRepository restaurantRepository, IMapper mapper)
+            IRestaurantRepository restaurantRepository,
+            IMapper mapper,
+            IValidator<InsertMenuDTO> insertMenuDTOValidator,
+            IValidator<UpdateMenuDTO> updateMenuDTOValidator)
         {
             _menuRepository = menuRepository;
             _restaurantRepository = restaurantRepository;
             _mapper = mapper;
+            _insertMenuDTOValidator = insertMenuDTOValidator;
+            _updateMenuDTOValidator = updateMenuDTOValidator;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -47,7 +56,7 @@ namespace CatalogService.Application.Services
         public async Task<ICollection<ReadMenuDTO>> GetAllAsync(
             CancellationToken cancellationToken)
         {
-            ICollection<ReadMenuDTO> readMenuDTOs = 
+            ICollection<ReadMenuDTO> readMenuDTOs =
                 await _menuRepository.GetAllAsync(cancellationToken);
 
             return readMenuDTOs;
@@ -57,7 +66,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadMenuDTO> readMenuDTOs =
-                await _menuRepository.GetAllByRestaurantIdAsync(id);
+                await _menuRepository.GetAllByRestaurantIdAsync(id, cancellationToken);
 
             return readMenuDTOs;
         }
@@ -65,7 +74,7 @@ namespace CatalogService.Application.Services
         public async Task<ReadMenuDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            ReadMenuDTO? readMenuDTO = 
+            ReadMenuDTO? readMenuDTO =
                 await _menuRepository.GetByIdAsync(id, cancellationToken);
 
             if (readMenuDTO is null)
@@ -80,6 +89,9 @@ namespace CatalogService.Application.Services
         public async Task<ReadMenuDTO> InsertAsync(InsertMenuDTO item,
             CancellationToken cancellationToken)
         {
+            await _insertMenuDTOValidator
+                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
+
             var menu = _mapper.Map<Menu>(item);
 
             menu = await _menuRepository
@@ -94,7 +106,7 @@ namespace CatalogService.Application.Services
                     menu.Id.ToString(), typeof(Menu));
             }
 
-            ReadMenuDTO? readMenuDTO = 
+            ReadMenuDTO? readMenuDTO =
                 await _menuRepository.GetByIdAsync(menu.Id, cancellationToken);
 
             if (readMenuDTO is null)
@@ -109,6 +121,9 @@ namespace CatalogService.Application.Services
         public async Task<ReadMenuDTO> UpdateAsync(int id,
             UpdateMenuDTO item, CancellationToken cancellationToken)
         {
+            await _updateMenuDTOValidator
+                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
+
             var menu = _mapper.Map<Menu>(item);
             menu.Id = id;
 

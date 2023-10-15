@@ -18,7 +18,8 @@ namespace CatalogService.Infrastructure.Data.Repositories
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             Restaurant? restaurant = await _dbContext.Restaurants
-                .FirstOrDefaultAsync(restaurant => restaurant.Id == id);
+                .FirstOrDefaultAsync(restaurant => restaurant.Id == id,
+                cancellationToken);
 
             if (restaurant is null)
             {
@@ -34,7 +35,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readRestaurantDTOs = await  _mapper.ProjectTo<ReadRestaurantDTO>(
                 _dbContext.Restaurants.Select(restaurant => restaurant))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return readRestaurantDTOs;
         }
@@ -44,7 +45,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
             var readRestaurantDTO = await _mapper.ProjectTo<ReadRestaurantDTO>(
                 _dbContext.Restaurants.Where(restaurant => restaurant.Id == id))
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(cancellationToken);
 
             return readRestaurantDTO;
         }
