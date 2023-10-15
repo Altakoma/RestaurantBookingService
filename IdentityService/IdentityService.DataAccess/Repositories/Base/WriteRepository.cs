@@ -1,6 +1,7 @@
 ﻿using IdentityService.DataAccess.DatabaseContext;
+using IdentityService.DataAccess.Repositories.Interfaces.Base;
 
-namespace IdentityService.DataAccess.Repositories.Interfaces.Base
+namespace IdentityService.DataAccess.Repositories.Base
 {
     public abstract class WriteRepository<T> : IWriteRepository<T>
         where T : notnull
@@ -17,7 +18,7 @@ namespace IdentityService.DataAccess.Repositories.Interfaces.Base
             _identityDbContext.Remove(item);
         }
 
-        public async Task<T> InsertAsync(T item, 
+        public async Task<T> InsertAsync(T item,
             CancellationToken cancellationToken)
         {
             await _identityDbContext.AddAsync(item, cancellationToken);
