@@ -4,24 +4,28 @@ using IdentityService.DataAccess.Exceptions;
 
 namespace IdentityService.BusinessLogic.Validatiors.UserValidators
 {
-    public class InsertUserValidator : AbstractValidator<InsertUserDTO>
+    internal class UpdateUserValidator : AbstractValidator<UpdateUserDTO>
     {
-        public InsertUserValidator()
+        public UpdateUserValidator()
         {
-            RuleFor(insertUserDTO => insertUserDTO.Name).NotEmpty()
+            RuleFor(updateUserDTO => updateUserDTO.Name).NotEmpty()
                 .WithMessage(
-                string.Format(ExceptionMessages.NotEnteredPropertyMessage, nameof(UpdateUserDTO.Name)))
+                string.Format(ExceptionMessages.NotEnteredPropertyMessage,nameof(UpdateUserDTO.Name)))
                 .MaximumLength(ValidationValues.MaxAccountNameLength);
 
-            RuleFor(insertUserDTO => insertUserDTO.Login).NotEmpty()
+            RuleFor(updateUserDTO => updateUserDTO.Login).NotEmpty()
                 .WithMessage(
                 string.Format(ExceptionMessages.NotEnteredPropertyMessage, nameof(UpdateUserDTO.Login)))
                 .MaximumLength(ValidationValues.MaxAccountLoginLength);
 
-            RuleFor(insertUserDTO => insertUserDTO.Password).NotEmpty()
+            RuleFor(updateUserDTO => updateUserDTO.Password).NotEmpty()
                 .WithMessage(
                 string.Format(ExceptionMessages.NotEnteredPropertyMessage, nameof(UpdateUserDTO.Password)))
                 .MaximumLength(ValidationValues.MaxAccountPasswordLength);
+
+            RuleFor(updateUserDTO => updateUserDTO.UserRoleId).NotEqual(0)
+                .WithMessage(
+                string.Format(ExceptionMessages.DetectionZeroPropertyMessage, nameof(UpdateUserDTO.UserRoleId)));
         }
     }
 }

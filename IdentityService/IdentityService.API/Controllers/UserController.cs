@@ -51,8 +51,7 @@ namespace IdentityService.API.Controllers
             CancellationToken cancellationToken)
         {
             ReadUserDTO readUserDTO =
-                await _userService.UpdateAsync(
-                    id, updateUserDTO, cancellationToken);
+                await _userService.UpdateAsync(id, updateUserDTO, cancellationToken);
 
             return Ok(readUserDTO);
         }
