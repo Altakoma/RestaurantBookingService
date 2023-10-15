@@ -5,9 +5,10 @@ namespace IdentityService.BusinessLogic.Extensions
 {
     public static class FluentValidationExtension
     {
-        public static async Task ValidateAndThrowArgumentException<T>(this IValidator<T> validator, T instance)
+        public static async Task ValidateAndThrowArgumentExceptionAsync<T>(this IValidator<T> validator,
+            T instance, CancellationToken cancellationToken)
         {
-            ValidationResult result = await validator.ValidateAsync(instance);
+            ValidationResult result = await validator.ValidateAsync(instance, cancellationToken);
 
             if (!result.IsValid)
             {
