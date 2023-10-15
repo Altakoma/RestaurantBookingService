@@ -45,6 +45,8 @@ namespace IdentityService.API.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> UpdateUserAsync([FromRoute] int id,
             [FromBody] UpdateUserDTO updateUserDTO,
@@ -58,6 +60,7 @@ namespace IdentityService.API.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] int id,
             CancellationToken cancellationToken)
