@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.Employee;
-using CatalogService.Application.Extensions;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Application.Services.Interfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
-using FluentValidation;
 
 namespace CatalogService.Application.Services
 {
@@ -13,18 +11,12 @@ namespace CatalogService.Application.Services
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
-        private readonly IValidator<InsertEmployeeDTO> _insertEmployeeValidator;
-        private readonly IValidator<UpdateEmployeeDTO> _updateEmployeeValidator;
 
         public EmployeeService(IEmployeeRepository employeeRepository,
-            IMapper mapper,
-            IValidator<InsertEmployeeDTO> insertEmployeeValidator,
-            IValidator<UpdateEmployeeDTO> updateEmployeeValidator)
+            IMapper mapper)
         {
             _employeeRepository = employeeRepository;
             _mapper = mapper;
-            _insertEmployeeValidator = insertEmployeeValidator;
-            _updateEmployeeValidator = updateEmployeeValidator;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -86,9 +78,6 @@ namespace CatalogService.Application.Services
         public async Task<ReadEmployeeDTO> InsertAsync(InsertEmployeeDTO item,
             CancellationToken cancellationToken)
         {
-            await _insertEmployeeValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var employee = _mapper.Map<Employee>(item);
 
             employee = await _employeeRepository
@@ -111,9 +100,6 @@ namespace CatalogService.Application.Services
         public async Task<ReadEmployeeDTO> UpdateAsync(int id,
             UpdateEmployeeDTO item, CancellationToken cancellationToken)
         {
-            await _updateEmployeeValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var employee = _mapper.Map<Employee>(item);
             employee.Id = id;
 

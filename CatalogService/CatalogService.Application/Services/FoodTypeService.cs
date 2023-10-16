@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.FoodType;
-using CatalogService.Application.Extensions;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Application.Services.Interfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
-using FluentValidation;
 
 namespace CatalogService.Application.Services
 {
@@ -13,16 +11,13 @@ namespace CatalogService.Application.Services
     {
         private readonly IFoodTypeRepository _foodTypeRepository;
         private readonly IMapper _mapper;
-        private readonly IValidator<FoodTypeDTO> _foodTypeDTOValidator;
 
 
         public FoodTypeService(IFoodTypeRepository foodTypeRepository,
-            IMapper mapper,
-            IValidator<FoodTypeDTO> foodTypeDTOValidator)
+            IMapper mapper)
         {
             _foodTypeRepository = foodTypeRepository;
             _mapper = mapper;
-            _foodTypeDTOValidator = foodTypeDTOValidator;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -75,9 +70,6 @@ namespace CatalogService.Application.Services
         public async Task<ReadFoodTypeDTO> InsertAsync(FoodTypeDTO item,
             CancellationToken cancellationToken)
         {
-            await _foodTypeDTOValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var foodType = _mapper.Map<FoodType>(item);
 
             foodType = await _foodTypeRepository
@@ -100,9 +92,6 @@ namespace CatalogService.Application.Services
         public async Task<ReadFoodTypeDTO> UpdateAsync(int id,
             FoodTypeDTO item, CancellationToken cancellationToken)
         {
-            await _foodTypeDTOValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var foodType = _mapper.Map<FoodType>(item);
             foodType.Id = id;
 
