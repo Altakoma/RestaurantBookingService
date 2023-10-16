@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using FluentValidation;
 using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Exceptions;
-using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.DTOs.User;
@@ -19,22 +17,16 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IRefreshTokenService _refreshTokenService;
-        private readonly IValidator<InsertUserDTO> _insertUserValidator;
-        private readonly IValidator<UpdateUserDTO> _updateUserValidator;
 
         public UserService(IUserRepository userRepository,
             IMapper mapper,
             ITokenGenerator tokenGenerator,
-            IRefreshTokenService refreshTokenService,
-            IValidator<InsertUserDTO> insertUserValidator,
-            IValidator<UpdateUserDTO> updateUserValidator)
+            IRefreshTokenService refreshTokenService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
             _refreshTokenService = refreshTokenService;
-            _insertUserValidator = insertUserValidator;
-            _updateUserValidator = updateUserValidator;
         }
 
         public async Task DeleteAsync(int id,
@@ -102,9 +94,6 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item,
             CancellationToken cancellationToken)
         {
-            await _insertUserValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var user = _mapper.Map<User>(item);
 
             user = await _userRepository.InsertAsync(user, cancellationToken);
@@ -132,9 +121,6 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> UpdateAsync(int id,
             UpdateUserDTO item, CancellationToken cancellationToken)
         {
-            await _updateUserValidator
-                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
-
             var user = _mapper.Map<User>(item);
 
             user.Id = id;

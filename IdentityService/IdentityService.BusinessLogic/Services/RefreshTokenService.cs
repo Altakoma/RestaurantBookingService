@@ -25,8 +25,13 @@ namespace IdentityService.BusinessLogic.Services
         {
             get
             {
-                var refreshTokenString = _httpContextAccessor.HttpContext.Request
+                string? refreshTokenString = _httpContextAccessor.HttpContext?.Request
                 .Cookies.FirstOrDefault(c => c.Key == RefreshTokenCookieName).Value;
+
+                if (refreshTokenString is null)
+                {
+                    throw new NotFoundException(RefreshTokenCookieName, typeof(Cookie));
+                }
 
                 return refreshTokenString;
             }
@@ -38,7 +43,7 @@ namespace IdentityService.BusinessLogic.Services
                     Expires = DateTime.Now.AddMinutes(20),
                 };
 
-                _httpContextAccessor.HttpContext.Response
+                _httpContextAccessor.HttpContext?.Response
                     .Cookies.Append(RefreshTokenCookieName, value, cookieOptions);
             }
         }
@@ -108,11 +113,6 @@ namespace IdentityService.BusinessLogic.Services
             CancellationToken cancellationToken)
         {
             string refreshTokenString = RefreshTokenCookie;
-
-            if (refreshTokenString is null)
-            {
-                throw new NotFoundException(RefreshTokenCookieName, typeof(Cookie));
-            }
 
             CreationRefreshTokenDTO? creationRefreshTokenDTO = await _refreshTokenRepository
                 .GetCreationRefreshTokenDTOAsync(refreshTokenString, cancellationToken);
