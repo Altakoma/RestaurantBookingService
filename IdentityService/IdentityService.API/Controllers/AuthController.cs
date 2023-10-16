@@ -22,7 +22,8 @@ namespace IdentityService.API.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadUserDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> RegisterAsync(
             [FromBody] InsertUserDTO insertUserDTO,

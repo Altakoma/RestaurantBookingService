@@ -6,7 +6,6 @@ using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Extensions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
-using IdentityService.BusinessLogic.Validatiors.UserValidators;
 using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
@@ -56,7 +55,7 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ICollection<ReadUserDTO>> GetAllAsync(
             CancellationToken cancellationToken)
         {
-            ICollection<ReadUserDTO> readUserDTOs = 
+            ICollection<ReadUserDTO> readUserDTOs =
                 await _userRepository.GetAllAsync(cancellationToken);
 
             return readUserDTOs;
@@ -103,7 +102,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> InsertAsync(InsertUserDTO item,
             CancellationToken cancellationToken)
         {
-            await _insertUserValidator.ValidateAndThrowArgumentException(item);
+            await _insertUserValidator
+                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
 
             var user = _mapper.Map<User>(item);
 
@@ -132,7 +132,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> UpdateAsync(int id,
             UpdateUserDTO item, CancellationToken cancellationToken)
         {
-            await _updateUserValidator.ValidateAndThrowArgumentException(item);
+            await _updateUserValidator
+                  .ValidateAndThrowArgumentExceptionAsync(item, cancellationToken);
 
             var user = _mapper.Map<User>(item);
 
