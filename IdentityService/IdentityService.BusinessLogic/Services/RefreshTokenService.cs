@@ -100,6 +100,8 @@ namespace IdentityService.BusinessLogic.Services
             {
                 _refreshTokenRepository.Update(token);
             }
+
+            await _refreshTokenRepository.SaveChangesToDbAsync(cancellationToken);
         }
 
         public async Task<TokenDTO> VerifyAndGenerateTokenAsync(
