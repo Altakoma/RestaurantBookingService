@@ -1,4 +1,6 @@
-﻿using IdentityService.BusinessLogic.Services;
+﻿using FluentValidation;
+using IdentityService.BusinessLogic.DTOs.User;
+using IdentityService.BusinessLogic.Services;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.ServicesConfigurations;
 using IdentityService.BusinessLogic.TokenGenerators;
