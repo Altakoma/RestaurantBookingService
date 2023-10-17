@@ -5,6 +5,9 @@ namespace CatalogService.Presentation.Configurations
 {
     public static class DbConfiguration
     {
+        public const string DbDevelopmentConnectionString = "ConnectionStrings:DefaultConnection";
+        public const string DbEnvironmentConnectionString = "DefaultConnection";
+
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
@@ -12,11 +15,11 @@ namespace CatalogService.Presentation.Configurations
             {
                 if (builder.Environment.IsDevelopment())
                 {
-                    options.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"]);
+                    options.UseSqlServer(builder.Configuration[DbDevelopmentConnectionString]);
                 }
                 else
                 {
-                    options.UseSqlServer(Environment.GetEnvironmentVariable("DefaultConnection"));
+                    options.UseSqlServer(Environment.GetEnvironmentVariable(DbEnvironmentConnectionString));
                 }
             });
 
