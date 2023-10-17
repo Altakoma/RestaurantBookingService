@@ -1,7 +1,6 @@
 ﻿using IdentityService.BusinessLogic.DTOs.Exception;
 using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Services.Interfaces;
-using IdentityService.DataAccess.DTOs.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

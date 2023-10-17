@@ -27,7 +27,7 @@ namespace IdentityService.BusinessLogic.TokenGenerators
             SecurityTokenDescriptor tokenDescriptor =
                 GetTokenDescriptor(name, roleName, userId);
 
-            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            SecurityToken token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
             var refreshToken = new RefreshToken
             {

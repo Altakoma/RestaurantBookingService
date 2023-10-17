@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using IdentityService.DataAccess.DTOs.RefreshToken;
+using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.BusinessLogic.MappingProfiles

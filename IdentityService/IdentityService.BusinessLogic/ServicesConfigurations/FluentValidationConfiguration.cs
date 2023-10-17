@@ -11,7 +11,6 @@ namespace IdentityService.BusinessLogic.ServicesConfigurations
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-
             services.AddFluentValidationAutoValidation();
 
             return services;

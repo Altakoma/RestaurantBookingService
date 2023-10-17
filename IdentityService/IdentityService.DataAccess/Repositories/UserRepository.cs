@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IdentityService.DataAccess.DatabaseContext;
-using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Base;
@@ -9,48 +8,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories
 {
-    public class UserRepository : WriteRepository<User>, IUserRepository
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        private readonly IdentityDbContext _identityDbContext;
-        private readonly IMapper _mapper;
-
         public UserRepository(IdentityDbContext identityDbContext,
-            IMapper mapper) : base(identityDbContext)
+            IMapper mapper) : base(identityDbContext, mapper)
         {
-            _identityDbContext = identityDbContext;
-            _mapper = mapper;
         }
 
-        public async Task<ICollection<ReadUserDTO>> GetAllAsync(
+        public async Task<U?> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
-            var users = await _mapper.ProjectTo<ReadUserDTO>(
+            U? user = await _mapper.ProjectTo<U>(
                 _identityDbContext.Users
-                .AsNoTracking()
-                .Select(user => user))
-                .ToListAsync(cancellationToken);
-
-            return users;
-        }
-
-        public async Task<ReadUserDTO?> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            var user = await _mapper.ProjectTo<ReadUserDTO>(
-                _identityDbContext.Users
-                .AsNoTracking()
                 .Where(user => user.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
             return user;
         }
 
-        public async Task<ReadUserDTO?> GetUserAsync(string login, string password,
+        public async Task<U?> GetUserAsync<U>(string login, string password,
             CancellationToken cancellationToken)
         {
-            var user = await _mapper.ProjectTo<ReadUserDTO>(
+            U? user = await _mapper.ProjectTo<U>(
                 _identityDbContext.Users
-                .AsNoTracking()
                 .Where(user => user.Login == login &&
                        user.Password == password))
                 .SingleOrDefaultAsync(cancellationToken);

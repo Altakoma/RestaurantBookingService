@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IdentityService.DataAccess.DatabaseContext;
-using IdentityService.DataAccess.DTOs.RefreshToken;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Base;
 using IdentityService.DataAccess.Repositories.Interfaces;
@@ -9,25 +8,19 @@ using Microsoft.EntityFrameworkCore;
 namespace IdentityService.DataAccess.Repositories
 {
     public class RefreshTokenRepository :
-        WriteRepository<RefreshToken>,
+        BaseRepository<RefreshToken>,
         IRefreshTokenRepository
     {
-        private readonly IdentityDbContext _identityDbContext;
-        private readonly IMapper _mapper;
-
         public RefreshTokenRepository(IdentityDbContext identityDbContext,
-            IMapper mapper) : base(identityDbContext)
+            IMapper mapper) : base(identityDbContext, mapper)
         {
-            _identityDbContext = identityDbContext;
-            _mapper = mapper;
         }
 
-        public async Task<CreationRefreshTokenDTO?> GetCreationRefreshTokenDTOAsync(string token,
+        public async Task<U?> GetCreationRefreshTokenDTOAsync<U>(string token,
             CancellationToken cancellationToken)
         {
-            var creationRefreshTokenDTO = await _mapper.ProjectTo<CreationRefreshTokenDTO>(
+            U? creationRefreshTokenDTO = await _mapper.ProjectTo<U>(
                 _identityDbContext.RefreshTokens
-                .AsNoTracking()
                 .Where(refreshToken => refreshToken.Token == token))
                 .SingleOrDefaultAsync(cancellationToken);
 
@@ -37,7 +30,7 @@ namespace IdentityService.DataAccess.Repositories
         public async Task<RefreshToken?> GetByUserIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            var refreshToken = await _identityDbContext.RefreshTokens
+            RefreshToken? refreshToken = await _identityDbContext.RefreshTokens
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
                     refreshToken => refreshToken.UserId == id,

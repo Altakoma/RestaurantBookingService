@@ -1,12 +1,11 @@
-﻿using IdentityService.DataAccess.DTOs.RefreshToken;
-using IdentityService.DataAccess.Entities;
+﻿using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces.Base;
 
 namespace IdentityService.DataAccess.Repositories.Interfaces
 {
-    public interface IRefreshTokenRepository : IWriteRepository<RefreshToken>
+    public interface IRefreshTokenRepository : IRepository<RefreshToken>
     {
         Task<RefreshToken?> GetByUserIdAsync(int id, CancellationToken cancellationToken);
-        Task<CreationRefreshTokenDTO?> GetCreationRefreshTokenDTOAsync(string token, CancellationToken cancellationToken);
+        Task<U?> GetCreationRefreshTokenDTOAsync<U>(string token, CancellationToken cancellationToken);
     }
 }

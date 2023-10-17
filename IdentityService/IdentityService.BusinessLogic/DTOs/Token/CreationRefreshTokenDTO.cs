@@ -1,4 +1,4 @@
-﻿namespace IdentityService.DataAccess.DTOs.RefreshToken
+﻿namespace IdentityService.BusinessLogic.DTOs.Token
 {
     public class CreationRefreshTokenDTO
     {

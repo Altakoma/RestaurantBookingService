@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IdentityService.BusinessLogic.DTOs.User;
-using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.BusinessLogic.MappingProfiles

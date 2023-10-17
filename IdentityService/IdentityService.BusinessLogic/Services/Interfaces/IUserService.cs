@@ -1,6 +1,5 @@
 ﻿using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.DTOs.User;
-using IdentityService.DataAccess.DTOs.User;
 
 namespace IdentityService.BusinessLogic.Services.Interfaces
 {
