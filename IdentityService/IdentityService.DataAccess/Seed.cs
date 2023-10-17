@@ -16,7 +16,7 @@ namespace IdentityService.DataAccess
 
         public void SeedData()
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            using (IServiceScope scope = _serviceScopeFactory.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<IdentityDbContext>();
 

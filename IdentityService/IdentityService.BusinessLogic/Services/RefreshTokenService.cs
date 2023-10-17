@@ -2,7 +2,6 @@
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
-using IdentityService.DataAccess.DTOs.RefreshToken;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
@@ -61,7 +60,7 @@ namespace IdentityService.BusinessLogic.Services
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var refreshToken = await _refreshTokenRepository
+            RefreshToken? refreshToken = await _refreshTokenRepository
                                      .GetByUserIdAsync(id, cancellationToken);
 
             if (refreshToken is null)
@@ -84,7 +83,7 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<RefreshToken?> GetByUserIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            var token = await _refreshTokenRepository
+            RefreshToken? token = await _refreshTokenRepository
                               .GetByUserIdAsync(id, cancellationToken);
 
             return token;
@@ -115,7 +114,7 @@ namespace IdentityService.BusinessLogic.Services
             string refreshTokenString = RefreshTokenCookie;
 
             CreationRefreshTokenDTO? creationRefreshTokenDTO = await _refreshTokenRepository
-                .GetCreationRefreshTokenDTOAsync(refreshTokenString, cancellationToken);
+                .GetCreationRefreshTokenDTOAsync<CreationRefreshTokenDTO>(refreshTokenString, cancellationToken);
 
             if (creationRefreshTokenDTO is null)
             {

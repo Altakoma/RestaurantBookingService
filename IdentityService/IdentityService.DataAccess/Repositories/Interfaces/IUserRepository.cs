@@ -1,12 +1,12 @@
-﻿using IdentityService.DataAccess.DTOs.User;
-using IdentityService.DataAccess.Entities;
+﻿using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Repositories.Interfaces.Base;
 
 namespace IdentityService.DataAccess.Repositories.Interfaces
 {
-    public interface IUserRepository : IRepository<ReadUserDTO, User>
+    public interface IUserRepository : IRepository<User>
     {
-        Task<ReadUserDTO?> GetUserAsync(string login, string password, CancellationToken cancellationToken);
+        Task<U?> GetByIdAsync<U>(int id, CancellationToken cancellationToken);
+        Task<U?> GetUserAsync<U>(string login, string password, CancellationToken cancellationToken);
         Task DeleteAsync(int id, CancellationToken cancellationToken);
     }
 }

@@ -22,11 +22,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ICollection<ReadUserRoleDTO>> GetAllAsync(
             CancellationToken cancellationToken)
         {
-            var userRoles = await _userRoleRepository
-                                  .GetAllAsync(cancellationToken);
-
-            var readUserRoleDTOs = _mapper
-                                   .Map<ICollection<ReadUserRoleDTO>>(userRoles);
+            ICollection<ReadUserRoleDTO> readUserRoleDTOs = await _userRoleRepository
+                                  .GetAllAsync<ReadUserRoleDTO>(cancellationToken);
 
             return readUserRoleDTOs;
         }
@@ -34,7 +31,7 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserRoleDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            var userRole = await _userRoleRepository
+            UserRole? userRole = await _userRoleRepository
                                  .GetByIdAsync(id, cancellationToken);
 
             if (userRole is null)

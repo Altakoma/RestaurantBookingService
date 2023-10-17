@@ -2,7 +2,6 @@
 using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Services.Interfaces;
-using IdentityService.DataAccess.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityService.API.Controllers

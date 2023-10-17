@@ -4,7 +4,6 @@ using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
-using IdentityService.DataAccess.DTOs.User;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
@@ -48,7 +47,7 @@ namespace IdentityService.BusinessLogic.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadUserDTO> readUserDTOs =
-                await _userRepository.GetAllAsync(cancellationToken);
+                await _userRepository.GetAllAsync<ReadUserDTO>(cancellationToken);
 
             return readUserDTOs;
         }
@@ -56,15 +55,13 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            ReadUserDTO? user = await _userRepository
-                                      .GetByIdAsync(id, cancellationToken);
+            ReadUserDTO? readUserDTO = await _userRepository
+                                      .GetByIdAsync<ReadUserDTO>(id, cancellationToken);
 
-            if (user is null)
+            if (readUserDTO is null)
             {
                 throw new NotFoundException(id.ToString(), typeof(User));
             }
-
-            var readUserDTO = _mapper.Map<ReadUserDTO>(user);
 
             return readUserDTO;
         }
@@ -72,16 +69,16 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<TokenDTO> GetUserAsync(string login,
             string password, CancellationToken cancellationToken)
         {
-            ReadUserDTO? user = await _userRepository
-                .GetUserAsync(login, password, cancellationToken);
+            ReadUserDTO? readUserDTO = await _userRepository
+                .GetUserAsync<ReadUserDTO>(login, password, cancellationToken);
 
-            if (user is null)
+            if (readUserDTO is null)
             {
                 throw new NotFoundException(login, typeof(User));
             }
 
             (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
-                .GenerateToken(user.Name, user.UserRoleName, user.Id);
+                .GenerateToken(readUserDTO.Name, readUserDTO.UserRoleName, readUserDTO.Id);
 
             await _refreshTokenService
                   .SaveTokenAsync(refreshToken, cancellationToken);
@@ -108,7 +105,7 @@ namespace IdentityService.BusinessLogic.Services
             }
 
             ReadUserDTO? readUserDTO = await _userRepository
-                .GetByIdAsync(user.Id, cancellationToken);
+                .GetByIdAsync<ReadUserDTO>(user.Id, cancellationToken);
 
             if (readUserDTO is null)
             {
@@ -137,7 +134,7 @@ namespace IdentityService.BusinessLogic.Services
             }
 
             ReadUserDTO? readUserDTO = await _userRepository
-                .GetByIdAsync(id, cancellationToken);
+                .GetByIdAsync<ReadUserDTO>(id, cancellationToken);
 
             if (readUserDTO is null)
             {

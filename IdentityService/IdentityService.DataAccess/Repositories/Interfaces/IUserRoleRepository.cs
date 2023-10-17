@@ -3,7 +3,8 @@ using IdentityService.DataAccess.Repositories.Interfaces.Base;
 
 namespace IdentityService.DataAccess.Repositories.Interfaces
 {
-    public interface IUserRoleRepository : IReadRepository<UserRole>
+    public interface IUserRoleRepository : IRepository<UserRole>
     {
+        Task<UserRole?> GetByIdAsync(int id, CancellationToken cancellationToken);
     }
 }

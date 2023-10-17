@@ -41,20 +41,13 @@ namespace IdentityService.API.Middlewares
 
         private (int, string) GetStatusCodeAndExceptionTypeName(Exception exception)
         {
-            switch (exception)
+            return exception switch
             {
-                case ArgumentException:
-                    return (StatusCodes.Status400BadRequest, nameof(ArgumentException));
-
-                case NotFoundException:
-                    return (StatusCodes.Status404NotFound, nameof(NotFoundException));
-
-                case DbOperationException:
-                    return (StatusCodes.Status500InternalServerError, nameof(DbOperationException));
-
-                default:
-                    return (StatusCodes.Status500InternalServerError, nameof(Exception));
-            }
+                ArgumentException => (StatusCodes.Status400BadRequest, nameof(ArgumentException)),
+                NotFoundException => (StatusCodes.Status404NotFound, nameof(NotFoundException)),
+                DbOperationException => (StatusCodes.Status500InternalServerError, nameof(DbOperationException)),
+                _ => (StatusCodes.Status500InternalServerError, nameof(Exception)),
+            };
         }
     }
 }

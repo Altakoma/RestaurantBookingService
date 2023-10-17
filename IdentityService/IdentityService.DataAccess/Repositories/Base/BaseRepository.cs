@@ -1,16 +1,29 @@
-﻿using IdentityService.DataAccess.DatabaseContext;
+﻿using AutoMapper;
+using IdentityService.DataAccess.DatabaseContext;
 using IdentityService.DataAccess.Repositories.Interfaces.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories.Base
 {
-    public abstract class WriteRepository<T> : IWriteRepository<T>
-        where T : notnull
+    public abstract class BaseRepository<T> : IRepository<T> where T : class
     {
-        private readonly IdentityDbContext _identityDbContext;
+        protected readonly IdentityDbContext _identityDbContext;
+        protected readonly IMapper _mapper;
 
-        public WriteRepository(IdentityDbContext identityDbContext)
+        public BaseRepository(IdentityDbContext identityDbContext,
+            IMapper mapper)
         {
             _identityDbContext = identityDbContext;
+            _mapper = mapper;
+        }
+
+        public async Task<ICollection<U>> GetAllAsync<U>(CancellationToken cancellationToken)
+        {
+            ICollection<U> items = await _mapper.ProjectTo<U>(
+                _identityDbContext.Set<T>().Select(item => item))
+                .ToListAsync(cancellationToken);
+
+            return items;
         }
 
         public void Delete(T item)
