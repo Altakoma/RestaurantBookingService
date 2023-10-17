@@ -1,25 +1,23 @@
 ﻿using AutoMapper;
-using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Infrastructure.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class MenuRepository : WriteRepository<Menu>, IMenuRepository
+    public class MenuRepository : BaseRepository<Menu>, IMenuRepository
     {
-        public MenuRepository(CatalogServiceDbContext dbContext,
-            IMapper mapper) : base(dbContext, mapper)
+        public MenuRepository(CatalogServiceDbContext catalogServiceDbContext,
+            IMapper mapper) : base(catalogServiceDbContext, mapper)
         {
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            Menu? menu = await _dbContext.Menu
+            Menu? menu = await _catalogServiceDbContext.Menu
                 .FirstOrDefaultAsync(menu => menu.Id == id,
                 cancellationToken);
 
@@ -32,31 +30,21 @@ namespace CatalogService.Infrastructure.Data.Repositories
             Delete(menu);
         }
 
-        public async Task<ICollection<ReadMenuDTO>> GetAllAsync(
+        public async Task<U?> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
-            var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
-                _dbContext.Menu.Select(menu => menu))
-                .ToListAsync(cancellationToken);
-
-            return readMenuDTOs;
-        }
-
-        public async Task<ReadMenuDTO?> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            var readMenuDTO = await _mapper.ProjectTo<ReadMenuDTO>(
-                _dbContext.Menu.Where(menu => menu.Id == id))
+            U? readMenuDTO = await _mapper.ProjectTo<U>(
+                _catalogServiceDbContext.Menu.Where(menu => menu.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
             return readMenuDTO;
         }
 
-        public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id,
+        public async Task<ICollection<U>> GetAllByRestaurantIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
-            var readMenuDTOs = await _mapper.ProjectTo<ReadMenuDTO>(
-                _dbContext.Menu.Where(menu => menu.RestaurantId == id))
+            ICollection<U> readMenuDTOs = await _mapper.ProjectTo<U>(
+                _catalogServiceDbContext.Menu.Where(menu => menu.RestaurantId == id))
                 .ToListAsync(cancellationToken);
 
             return readMenuDTOs;

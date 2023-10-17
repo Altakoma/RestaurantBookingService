@@ -24,8 +24,8 @@ namespace CatalogService.Application.Services
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            ReadMenuDTO? readMenuDTO = await _menuRepository
-                                             .GetByIdAsync(id, cancellationToken);
+            ReadMenuDTO? readMenuDTO =
+                await _menuRepository.GetByIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             if (readMenuDTO is null)
             {
@@ -49,7 +49,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadMenuDTO> readMenuDTOs =
-                await _menuRepository.GetAllAsync(cancellationToken);
+                await _menuRepository.GetAllAsync<ReadMenuDTO>(cancellationToken);
 
             return readMenuDTOs;
         }
@@ -57,8 +57,8 @@ namespace CatalogService.Application.Services
         public async Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            ICollection<ReadMenuDTO> readMenuDTOs =
-                await _menuRepository.GetAllByRestaurantIdAsync(id, cancellationToken);
+            ICollection<ReadMenuDTO> readMenuDTOs =await _menuRepository
+                .GetAllByRestaurantIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             return readMenuDTOs;
         }
@@ -67,7 +67,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ReadMenuDTO? readMenuDTO =
-                await _menuRepository.GetByIdAsync(id, cancellationToken);
+                await _menuRepository.GetByIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             if (readMenuDTO is null)
             {
@@ -96,7 +96,7 @@ namespace CatalogService.Application.Services
             }
 
             ReadMenuDTO? readMenuDTO =
-                await _menuRepository.GetByIdAsync(menu.Id, cancellationToken);
+                await _menuRepository.GetByIdAsync<ReadMenuDTO>(menu.Id, cancellationToken);
 
             if (readMenuDTO is null)
             {
@@ -124,8 +124,8 @@ namespace CatalogService.Application.Services
                     id.ToString(), typeof(Menu));
             }
 
-            ReadMenuDTO? readMenuDTO = await _menuRepository
-                                             .GetByIdAsync(id, cancellationToken);
+            ReadMenuDTO? readMenuDTO = 
+                await _menuRepository.GetByIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             if (readMenuDTO is null)
             {

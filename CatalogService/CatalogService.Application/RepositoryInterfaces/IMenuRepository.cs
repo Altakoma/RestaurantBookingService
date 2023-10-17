@@ -1,11 +1,12 @@
-﻿using CatalogService.Application.DTOs.Menu;
-using CatalogService.Application.RepositoryInterfaces.Base;
+﻿using CatalogService.Application.RepositoryInterfaces.Base;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.RepositoryInterfaces
 {
-    public interface IMenuRepository : IRepository<Menu, ReadMenuDTO>
+    public interface IMenuRepository : IRepository<Menu>
     {
-        Task<ICollection<ReadMenuDTO>> GetAllByRestaurantIdAsync(int id, CancellationToken cancellationToken);
+        Task<ICollection<U>> GetAllByRestaurantIdAsync<U>(int id, CancellationToken cancellationToken);
+        Task DeleteAsync(int id, CancellationToken cancellationToken);
+        Task<U?> GetByIdAsync<U>(int id, CancellationToken cancellationToken);
     }
 }

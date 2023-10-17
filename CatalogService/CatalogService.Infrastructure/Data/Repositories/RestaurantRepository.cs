@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CatalogService.Application.DTOs.Restaurant;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
@@ -9,15 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class RestaurantRepository : WriteRepository<Restaurant>, IRestaurantRepository
+    public class RestaurantRepository : BaseRepository<Restaurant>, IRestaurantRepository
     {
-        public RestaurantRepository(CatalogServiceDbContext dbContext,
-            IMapper mapper) : base(dbContext, mapper)
+        public RestaurantRepository(CatalogServiceDbContext catalogServiceDbContext,
+            IMapper mapper) : base(catalogServiceDbContext, mapper)
         {
         }
+
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            Restaurant? restaurant = await _dbContext.Restaurants
+            Restaurant? restaurant = await _catalogServiceDbContext.Restaurants
                 .FirstOrDefaultAsync(restaurant => restaurant.Id == id,
                 cancellationToken);
 
@@ -30,21 +30,11 @@ namespace CatalogService.Infrastructure.Data.Repositories
             Delete(restaurant);
         }
 
-        public async Task<ICollection<ReadRestaurantDTO>> GetAllAsync(
+        public async Task<U?> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
-            var readRestaurantDTOs = await  _mapper.ProjectTo<ReadRestaurantDTO>(
-                _dbContext.Restaurants.Select(restaurant => restaurant))
-                .ToListAsync(cancellationToken);
-
-            return readRestaurantDTOs;
-        }
-
-        public async Task<ReadRestaurantDTO?> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            var readRestaurantDTO = await _mapper.ProjectTo<ReadRestaurantDTO>(
-                _dbContext.Restaurants.Where(restaurant => restaurant.Id == id))
+            U? readRestaurantDTO = await _mapper.ProjectTo<U>(
+                _catalogServiceDbContext.Restaurants.Where(restaurant => restaurant.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
             return readRestaurantDTO;

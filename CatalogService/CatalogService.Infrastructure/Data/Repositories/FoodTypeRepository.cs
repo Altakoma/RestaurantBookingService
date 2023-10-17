@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Application.RepositoryInterfaces;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
@@ -9,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CatalogService.Infrastructure.Data.Repositories
 {
-    public class FoodTypeRepository : WriteRepository<FoodType>, IFoodTypeRepository
+    public class FoodTypeRepository : BaseRepository<FoodType>, IFoodTypeRepository
     {
-        public FoodTypeRepository(CatalogServiceDbContext dbContext,
-            IMapper mapper) : base(dbContext, mapper)
+        public FoodTypeRepository(CatalogServiceDbContext catalogServiceDbContext,
+            IMapper mapper) : base(catalogServiceDbContext, mapper)
         {
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            FoodType? foodType = await _dbContext.FoodTypes
+            FoodType? foodType = await _catalogServiceDbContext.FoodTypes
                 .FirstOrDefaultAsync(foodType => foodType.Id == id,
                                      cancellationToken);
 
@@ -31,21 +30,11 @@ namespace CatalogService.Infrastructure.Data.Repositories
             Delete(foodType);
         }
 
-        public async Task<ICollection<ReadFoodTypeDTO>> GetAllAsync(
+        public async Task<U?> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
-            var readFoodTypeDTOs = await _mapper.ProjectTo<ReadFoodTypeDTO>(
-                _dbContext.FoodTypes.Select(foodType => foodType))
-                .ToListAsync(cancellationToken);
-
-            return readFoodTypeDTOs;
-        }
-
-        public async Task<ReadFoodTypeDTO?> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            var readFoodTypeDTO = await _mapper.ProjectTo<ReadFoodTypeDTO>(
-                _dbContext.FoodTypes.Where(foodType => foodType.Id == id))
+            U? readFoodTypeDTO = await _mapper.ProjectTo<U>(
+                _catalogServiceDbContext.FoodTypes.Where(foodType => foodType.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
             return readFoodTypeDTO;

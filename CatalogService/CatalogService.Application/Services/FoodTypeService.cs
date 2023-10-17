@@ -12,7 +12,6 @@ namespace CatalogService.Application.Services
         private readonly IFoodTypeRepository _foodTypeRepository;
         private readonly IMapper _mapper;
 
-
         public FoodTypeService(IFoodTypeRepository foodTypeRepository,
             IMapper mapper)
         {
@@ -23,7 +22,7 @@ namespace CatalogService.Application.Services
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO? readFoodTypeDTO =
-                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
+                await _foodTypeRepository.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
 
             if (readFoodTypeDTO is null)
             {
@@ -47,7 +46,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
-                await _foodTypeRepository.GetAllAsync(cancellationToken);
+                await _foodTypeRepository.GetAllAsync<ReadFoodTypeDTO>(cancellationToken);
 
             return readFoodTypeDTOs;
         }
@@ -56,7 +55,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO? readFoodTypeDTO =
-                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
+                await _foodTypeRepository.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
 
             if (readFoodTypeDTO is null)
             {
@@ -107,7 +106,7 @@ namespace CatalogService.Application.Services
             }
 
             ReadFoodTypeDTO? readFoodType =
-                await _foodTypeRepository.GetByIdAsync(id, cancellationToken);
+                await _foodTypeRepository.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
 
             if (readFoodType is null)
             {

@@ -21,8 +21,8 @@ namespace CatalogService.Application.Services
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            ReadRestaurantDTO? restaurantDTO =
-                await _restaurantRepository.GetByIdAsync(id, cancellationToken);
+            ReadRestaurantDTO? restaurantDTO = await _restaurantRepository
+                .GetByIdAsync<ReadRestaurantDTO>(id, cancellationToken);
 
             if (restaurantDTO is null)
             {
@@ -46,7 +46,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadRestaurantDTO> readRestaurantDTOs =
-                await _restaurantRepository.GetAllAsync(cancellationToken);
+                await _restaurantRepository.GetAllAsync<ReadRestaurantDTO>(cancellationToken);
 
             return readRestaurantDTOs;
         }
@@ -54,8 +54,8 @@ namespace CatalogService.Application.Services
         public async Task<ReadRestaurantDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            ReadRestaurantDTO? readRestaurantDTO =
-                await _restaurantRepository.GetByIdAsync(id, cancellationToken);
+            ReadRestaurantDTO? readRestaurantDTO = await _restaurantRepository
+                .GetByIdAsync<ReadRestaurantDTO>(id, cancellationToken);
 
             if (readRestaurantDTO is null)
             {

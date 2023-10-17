@@ -22,7 +22,7 @@ namespace CatalogService.Application.Services
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             ReadEmployeeDTO? readEmployeeDTO =
-                await _employeeRepository.GetByIdAsync(id, cancellationToken);
+                await _employeeRepository.GetByIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             if (readEmployeeDTO is null)
             {
@@ -46,7 +46,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ICollection<ReadEmployeeDTO> readEmployeeDTOs =
-                await _employeeRepository.GetAllAsync(cancellationToken);
+                await _employeeRepository.GetAllAsync<ReadEmployeeDTO>(cancellationToken);
 
             return readEmployeeDTOs;
         }
@@ -55,7 +55,7 @@ namespace CatalogService.Application.Services
             int id, CancellationToken cancellationToken)
         {
             ICollection<ReadEmployeeDTO> readEmployeeDTOs = await _employeeRepository
-                .GetAllByRestaurantIdAsync(id, cancellationToken);
+                .GetAllByRestaurantIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             return readEmployeeDTOs;
         }
@@ -64,7 +64,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             ReadEmployeeDTO? readEmployeeDTO =
-                await _employeeRepository.GetByIdAsync(id, cancellationToken);
+                await _employeeRepository.GetByIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             if (readEmployeeDTO is null)
             {
@@ -115,7 +115,7 @@ namespace CatalogService.Application.Services
             }
 
             ReadEmployeeDTO? readEmployeeDTO =
-                await _employeeRepository.GetByIdAsync(id, cancellationToken);
+                await _employeeRepository.GetByIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             if (readEmployeeDTO is null)
             {

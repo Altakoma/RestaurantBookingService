@@ -20,8 +20,7 @@ namespace CatalogService.Presentation.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadFoodTypeDTO>))]
-        public async Task<IActionResult> GetAllFoodTypesAsync(
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllFoodTypesAsync(CancellationToken cancellationToken)
         {
             ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
                 await _foodTypeService.GetAllAsync(cancellationToken);
@@ -45,8 +44,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadFoodTypeDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> InsertFoodTypeAsync(
-            [FromBody] FoodTypeDTO foodTypeDTO,
+        public async Task<IActionResult> InsertFoodTypeAsync([FromBody] FoodTypeDTO foodTypeDTO,
             CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
