@@ -21,7 +21,7 @@ namespace IdentityService.DataAccess.Repositories.Base
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
                 _identityDbContext.Set<T>().Select(item => item))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return items;
         }
