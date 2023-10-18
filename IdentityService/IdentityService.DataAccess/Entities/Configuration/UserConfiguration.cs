@@ -7,21 +7,21 @@ namespace IdentityService.DataAccess.Entities.Configuration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(u => u.Id);
+            builder.HasKey(user => user.Id);
 
             builder.ToTable("User");
 
-            builder.Property(u => u.Name).HasMaxLength(50);
-            builder.Property(u => u.Login).HasMaxLength(50);
-            builder.Property(u => u.Password).HasMaxLength(50);
+            builder.Property(user => user.Name).HasMaxLength(50);
+            builder.Property(user => user.Login).HasMaxLength(50);
+            builder.Property(user => user.Password).HasMaxLength(50);
 
-            builder.Property(u => u.UserRoleId).IsRequired();
-            builder.Property(u => u.Login).IsRequired();
-            builder.Property(u => u.Name).IsRequired();
-            builder.Property(u => u.Password).IsRequired();
+            builder.Property(user => user.UserRoleId).IsRequired();
+            builder.Property(user => user.Login).IsRequired();
+            builder.Property(user => user.Name).IsRequired();
+            builder.Property(user => user.Password).IsRequired();
 
-            builder.HasOne(u => u.UserRole).WithMany(ur => ur.Users)
-                .HasForeignKey(u => u.UserRoleId)
+            builder.HasOne(user => user.UserRole).WithMany(userRole => userRole.Users)
+                .HasForeignKey(user => user.UserRoleId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -1,8 +1,7 @@
 ﻿namespace IdentityService.DataAccess.Entities
 {
-    public class User
+    public class User : BaseEntity
     {
-        public int Id { get; set; }
         public int UserRoleId { get; set; }
 
         public string Name { get; set; } = null!;

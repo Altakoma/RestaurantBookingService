@@ -93,7 +93,7 @@ namespace IdentityService.BusinessLogic.Services
             CancellationToken cancellationToken)
         {
             RefreshToken? refreshToken = await GetByUserIdAsync(
-                                         token.UserId, cancellationToken);
+                                         token.Id, cancellationToken);
 
             if (refreshToken is null)
             {

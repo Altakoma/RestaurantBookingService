@@ -9,16 +9,16 @@ namespace IdentityService.DataAccess.Entities.Configuration
         {
             builder.ToTable("RefreshToken");
 
-            builder.Property(r => r.isRevoked).IsRequired();
-            builder.Property(r => r.AddedDate).IsRequired();
-            builder.Property(r => r.ExpirationDate).IsRequired();
-            builder.Property(r => r.Token).IsRequired();
+            builder.Property(refreshToken => refreshToken.isRevoked).IsRequired();
+            builder.Property(refreshToken => refreshToken.AddedDate).IsRequired();
+            builder.Property(refreshToken => refreshToken.ExpirationDate).IsRequired();
+            builder.Property(refreshToken => refreshToken.Token).IsRequired();
 
-            builder.HasOne(r => r.User).WithOne(u => u.RefreshToken)
-                .HasForeignKey<RefreshToken>(r => r.UserId)
+            builder.HasOne(refreshToken => refreshToken.User).WithOne(user => user.RefreshToken)
+                .HasForeignKey<RefreshToken>(refreshToken => refreshToken.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasKey(r => r.UserId);
+            builder.HasKey(r => r.Id);
         }
     }
 }

@@ -15,17 +15,6 @@ namespace IdentityService.DataAccess.Repositories
         {
         }
 
-        public async Task<U?> GetByIdAsync<U>(int id,
-            CancellationToken cancellationToken)
-        {
-            U? user = await _mapper.ProjectTo<U>(
-                _identityDbContext.Users
-                .Where(user => user.Id == id))
-                .SingleOrDefaultAsync(cancellationToken);
-
-            return user;
-        }
-
         public async Task<U?> GetUserAsync<U>(string login, string password,
             CancellationToken cancellationToken)
         {
