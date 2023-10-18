@@ -51,7 +51,8 @@ namespace CatalogService.Presentation.Controllers
             ReadEmployeeDTO readEmployeeDTO = await _employeeService
                 .InsertAsync<InsertEmployeeDTO, ReadEmployeeDTO>(employeeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetEmployeeAsync), new { employeeDTO.Id }, employeeDTO);
+            return CreatedAtAction(nameof(GetEmployeeAsync), 
+                                   new { id = employeeDTO.Id }, employeeDTO);
         }
 
         [HttpPut("{id}")]

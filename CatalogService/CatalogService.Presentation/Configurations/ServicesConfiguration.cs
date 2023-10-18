@@ -14,6 +14,11 @@ namespace CatalogService.Presentation.Configurations
         {
             services.AddControllers();
 
+            services.AddMvc(options =>
+            {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
+
             services.AddDatabaseContext(builder);
 
             services.AddEndpointsApiExplorer();

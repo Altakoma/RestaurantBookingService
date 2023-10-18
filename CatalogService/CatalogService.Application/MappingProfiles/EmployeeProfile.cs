@@ -37,6 +37,8 @@ namespace CatalogService.Application.MappingProfiles
                 .ForMember(
                 employee => employee.RestaurantId,
                 configuration => configuration.MapFrom(updateEmployeeDTO => updateEmployeeDTO.RestaurantId));
+
+            CreateMap<Employee, Employee>();
         }
     }
 }

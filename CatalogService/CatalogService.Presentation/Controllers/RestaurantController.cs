@@ -61,7 +61,7 @@ namespace CatalogService.Presentation.Controllers
                 cancellationToken);
 
             return CreatedAtAction(nameof(GetRestaurantAsync),
-                                   new { readRestaurantDTO.Id }, readRestaurantDTO);
+                                   new { id = readRestaurantDTO.Id }, readRestaurantDTO);
         }
 
         [HttpPut("{id}")]

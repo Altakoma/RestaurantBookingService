@@ -52,6 +52,8 @@ namespace CatalogService.Application.MappingProfiles
                 .ForMember(
                 menu => menu.FoodTypeId,
                 configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.FoodTypeId));
+
+            CreateMap<Menu, Menu>();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace CatalogService.Presentation.Controllers
                 .InsertAsync<InsertMenuDTO, ReadMenuDTO>(insertMenuDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodAsync),
-                                   new { readMenuDTO.Id }, readMenuDTO);
+                                   new { id = readMenuDTO.Id }, readMenuDTO);
         }
 
         [HttpPut("{id}")]
