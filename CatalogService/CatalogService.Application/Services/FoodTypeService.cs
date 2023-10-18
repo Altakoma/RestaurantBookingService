@@ -1,22 +1,21 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Application.RepositoryInterfaces;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Application.Services.Base;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
+using CatalogService.Domain.Interfaces.Services;
 
 namespace CatalogService.Application.Services
 {
-    public class FoodTypeService : IFoodTypeService
+    public class FoodTypeService : BaseService<FoodType>, IFoodTypeService
     {
         private readonly IFoodTypeRepository _foodTypeRepository;
-        private readonly IMapper _mapper;
 
         public FoodTypeService(IFoodTypeRepository foodTypeRepository,
-            IMapper mapper)
+            IMapper mapper) : base(foodTypeRepository, mapper)
         {
             _foodTypeRepository = foodTypeRepository;
-            _mapper = mapper;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -42,20 +41,10 @@ namespace CatalogService.Application.Services
             }
         }
 
-        public async Task<ICollection<ReadFoodTypeDTO>> GetAllAsync(
-            CancellationToken cancellationToken)
+        public async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
         {
-            ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
-                await _foodTypeRepository.GetAllAsync<ReadFoodTypeDTO>(cancellationToken);
-
-            return readFoodTypeDTOs;
-        }
-
-        public async Task<ReadFoodTypeDTO> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            ReadFoodTypeDTO? readFoodTypeDTO =
-                await _foodTypeRepository.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
+            T? readFoodTypeDTO = await _foodTypeRepository
+                .GetByIdAsync<T>(id, cancellationToken);
 
             if (readFoodTypeDTO is null)
             {
@@ -66,30 +55,8 @@ namespace CatalogService.Application.Services
             return readFoodTypeDTO;
         }
 
-        public async Task<ReadFoodTypeDTO> InsertAsync(FoodTypeDTO item,
+        public async Task<T> UpdateAsync<U, T>(int id, U item,
             CancellationToken cancellationToken)
-        {
-            var foodType = _mapper.Map<FoodType>(item);
-
-            foodType = await _foodTypeRepository
-                             .InsertAsync(foodType, cancellationToken);
-
-            bool isInserted = await _foodTypeRepository
-                                    .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isInserted)
-            {
-                throw new DbOperationException(nameof(InsertAsync),
-                    foodType.Id.ToString(), typeof(FoodType));
-            }
-
-            var readFoodTypeDTO = _mapper.Map<ReadFoodTypeDTO>(foodType);
-
-            return readFoodTypeDTO;
-        }
-
-        public async Task<ReadFoodTypeDTO> UpdateAsync(int id,
-            FoodTypeDTO item, CancellationToken cancellationToken)
         {
             var foodType = _mapper.Map<FoodType>(item);
             foodType.Id = id;
@@ -105,8 +72,8 @@ namespace CatalogService.Application.Services
                     id.ToString(), typeof(FoodType));
             }
 
-            ReadFoodTypeDTO? readFoodType =
-                await _foodTypeRepository.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
+            T? readFoodType = await _foodTypeRepository
+                .GetByIdAsync<T>(id, cancellationToken);
 
             if (readFoodType is null)
             {

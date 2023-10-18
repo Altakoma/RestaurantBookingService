@@ -1,22 +1,21 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.Restaurant;
 using CatalogService.Application.RepositoryInterfaces;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Application.Services.Base;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Exceptions;
+using CatalogService.Domain.Interfaces.Services;
 
 namespace CatalogService.Application.Services
 {
-    public class RestaurantService : IRestaurantService
+    public class RestaurantService : BaseService<Restaurant>, IRestaurantService
     {
         private readonly IRestaurantRepository _restaurantRepository;
-        private readonly IMapper _mapper;
 
         public RestaurantService(IRestaurantRepository restaurantRepository,
-            IMapper mapper)
+            IMapper mapper) : base(restaurantRepository, mapper)
         {
             _restaurantRepository = restaurantRepository;
-            _mapper = mapper;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
@@ -42,20 +41,10 @@ namespace CatalogService.Application.Services
             }
         }
 
-        public async Task<ICollection<ReadRestaurantDTO>> GetAllAsync(
-            CancellationToken cancellationToken)
+        public async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
         {
-            ICollection<ReadRestaurantDTO> readRestaurantDTOs =
-                await _restaurantRepository.GetAllAsync<ReadRestaurantDTO>(cancellationToken);
-
-            return readRestaurantDTOs;
-        }
-
-        public async Task<ReadRestaurantDTO> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            ReadRestaurantDTO? readRestaurantDTO = await _restaurantRepository
-                .GetByIdAsync<ReadRestaurantDTO>(id, cancellationToken);
+            T? readRestaurantDTO = await _restaurantRepository
+                .GetByIdAsync<T>(id, cancellationToken);
 
             if (readRestaurantDTO is null)
             {
@@ -66,30 +55,8 @@ namespace CatalogService.Application.Services
             return readRestaurantDTO;
         }
 
-        public async Task<ReadRestaurantDTO> InsertAsync(InsertRestaurantDTO item,
+        public async Task<T> UpdateAsync<U, T>(int id, U item,
             CancellationToken cancellationToken)
-        {
-            var restaurant = _mapper.Map<Restaurant>(item);
-
-            restaurant = await _restaurantRepository
-                               .InsertAsync(restaurant, cancellationToken);
-
-            bool isInserted = await _restaurantRepository
-                                    .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isInserted)
-            {
-                throw new DbOperationException(nameof(InsertAsync),
-                    restaurant.Id.ToString(), typeof(Restaurant));
-            }
-
-            var readRestaurantDTO = _mapper.Map<ReadRestaurantDTO>(restaurant);
-
-            return readRestaurantDTO;
-        }
-
-        public async Task<ReadRestaurantDTO> UpdateAsync(int id,
-            UpdateRestaurantDTO item, CancellationToken cancellationToken)
         {
             var restaurant = _mapper.Map<Restaurant>(item);
             restaurant.Id = id;
@@ -105,7 +72,7 @@ namespace CatalogService.Application.Services
                     typeof(Restaurant));
             }
 
-            var readRestaurantDTO = _mapper.Map<ReadRestaurantDTO>(restaurant);
+            var readRestaurantDTO = _mapper.Map<T>(restaurant);
 
             return readRestaurantDTO;
         }

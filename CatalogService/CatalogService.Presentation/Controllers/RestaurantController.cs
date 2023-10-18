@@ -2,7 +2,7 @@
 using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

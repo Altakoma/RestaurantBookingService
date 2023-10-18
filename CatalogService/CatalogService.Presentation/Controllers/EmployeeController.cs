@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Employee;
 using CatalogService.Application.DTOs.Exception;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
