@@ -42,7 +42,7 @@ namespace CatalogService.Application.Services.Base
         {
             var item = _mapper.Map<K>(insertItemDTO);
 
-            item = await _repository.InsertAsync(item, cancellationToken);
+            await _repository.InsertAsync(item, cancellationToken);
 
             bool isInserted = await _repository.SaveChangesToDbAsync(cancellationToken);
 
@@ -52,7 +52,7 @@ namespace CatalogService.Application.Services.Base
                     item?.ToString() ?? string.Empty, typeof(K));
             }
 
-            T readItemDTO = _mapper.Map<T>(item);
+            T readItemDTO = await GetByIdAsync<T>(item.Id, cancellationToken);
 
             return readItemDTO;
         }
@@ -60,6 +60,15 @@ namespace CatalogService.Application.Services.Base
         public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
+            T? readItemDTO = await _repository
+                                   .GetByIdAsync<T>(id, cancellationToken);
+
+            if (readItemDTO is null)
+            {
+                throw new NotFoundException(nameof(K),
+                    id.ToString(), typeof(K));
+            }
+
             var item = _mapper.Map<K>(updateItemDTO);
             item.Id = id;
 
@@ -71,15 +80,6 @@ namespace CatalogService.Application.Services.Base
             if (!isUpdated)
             {
                 throw new DbOperationException(nameof(UpdateAsync),
-                    id.ToString(), typeof(K));
-            }
-
-            T? readItemDTO = await _repository
-                                   .GetByIdAsync<T>(id, cancellationToken);
-
-            if (readItemDTO is null)
-            {
-                throw new NotFoundException(nameof(K),
                     id.ToString(), typeof(K));
             }
 
