@@ -1,3 +1,4 @@
+using BookingService.Infrastructure.Data;
 using BookingService.Presentation.Configurations;
 using Microsoft.AspNetCore.Diagnostics;
 

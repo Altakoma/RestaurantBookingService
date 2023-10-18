@@ -1,4 +1,5 @@
 ﻿using BookingService.Application.ServicesConfigurations;
+using BookingService.Infrastructure.Data;
 
 namespace BookingService.Presentation.Configurations
 {

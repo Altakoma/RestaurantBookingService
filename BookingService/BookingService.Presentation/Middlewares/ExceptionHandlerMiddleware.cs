@@ -1,4 +1,7 @@
-﻿namespace BookingService.Presentation.Middlewares
+﻿using BookingService.Application.DTOs.Exception;
+using BookingService.Domain.Exceptions;
+
+namespace BookingService.Presentation.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
