@@ -6,8 +6,6 @@ namespace CatalogService.Application.RepositoryInterfaces
 {
     public interface IEmployeeRepository : IRepository<Employee>
     {
-        Task<U?> GetByIdAsync<U>(int id, CancellationToken cancellationToken);
-        Task DeleteAsync(int id, CancellationToken cancellationToken);
         Task<ICollection<U>> GetAllByRestaurantIdAsync<U>(int id, CancellationToken cancellationToken);
     }
 }

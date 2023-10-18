@@ -2,7 +2,7 @@
 
 namespace CatalogService.Domain.Interfaces.Services
 {
-    public interface IRestaurantService : IService
+    public interface IRestaurantService : IBaseService
     {
     }
 }

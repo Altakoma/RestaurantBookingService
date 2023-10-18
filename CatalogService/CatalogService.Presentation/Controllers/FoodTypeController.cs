@@ -23,7 +23,7 @@ namespace CatalogService.Presentation.Controllers
         public async Task<IActionResult> GetAllFoodTypesAsync(CancellationToken cancellationToken)
         {
             ICollection<ReadFoodTypeDTO> readFoodTypeDTOs =
-                await _foodTypeService.GetAllAsync(cancellationToken);
+                await _foodTypeService.GetAllAsync<ReadFoodTypeDTO>(cancellationToken);
 
             return Ok(readFoodTypeDTOs);
         }
@@ -35,7 +35,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO readFoodTypeDTO =
-                await _foodTypeService.GetByIdAsync(id, cancellationToken);
+                await _foodTypeService.GetByIdAsync<ReadFoodTypeDTO>(id, cancellationToken);
 
             return Ok(readFoodTypeDTO);
         }
@@ -48,7 +48,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
-                .InsertAsync(foodTypeDTO, cancellationToken);
+                .InsertAsync<FoodTypeDTO, ReadFoodTypeDTO>(foodTypeDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodTypeAsync),
                                    new { readFoodTypeDTO.Id }, readFoodTypeDTO);
@@ -63,8 +63,8 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] FoodTypeDTO foodTypeDTO,
             CancellationToken cancellationToken)
         {
-            ReadFoodTypeDTO readFoodTypeDTO =
-                await _foodTypeService.UpdateAsync(id, foodTypeDTO, cancellationToken);
+            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
+                .UpdateAsync<FoodTypeDTO, ReadFoodTypeDTO>(id, foodTypeDTO, cancellationToken);
 
             return Ok(readFoodTypeDTO);
         }
