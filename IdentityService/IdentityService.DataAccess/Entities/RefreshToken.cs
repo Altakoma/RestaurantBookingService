@@ -1,0 +1,12 @@
+﻿namespace IdentityService.DataAccess.Entities
+{
+    public class RefreshToken : BaseEntity
+    {
+        public string Token { get; set; } = null!;
+        public bool isRevoked { get; set; }
+        public DateTime AddedDate { get; set; }
+        public DateTime ExpirationDate { get; set; }
+
+        public User User { get; set; } = null!;
+    }
+}
