@@ -1,4 +1,4 @@
-﻿namespace BookingService.Application.RepositoryInterfaces.Base
+﻿namespace BookingService.Application.Interfaces.Repositories.Base
 {
     public interface IRepository<T>
     {

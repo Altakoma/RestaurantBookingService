@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BookingService.Application.RepositoryInterfaces.Base;
+using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 
