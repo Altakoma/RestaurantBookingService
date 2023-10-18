@@ -15,10 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Client\" />
+    <Folder Include="DTOs\Booking\" />
+    <Folder Include="DTOs\Restaurant\" />
+    <Folder Include="DTOs\Table\" />
     <Folder Include="MappingProfiles\" />
     <Folder Include="Validators\" />
-    <Folder Include="RepositoryInterfaces\" />
-    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BookingService.Domain\BookingService.Domain\BookingService.Domain.csproj" />
   </ItemGroup>
 
 </Project>
