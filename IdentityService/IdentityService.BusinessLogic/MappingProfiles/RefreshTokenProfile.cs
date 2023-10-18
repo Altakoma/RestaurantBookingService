@@ -11,7 +11,7 @@ namespace IdentityService.BusinessLogic.MappingProfiles
             CreateMap<RefreshToken, CreationRefreshTokenDTO>()
                 .ForMember(
                 creationRefreshTokenDTO => creationRefreshTokenDTO.Id,
-                configuration => configuration.MapFrom(refreshToken => refreshToken.UserId))
+                configuration => configuration.MapFrom(refreshToken => refreshToken.Id))
                 .ForMember(
                 creationRefreshTokenDTO => creationRefreshTokenDTO.Name,
                 configuration => configuration.MapFrom(refreshToken => refreshToken.User.Name))

@@ -31,7 +31,7 @@ namespace IdentityService.BusinessLogic.TokenGenerators
 
             var refreshToken = new RefreshToken
             {
-                UserId = userId,
+                Id = userId,
                 Token = GetRandomRefreshToken(40),
                 isRevoked = false,
                 AddedDate = DateTime.Now,

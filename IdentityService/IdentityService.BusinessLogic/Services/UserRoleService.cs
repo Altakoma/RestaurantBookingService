@@ -31,15 +31,13 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserRoleDTO> GetByIdAsync(int id,
             CancellationToken cancellationToken)
         {
-            UserRole? userRole = await _userRoleRepository
-                                 .GetByIdAsync(id, cancellationToken);
+            ReadUserRoleDTO? readUserRoleDTO = await _userRoleRepository
+                .GetByIdAsync<ReadUserRoleDTO>(id, cancellationToken);
 
-            if (userRole is null)
+            if (readUserRoleDTO is null)
             {
                 throw new NotFoundException(id.ToString(), typeof(UserRole));
             }
-
-            var readUserRoleDTO = _mapper.Map<ReadUserRoleDTO>(userRole);
 
             return readUserRoleDTO;
         }

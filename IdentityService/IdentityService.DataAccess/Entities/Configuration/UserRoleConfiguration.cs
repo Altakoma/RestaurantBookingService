@@ -7,15 +7,15 @@ namespace IdentityService.DataAccess.Entities.Configuration
     {
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
-            builder.HasKey(ur => ur.Id);
+            builder.HasKey(userRole => userRole.Id);
 
             builder.ToTable("UserRole");
 
-            builder.Property(ur => ur.Name).HasMaxLength(20);
+            builder.Property(userRole => userRole.Name).HasMaxLength(20);
 
-            builder.Property(ur => ur.Name).IsRequired();
+            builder.Property(userRole => userRole.Name).IsRequired();
 
-            builder.HasMany(ur => ur.Users).WithOne(u => u.UserRole);
+            builder.HasMany(userRole => userRole.Users).WithOne(u => u.UserRole);
         }
     }
 }
