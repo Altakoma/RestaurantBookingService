@@ -20,6 +20,8 @@ namespace CatalogService.Application.MappingProfiles
                 .ForMember(
                 foodType => foodType.Name,
                 configuration => configuration.MapFrom(foodTypeDTO => foodTypeDTO.Name));
+
+            CreateMap<FoodType, FoodType>();
         }
     }
 }

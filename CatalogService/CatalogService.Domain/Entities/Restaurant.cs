@@ -1,8 +1,7 @@
 ﻿namespace CatalogService.Domain.Entities
 {
-    public class Restaurant
+    public class Restaurant : BaseEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; } = null!;
         public string City { get; set; } = null!;
         public string Street { get; set; } = null!;

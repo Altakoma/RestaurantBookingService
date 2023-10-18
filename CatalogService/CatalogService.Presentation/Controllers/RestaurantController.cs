@@ -2,7 +2,7 @@
 using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +31,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ICollection<ReadRestaurantDTO> readRestaurantDTOs =
-                await _restaurantService.GetAllAsync(cancellationToken);
+                await _restaurantService.GetAllAsync<ReadRestaurantDTO>(cancellationToken);
 
             return Ok(readRestaurantDTOs);
         }
@@ -43,7 +43,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadRestaurantDTO readRestaurantDTO =
-                await _restaurantService.GetByIdAsync(id, cancellationToken);
+                await _restaurantService.GetByIdAsync<ReadRestaurantDTO>(id, cancellationToken);
 
             return Ok(readRestaurantDTO);
         }
@@ -57,10 +57,11 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .InsertAsync(insertRestaurantDTO, cancellationToken);
+                .InsertAsync<InsertRestaurantDTO, ReadRestaurantDTO>(insertRestaurantDTO,
+                cancellationToken);
 
             return CreatedAtAction(nameof(GetRestaurantAsync),
-                                   new { readRestaurantDTO.Id }, readRestaurantDTO);
+                                   new { id = readRestaurantDTO.Id }, readRestaurantDTO);
         }
 
         [HttpPut("{id}")]
@@ -73,7 +74,8 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .UpdateAsync(id, updateRestaurantDTO, cancellationToken);
+                .UpdateAsync<UpdateRestaurantDTO, ReadRestaurantDTO>(id,
+                updateRestaurantDTO, cancellationToken);
 
             return Ok(readRestaurantDTO);
         }
@@ -96,7 +98,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ICollection<ReadMenuDTO> readMenuDTOs =
-                await _menuService.GetAllByRestaurantIdAsync(id, cancellationToken);
+                await _menuService.GetAllByRestaurantIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             return Ok(readMenuDTOs);
         }
@@ -107,7 +109,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ICollection<ReadEmployeeDTO> readEmployeeDTOs = await _employeeService
-                .GetAllByRestaurantIdAsync(id, cancellationToken);
+                .GetAllByRestaurantIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             return Ok(readEmployeeDTOs);
         }

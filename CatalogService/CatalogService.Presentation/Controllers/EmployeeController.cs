@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Employee;
 using CatalogService.Application.DTOs.Exception;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ICollection<ReadEmployeeDTO> employeeDTOs =
-                await _employeeService.GetAllAsync(cancellationToken);
+                await _employeeService.GetAllAsync<ReadEmployeeDTO>(cancellationToken);
 
             return Ok(employeeDTOs);
         }
@@ -36,7 +36,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadEmployeeDTO employeeDTO = await _employeeService
-                .GetByIdAsync(id, cancellationToken);
+                .GetByIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             return Ok(employeeDTO);
         }
@@ -48,11 +48,11 @@ namespace CatalogService.Presentation.Controllers
         public async Task<IActionResult> InsertEmployeeAsync([FromBody] InsertEmployeeDTO employeeDTO,
             CancellationToken cancellationToken)
         {
-            ReadEmployeeDTO readEmployeeDTO =
-                await _employeeService.InsertAsync(employeeDTO, cancellationToken);
+            ReadEmployeeDTO readEmployeeDTO = await _employeeService
+                .InsertAsync<InsertEmployeeDTO, ReadEmployeeDTO>(employeeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetEmployeeAsync),
-                                   new { employeeDTO.Id }, employeeDTO);
+            return CreatedAtAction(nameof(GetEmployeeAsync), 
+                                   new { id = employeeDTO.Id }, employeeDTO);
         }
 
         [HttpPut("{id}")]
@@ -64,8 +64,9 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] UpdateEmployeeDTO updateEmployeeDTO,
             CancellationToken cancellationToken)
         {
-            ReadEmployeeDTO employeeDTO = await _employeeService.UpdateAsync(id,
-                                           updateEmployeeDTO, cancellationToken);
+            ReadEmployeeDTO employeeDTO = await _employeeService
+                .UpdateAsync<UpdateEmployeeDTO, ReadEmployeeDTO>(id,
+                updateEmployeeDTO, cancellationToken);
 
             return Ok(employeeDTO);
         }

@@ -10,12 +10,12 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext.Configurations
         {
             builder.ToTable("Menu");
 
-            builder.HasKey(m => m.Id);
+            builder.HasKey(menu => menu.Id);
 
-            builder.Property(m => m.FoodName).HasMaxLength(100);
+            builder.Property(menu => menu.FoodName).HasMaxLength(100);
 
-            builder.HasOne(m => m.Restaurant).WithMany(r => r.Menu);
-            builder.HasOne(m => m.FoodType).WithMany(ft => ft.Menu);
+            builder.HasOne(menu => menu.Restaurant).WithMany(r => r.Menu);
+            builder.HasOne(menu => menu.FoodType).WithMany(ft => ft.Menu);
         }
     }
 }

@@ -52,6 +52,8 @@ namespace CatalogService.Application.MappingProfiles
                 .ForMember(
                 readRestaurantDTO => readRestaurantDTO.City,
                 configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.City));
+
+            CreateMap<Restaurant, Restaurant>();
         }
     }
 }

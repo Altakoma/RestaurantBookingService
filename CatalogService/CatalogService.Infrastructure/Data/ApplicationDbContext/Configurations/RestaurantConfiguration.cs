@@ -10,15 +10,15 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext.Configurations
         {
             builder.ToTable("Restaurant");
 
-            builder.HasKey(r => r.Id);
+            builder.HasKey(restaurant => restaurant.Id);
 
-            builder.Property(r => r.Name).HasMaxLength(50);
-            builder.Property(r => r.City).HasMaxLength(50);
-            builder.Property(r => r.Street).HasMaxLength(50);
-            builder.Property(r => r.House).HasMaxLength(50);
+            builder.Property(restaurant => restaurant.Name).HasMaxLength(50);
+            builder.Property(restaurant => restaurant.City).HasMaxLength(50);
+            builder.Property(restaurant => restaurant.Street).HasMaxLength(50);
+            builder.Property(restaurant => restaurant.House).HasMaxLength(50);
 
-            builder.HasMany(r => r.Menu).WithOne(m => m.Restaurant);
-            builder.HasMany(r => r.Employees).WithOne(e => e.Restaurant);
+            builder.HasMany(restaurant => restaurant.Menu).WithOne(m => m.Restaurant);
+            builder.HasMany(restaurant => restaurant.Employees).WithOne(e => e.Restaurant);
         }
     }
 }

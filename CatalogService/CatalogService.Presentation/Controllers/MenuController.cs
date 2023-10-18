@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
-using CatalogService.Application.Services.Interfaces;
+using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +24,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ICollection<ReadMenuDTO> menuDTOs =
-                await _menuService.GetAllAsync(cancellationToken);
+                await _menuService.GetAllAsync<ReadMenuDTO>(cancellationToken);
 
             return Ok(menuDTOs);
         }
@@ -36,7 +36,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadMenuDTO menuDTO =
-                await _menuService.GetByIdAsync(id, cancellationToken);
+                await _menuService.GetByIdAsync<ReadMenuDTO>(id, cancellationToken);
 
             return Ok(menuDTO);
         }
@@ -49,11 +49,11 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] InsertMenuDTO insertMenuDTO,
             CancellationToken cancellationToken)
         {
-            ReadMenuDTO readMenuDTO =
-                await _menuService.InsertAsync(insertMenuDTO, cancellationToken);
+            ReadMenuDTO readMenuDTO = await _menuService
+                .InsertAsync<InsertMenuDTO, ReadMenuDTO>(insertMenuDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodAsync),
-                                   new { readMenuDTO.Id }, readMenuDTO);
+                                   new { id = readMenuDTO.Id }, readMenuDTO);
         }
 
         [HttpPut("{id}")]
@@ -65,8 +65,8 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] UpdateMenuDTO updateMenuDTO,
             CancellationToken cancellationToken)
         {
-            ReadMenuDTO readMenuDTO =
-                await _menuService.UpdateAsync(id, updateMenuDTO, cancellationToken);
+            ReadMenuDTO readMenuDTO = await _menuService
+                .UpdateAsync<UpdateMenuDTO, ReadMenuDTO>(id, updateMenuDTO, cancellationToken);
 
             return Ok(readMenuDTO);
         }

@@ -17,6 +17,11 @@ namespace IdentityService.API.Configurations
         {
             services.AddControllers();
 
+            services.AddMvc(options =>
+            {
+                options.SuppressAsyncSuffixInActionNames = false;
+            });
+
             services.AddDatabaseContext(builder);
 
             services.AddHttpContextAccessor();

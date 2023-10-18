@@ -7,8 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityService.DataAccess.Repositories
 {
-    public class RefreshTokenRepository :
-        BaseRepository<RefreshToken>,
+    public class RefreshTokenRepository : BaseRepository<RefreshToken>,
         IRefreshTokenRepository
     {
         public RefreshTokenRepository(IdentityDbContext identityDbContext,
@@ -33,7 +32,7 @@ namespace IdentityService.DataAccess.Repositories
             RefreshToken? refreshToken = await _identityDbContext.RefreshTokens
                 .AsNoTracking()
                 .FirstOrDefaultAsync(
-                    refreshToken => refreshToken.UserId == id,
+                    refreshToken => refreshToken.Id == id,
                     cancellationToken);
 
             return refreshToken;
