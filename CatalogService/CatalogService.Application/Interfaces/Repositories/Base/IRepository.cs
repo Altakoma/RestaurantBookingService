@@ -1,4 +1,4 @@
-﻿namespace CatalogService.Application.RepositoryInterfaces.Base
+﻿namespace CatalogService.Application.Interfaces.Repositories.Base
 {
     public interface IRepository<T>
     {

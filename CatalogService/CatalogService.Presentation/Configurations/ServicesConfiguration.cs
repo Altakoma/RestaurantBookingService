@@ -1,4 +1,4 @@
-﻿using CatalogService.Application.RepositoryInterfaces;
+﻿using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Services;
 using CatalogService.Application.ServicesConfigurations;
 using CatalogService.Domain.Interfaces.Services;

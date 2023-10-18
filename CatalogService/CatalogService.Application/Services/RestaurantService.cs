@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CatalogService.Application.RepositoryInterfaces;
+using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Services.Base;
 using CatalogService.Domain.Entities;
 using CatalogService.Domain.Interfaces.Services;

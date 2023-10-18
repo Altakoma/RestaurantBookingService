@@ -1,7 +1,7 @@
-﻿using CatalogService.Application.RepositoryInterfaces.Base;
+﻿using CatalogService.Application.Interfaces.Repositories.Base;
 using CatalogService.Domain.Entities;
 
-namespace CatalogService.Application.RepositoryInterfaces
+namespace CatalogService.Application.Interfaces.Repositories
 {
     public interface IMenuRepository : IRepository<Menu>
     {
