@@ -19,7 +19,8 @@ namespace CatalogService.Infrastructure.Data.Repositories.Base
             _mapper = mapper;
         }
 
-        public async Task<ICollection<U>> GetAllAsync<U>(CancellationToken cancellationToken)
+        public async Task<ICollection<U>> GetAllAsync<U>(
+            CancellationToken cancellationToken)
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
                 _catalogServiceDbContext.Set<T>().Select(item => item))
@@ -57,12 +58,9 @@ namespace CatalogService.Infrastructure.Data.Repositories.Base
             _catalogServiceDbContext.Remove(item);
         }
 
-        public async Task<T> InsertAsync(T item,
-            CancellationToken cancellationToken)
+        public async Task InsertAsync(T item, CancellationToken cancellationToken)
         {
             await _catalogServiceDbContext.AddAsync(item, cancellationToken);
-
-            return item;
         }
 
         public void Update(T item)

@@ -29,7 +29,7 @@ namespace CatalogService.Presentation.Middlewares
                 {
                     Message = generalException.Message,
                     ExceptionType = exceptionType,
-                    Data = generalException.InnerException,
+                    Data = generalException.InnerException?.Message,
                 };
 
                 context.Response.ContentType = "application/json";
