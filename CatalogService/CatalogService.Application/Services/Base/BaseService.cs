@@ -23,8 +23,8 @@ namespace CatalogService.Application.Services.Base
 
             if (readItemDTO is null)
             {
-                throw new NotFoundException(nameof(FoodType),
-                    id.ToString(), typeof(FoodType));
+                throw new NotFoundException(nameof(K),
+                    id.ToString(), typeof(K));
             }
 
             return readItemDTO;
@@ -92,8 +92,8 @@ namespace CatalogService.Application.Services.Base
 
             if (item is null)
             {
-                throw new NotFoundException(nameof(Employee),
-                    id.ToString(), typeof(Employee));
+                throw new NotFoundException(nameof(K),
+                    id.ToString(), typeof(K));
             }
 
             await _repository.DeleteAsync(id, cancellationToken);
@@ -104,7 +104,7 @@ namespace CatalogService.Application.Services.Base
             if (!isDeleted)
             {
                 throw new DbOperationException(nameof(DeleteAsync),
-                    id.ToString(), typeof(Employee));
+                    id.ToString(), typeof(K));
             }
         }
     }
