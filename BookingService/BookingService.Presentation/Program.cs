@@ -1,6 +1,6 @@
 using BookingService.Infrastructure.Data;
 using BookingService.Presentation.Configurations;
-using Microsoft.AspNetCore.Diagnostics;
+using BookingService.Presentation.Middlewares;
 
 namespace BookingService.Presentation
 {

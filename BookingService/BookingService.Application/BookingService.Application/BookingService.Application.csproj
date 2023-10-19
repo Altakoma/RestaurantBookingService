@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MappingProfiles\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
