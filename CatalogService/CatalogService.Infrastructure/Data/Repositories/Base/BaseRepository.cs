@@ -23,7 +23,8 @@ namespace CatalogService.Infrastructure.Data.Repositories.Base
             CancellationToken cancellationToken)
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
-                _catalogServiceDbContext.Set<T>().Select(item => item))
+                _catalogServiceDbContext.Set<T>()
+                .OrderBy(item => item.Id).Take(15))
                 .ToListAsync(cancellationToken);
 
             return items;
