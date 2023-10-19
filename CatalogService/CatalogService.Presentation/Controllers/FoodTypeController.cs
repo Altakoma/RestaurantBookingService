@@ -50,7 +50,7 @@ namespace CatalogService.Presentation.Controllers
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
                 .InsertAsync<FoodTypeDTO, ReadFoodTypeDTO>(foodTypeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetFoodTypeAsync), 
+            return CreatedAtAction(nameof(GetFoodTypeAsync),
                                    new { id = readFoodTypeDTO.Id }, readFoodTypeDTO);
         }
 

@@ -52,6 +52,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadRestaurantDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InsertRestaurantAsync(
             [FromBody] InsertRestaurantDTO insertRestaurantDTO,
             CancellationToken cancellationToken)
@@ -69,6 +70,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRestaurantAsync([FromRoute] int id,
             [FromBody] UpdateRestaurantDTO updateRestaurantDTO,
             CancellationToken cancellationToken)
@@ -84,6 +86,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRestaurantAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -105,6 +108,7 @@ namespace CatalogService.Presentation.Controllers
 
         [HttpGet("{id}/employee")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadEmployeeDTO>))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetEmployeesAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
