@@ -1,5 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.FoodType;
+using CatalogService.Domain.Entities;
 using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,8 +48,14 @@ namespace CatalogService.Presentation.Controllers
         public async Task<IActionResult> InsertFoodTypeAsync([FromBody] FoodTypeDTO foodTypeDTO,
             CancellationToken cancellationToken)
         {
-            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
+            var insertAsync = async () =>
+            {
+                return await _foodTypeService
                 .InsertAsync<FoodTypeDTO, ReadFoodTypeDTO>(foodTypeDTO, cancellationToken);
+            };
+
+            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
+                .ExecuteAndCheckAsync(insertAsync, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodTypeAsync),
                                    new { id = readFoodTypeDTO.Id }, readFoodTypeDTO);
@@ -63,8 +70,14 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] FoodTypeDTO foodTypeDTO,
             CancellationToken cancellationToken)
         {
-            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
+            var updateAsync = async () =>
+            {
+                return await _foodTypeService
                 .UpdateAsync<FoodTypeDTO, ReadFoodTypeDTO>(id, foodTypeDTO, cancellationToken);
+            };
+
+            ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
+                .ExecuteAndCheckAsync(updateAsync, cancellationToken);
 
             return Ok(readFoodTypeDTO);
         }

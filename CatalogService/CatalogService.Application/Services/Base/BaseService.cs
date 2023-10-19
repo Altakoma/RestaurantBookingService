@@ -83,6 +83,15 @@ namespace CatalogService.Application.Services.Base
                     id.ToString(), typeof(K));
             }
 
+            readItemDTO = await _repository
+                                .GetByIdAsync<T>(id, cancellationToken);
+
+            if (readItemDTO is null)
+            {
+                throw new NotFoundException(nameof(K),
+                    id.ToString(), typeof(K));
+            }
+
             return readItemDTO;
         }
 

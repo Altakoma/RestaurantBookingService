@@ -25,7 +25,7 @@ namespace CatalogService.Application.Services
             _employeeRepository = employeeRepository;
         }
 
-        public new async Task<T> InsertAsync<U, T>(U insertItemDTO,
+        public async Task<T> ExecuteAndCheckAsync<T>(Func<Task<T>> function,
             CancellationToken cancellationToken)
         {
             int subjectId = _tokenParser
@@ -35,26 +35,7 @@ namespace CatalogService.Application.Services
 
             if (isExist)
             {
-                return await base.InsertAsync<U, T>(insertItemDTO, cancellationToken);
-            }
-            else
-            {
-                throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.EmployeeAuthorizationExceptionMessage);
-            }
-        }
-
-        public new async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
-            CancellationToken cancellationToken)
-        {
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            bool isExist = await _employeeRepository.Exists(subjectId, cancellationToken);
-
-            if (isExist)
-            {
-                return await base.UpdateAsync<U, T>(id, updateItemDTO, cancellationToken);
+                return await function();
             }
             else
             {

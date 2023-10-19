@@ -39,66 +39,6 @@ namespace CatalogService.Application.Services
             return readMenuDTOs;
         }
 
-        public async Task<T> InsertAsync<T>(InsertMenuDTO insertItemDTO,
-            CancellationToken cancellationToken)
-        {
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            bool isExist = await _employeeRepository.Exists(subjectId, cancellationToken);
-
-            if (isExist)
-            {
-                bool isWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
-                    insertItemDTO.RestaurantId, cancellationToken);
-
-                if (isWorkAtRestaurant)
-                {
-                    return await InsertAsync<InsertMenuDTO, T>(insertItemDTO, cancellationToken);
-                }
-                else
-                {
-                    throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.NotRestaurantEmployeeAuthorizationExceptionMessage);
-                }
-            }
-            else
-            {
-                throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.EmployeeAuthorizationExceptionMessage);
-            }
-        }
-
-        public async Task<T> UpdateAsync<T>(int id, UpdateMenuDTO updateItemDTO,
-            CancellationToken cancellationToken)
-        {
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            bool isExist = await _employeeRepository.Exists(subjectId, cancellationToken);
-
-            if (isExist)
-            {
-                bool isWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
-                    updateItemDTO.RestaurantId, cancellationToken);
-
-                if (isWorkAtRestaurant)
-                {
-                    return await UpdateAsync<UpdateMenuDTO, T>(id, updateItemDTO, cancellationToken);
-                }
-                else
-                {
-                    throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.NotRestaurantEmployeeAuthorizationExceptionMessage);
-                }
-            }
-            else
-            {
-                throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.EmployeeAuthorizationExceptionMessage);
-            }
-        }
-
         public new async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             int subjectId = _tokenParser
@@ -108,19 +48,49 @@ namespace CatalogService.Application.Services
 
             if (isExist)
             {
-                Menu? menu = await _menuRepository.GetByIdAsync<Menu>(id,cancellationToken);
+                Menu? menu = await _menuRepository.GetByIdAsync<Menu>(id, cancellationToken);
 
                 if (menu is null)
                 {
                     throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
                 }
 
-                bool isWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
+                bool isEmployeeWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
                     menu.RestaurantId, cancellationToken);
 
-                if (isWorkAtRestaurant)
+                if (isEmployeeWorkAtRestaurant)
                 {
                     await base.DeleteAsync(id, cancellationToken);
+                }
+                else
+                {
+                    throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
+                    ExceptionMessages.NotRestaurantEmployeeAuthorizationExceptionMessage);
+                }
+            }
+            else
+            {
+                throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
+                    ExceptionMessages.EmployeeAuthorizationExceptionMessage);
+            }
+        }
+
+        public async Task<T> ExecuteAndCheckEmployeeAsync<T>(Func<Task<T>> function,
+            MenuDTO menuDTO, CancellationToken cancellationToken)
+        {
+            int subjectId = _tokenParser
+                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
+
+            bool isExist = await _employeeRepository.Exists(subjectId, cancellationToken);
+
+            if (isExist)
+            {
+                bool isEmployeeWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
+                    menuDTO.RestaurantId, cancellationToken);
+
+                if (isEmployeeWorkAtRestaurant)
+                {
+                    return await function();
                 }
                 else
                 {

@@ -5,7 +5,7 @@ namespace CatalogService.Application.Interfaces.Services
 {
     public interface IMenuService : IBaseMenuService
     {
-        Task<T> InsertAsync<T>(InsertMenuDTO insertItemDTO, CancellationToken cancellationToken);
-        Task<T> UpdateAsync<T>(int id, UpdateMenuDTO updateItemDTO, CancellationToken cancellationToken);
+        Task<T> ExecuteAndCheckEmployeeAsync<T>(Func<Task<T>> function,
+                    MenuDTO menuDTO, CancellationToken cancellationToken);
     }
 }
