@@ -5,5 +5,7 @@ namespace CatalogService.Application.Interfaces.Repositories
 {
     public interface IRestaurantRepository : IRepository<Restaurant>
     {
+        Task<bool> WorksAtRestaurant(int employeeId, int restaurantId,
+            CancellationToken cancellationToken);
     }
 }

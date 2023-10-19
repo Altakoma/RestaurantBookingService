@@ -1,6 +1,9 @@
 ﻿using CatalogService.Application.Interfaces.Repositories;
+using CatalogService.Application.Interfaces.Services;
 using CatalogService.Application.Services;
 using CatalogService.Application.ServicesConfigurations;
+using CatalogService.Application.TokenParsers;
+using CatalogService.Application.TokenParsers.Interfaces;
 using CatalogService.Domain.Interfaces.Services;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.Data.Repositories;
@@ -12,6 +15,8 @@ namespace CatalogService.Presentation.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
+            services.AddHttpContextAccessor();
+
             services.AddControllers();
 
             services.AddMvc(options =>
@@ -40,10 +45,12 @@ namespace CatalogService.Presentation.Configurations
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             services.AddScoped<IFoodTypeRepository, FoodTypeRepository>();
 
-            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IBaseEmployeeService, EmployeeService>();
             services.AddScoped<IMenuService, MenuService>();
-            services.AddScoped<IRestaurantService, RestaurantService>();
-            services.AddScoped<IFoodTypeService, FoodTypeService>();
+            services.AddScoped<IBaseRestaurantService, RestaurantService>();
+            services.AddScoped<IBaseFoodTypeService, FoodTypeService>();
+
+            services.AddSingleton<ITokenParser, JwtTokenParser>();
 
             return services;
         }

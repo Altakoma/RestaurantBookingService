@@ -2,7 +2,7 @@
 
 namespace CatalogService.Domain.Interfaces.Services
 {
-    public interface IMenuService : IBaseService
+    public interface IBaseMenuService : IBaseService
     {
         Task<ICollection<T>> GetAllByRestaurantIdAsync<T>(int id, CancellationToken cancellationToken);
     }

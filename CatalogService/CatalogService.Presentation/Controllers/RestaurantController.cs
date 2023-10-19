@@ -2,6 +2,7 @@
 using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
+using CatalogService.Application.Interfaces.Services;
 using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +14,12 @@ namespace CatalogService.Presentation.Controllers
     [Authorize]
     public class RestaurantController : ControllerBase
     {
-        private readonly IRestaurantService _restaurantService;
+        private readonly IBaseRestaurantService _restaurantService;
         private readonly IMenuService _menuService;
-        private readonly IEmployeeService _employeeService;
+        private readonly IBaseEmployeeService _employeeService;
 
-        public RestaurantController(IRestaurantService restaurantService,
-            IMenuService menuService, IEmployeeService employeeService)
+        public RestaurantController(IBaseRestaurantService restaurantService,
+            IMenuService menuService, IBaseEmployeeService employeeService)
         {
             _restaurantService = restaurantService;
             _menuService = menuService;

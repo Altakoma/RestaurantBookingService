@@ -6,6 +6,14 @@
 
         public const string NotFoundExceptionMessage = "Object of type {0} hasn't been found by {1} key of {2}";
 
+        public const string NullReferenceMessage = "Object of type {0} has been null";
+
+        public const string EmployeeAuthorizationExceptionMessage = "Token provided {0} key of {1} and it doesn't give you" +
+            "permission to do that action, because there is no such a {2}";
+
+        public const string NotRestaurantEmployeeAuthorizationExceptionMessage = "Token provided {0} key of {1} and it doesn't give you" +
+            "permission to do that action, because you aren't an employee of this restaurant";
+
         public const string DbOperationExceptionMessage = "Method {0} has called database exception when" +
             " attempting to perform an action on an object of type {1} having {2} key wasn't found";
     }

@@ -6,7 +6,7 @@ using CatalogService.Domain.Interfaces.Services;
 
 namespace CatalogService.Application.Services
 {
-    public class EmployeeService : BaseService<Employee>, IEmployeeService
+    public class EmployeeService : BaseService<Employee>, IBaseEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
 

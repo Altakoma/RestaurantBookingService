@@ -11,9 +11,9 @@ namespace CatalogService.Presentation.Controllers
     [Authorize(Roles = "Admin")]
     public class EmployeeController : ControllerBase
     {
-        private readonly IEmployeeService _employeeService;
+        private readonly IBaseEmployeeService _employeeService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IBaseEmployeeService employeeService)
         {
             _employeeService = employeeService;
         }

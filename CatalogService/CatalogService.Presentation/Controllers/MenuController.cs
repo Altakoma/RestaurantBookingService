@@ -1,5 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
+using CatalogService.Application.Interfaces.Services;
 using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +51,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadMenuDTO readMenuDTO = await _menuService
-                .InsertAsync<InsertMenuDTO, ReadMenuDTO>(insertMenuDTO, cancellationToken);
+                .InsertAsync<ReadMenuDTO>(insertMenuDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodAsync),
                                    new { id = readMenuDTO.Id }, readMenuDTO);
@@ -66,7 +67,7 @@ namespace CatalogService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadMenuDTO readMenuDTO = await _menuService
-                .UpdateAsync<UpdateMenuDTO, ReadMenuDTO>(id, updateMenuDTO, cancellationToken);
+                .UpdateAsync<ReadMenuDTO>(id, updateMenuDTO, cancellationToken);
 
             return Ok(readMenuDTO);
         }
