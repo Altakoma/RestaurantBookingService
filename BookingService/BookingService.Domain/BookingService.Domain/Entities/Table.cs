@@ -1,8 +1,7 @@
 ﻿namespace BookingService.Domain.Entities
 {
-    public class Table
+    public class Table : BaseEntity
     {
-        public int Id { get; set; }
         public int RestaurantId { get; set; }
         public int SeatsCount { get; set; }
 

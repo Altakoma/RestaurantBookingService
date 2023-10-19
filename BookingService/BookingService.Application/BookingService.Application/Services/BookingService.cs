@@ -6,26 +6,11 @@ using BookingService.Domain.Interfaces.Services.Base;
 
 namespace BookingService.Application.Services
 {
-    public class BookingService : BaseService<Booking>, IService<Booking>
+    public class BookingService : BaseService<Booking>, IBaseService
     {
         public BookingService(IBookingRepository bookingRepository,
             IMapper mapper) : base(bookingRepository, mapper)
         {
-        }
-
-        public Task DeleteAsync(int id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<U> GetByIdAsync<U>(int id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<U> UpdateAsync<U>(int id, Booking item, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

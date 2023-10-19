@@ -16,7 +16,7 @@ namespace BookingService.Infrastructure.Data.ApplicationDbContext.Configurations
             builder.HasOne(booking => booking.Table)
                    .WithOne(table => table.Booking);
 
-            builder.HasKey(booking => new { booking.ClientId, booking.TableId });
+            builder.HasKey(booking => booking.Id);
         }
     }
 }

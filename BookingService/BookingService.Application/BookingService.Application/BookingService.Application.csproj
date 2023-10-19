@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\Client\" />
-    <Folder Include="DTOs\Booking\" />
-    <Folder Include="DTOs\Restaurant\" />
-    <Folder Include="DTOs\Table\" />
     <Folder Include="MappingProfiles\" />
     <Folder Include="Validators\" />
   </ItemGroup>

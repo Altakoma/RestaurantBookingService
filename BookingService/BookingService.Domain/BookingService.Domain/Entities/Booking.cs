@@ -1,6 +1,6 @@
 ﻿namespace BookingService.Domain.Entities
 {
-    public class Booking
+    public class Booking : BaseEntity
     {
         public int ClientId { get; set; }
         public int TableId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace BookingService.Domain.Interfaces.Services
 {
-    public interface ITableService<T> : IService<T>
+    public interface ITableService : IBaseService
     {
     }
 }

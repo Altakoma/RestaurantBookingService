@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using BookingService.Application.Interfaces.Repositories.Base;
+using BookingService.Domain.Entities;
+using BookingService.Domain.Exceptions;
 using BookingService.Infrastructure.Data.ApplicationDbContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingService.Infrastructure.Data.Repositories.Base
 {
-    public abstract class BaseRepository<T> : IRepository<T> where T : class
+    public abstract class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
         protected readonly BookingServiceDbContext _bookingServiceDbContext;
         protected readonly IMapper _mapper;
@@ -17,7 +19,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             _mapper = mapper;
         }
 
-        public async Task<ICollection<U>> GetAllAsync<U>(CancellationToken cancellationToken)
+        public async Task<ICollection<U>> GetAllAsync<U>(
+            CancellationToken cancellationToken)
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
                 _bookingServiceDbContext.Set<T>().Select(item => item))
@@ -26,16 +29,38 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             return items;
         }
 
+        public async Task<U?> GetByIdAsync<U>(int id,
+            CancellationToken cancellationToken)
+        {
+            U? item = await _mapper.ProjectTo<U>(
+                _bookingServiceDbContext.Set<T>().Where(item => item.Id == id))
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return item;
+        }
+
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            T? item = await _bookingServiceDbContext.Set<T>()
+                .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+            if (item is null)
+            {
+                throw new NotFoundException(nameof(T), id.ToString(),
+                    typeof(T));
+            }
+
+            Delete(item);
+        }
+
         public void Delete(T item)
         {
             _bookingServiceDbContext.Remove(item);
         }
 
-        public async Task<T> InsertAsync(T item, CancellationToken cancellationToken)
+        public async Task InsertAsync(T item, CancellationToken cancellationToken)
         {
             await _bookingServiceDbContext.AddAsync(item, cancellationToken);
-
-            return item;
         }
 
         public void Update(T item)
@@ -43,7 +68,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             _bookingServiceDbContext.Update(item);
         }
 
-        public async Task<bool> SaveChangesToDbAsync(CancellationToken cancellationToken)
+        public async Task<bool> SaveChangesToDbAsync(
+            CancellationToken cancellationToken)
         {
             int saved = await _bookingServiceDbContext
                               .SaveChangesAsync(cancellationToken);

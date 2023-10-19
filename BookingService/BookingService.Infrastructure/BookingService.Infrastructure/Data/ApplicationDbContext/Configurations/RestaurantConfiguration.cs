@@ -13,6 +13,7 @@ namespace BookingService.Infrastructure.Data.ApplicationDbContext.Configurations
             builder.Property(restaurant => restaurant.Name).HasMaxLength(50);
 
             builder.HasKey(restaurant => restaurant.Id);
+            builder.Property(restaurant => restaurant.Id).ValueGeneratedNever();
 
             builder.HasMany(restaurant => restaurant.Tables)
                    .WithOne(table => table.Restaurant);
