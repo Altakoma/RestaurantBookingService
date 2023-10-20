@@ -95,7 +95,7 @@ namespace CatalogService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public async Task<int> DeleteAsync(int id, CancellationToken cancellationToken)
         {
             K? item = await _repository.GetByIdAsync<K>(id, cancellationToken);
 
@@ -115,6 +115,8 @@ namespace CatalogService.Application.Services.Base
                 throw new DbOperationException(nameof(DeleteAsync),
                     id.ToString(), typeof(K));
             }
+
+            return id;
         }
     }
 }

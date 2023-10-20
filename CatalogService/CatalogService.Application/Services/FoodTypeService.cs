@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Services.Base;
 using CatalogService.Application.TokenParsers.Interfaces;
@@ -23,6 +24,31 @@ namespace CatalogService.Application.Services
             _httpContextAccessor = httpContextAccessor;
             _tokenParser = tokenParser;
             _employeeRepository = employeeRepository;
+        }
+
+        public new async Task<T> InsertAsync<U, T>(U foodTypeDTO, CancellationToken cancellationToken)
+        {
+            var insertAsync = async () =>
+            {
+                return await base.InsertAsync<U, T>(foodTypeDTO, cancellationToken);
+            };
+
+            T readFoodTypeDTO = await ExecuteAndCheckAsync<T>(insertAsync, cancellationToken);
+
+            return readFoodTypeDTO;
+        }
+
+        public new async Task<T> UpdateAsync<U, T>(int id, U foodTypeDTO, 
+            CancellationToken cancellationToken)
+        {
+            var updateAsync = async () =>
+            {
+                return await UpdateAsync<U, T>(id, foodTypeDTO, cancellationToken);
+            };
+
+            T readFoodTypeDTO = await ExecuteAndCheckAsync(updateAsync, cancellationToken);
+
+            return readFoodTypeDTO;
         }
 
         public async Task<T> ExecuteAndCheckAsync<T>(Func<Task<T>> function,

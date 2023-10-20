@@ -49,14 +49,8 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] InsertMenuDTO insertMenuDTO,
             CancellationToken cancellationToken)
         {
-            var insertAsync = async () =>
-            {
-                return await _menuService
-                .InsertAsync<InsertMenuDTO, ReadMenuDTO>(insertMenuDTO, cancellationToken);
-            };
-
             ReadMenuDTO readMenuDTO = await _menuService
-                .ExecuteAndCheckEmployeeAsync<ReadMenuDTO>(insertAsync, insertMenuDTO, cancellationToken);
+                .InsertAsync<InsertMenuDTO, ReadMenuDTO>(insertMenuDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetFoodAsync),
                                    new { id = readMenuDTO.Id }, readMenuDTO);
@@ -71,14 +65,8 @@ namespace CatalogService.Presentation.Controllers
             [FromBody] UpdateMenuDTO updateMenuDTO,
             CancellationToken cancellationToken)
         {
-            var updateAsync = async () =>
-            {
-                return await _menuService
-                .UpdateAsync<UpdateMenuDTO, ReadMenuDTO>(id, updateMenuDTO, cancellationToken);
-            };
-
             ReadMenuDTO readMenuDTO = await _menuService
-                .ExecuteAndCheckEmployeeAsync<ReadMenuDTO>(updateAsync, updateMenuDTO, cancellationToken);
+                .UpdateAsync<UpdateMenuDTO, ReadMenuDTO>(id, updateMenuDTO, cancellationToken);
 
             return Ok(readMenuDTO);
         }
