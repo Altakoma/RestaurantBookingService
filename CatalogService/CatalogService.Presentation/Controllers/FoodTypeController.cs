@@ -11,9 +11,9 @@ namespace CatalogService.Presentation.Controllers
     [Authorize]
     public class FoodTypeController : ControllerBase
     {
-        private readonly IFoodTypeService _foodTypeService;
+        private readonly IBaseFoodTypeService _foodTypeService;
 
-        public FoodTypeController(IFoodTypeService foodTypeService)
+        public FoodTypeController(IBaseFoodTypeService foodTypeService)
         {
             _foodTypeService = foodTypeService;
         }
@@ -50,7 +50,7 @@ namespace CatalogService.Presentation.Controllers
             ReadFoodTypeDTO readFoodTypeDTO = await _foodTypeService
                 .InsertAsync<FoodTypeDTO, ReadFoodTypeDTO>(foodTypeDTO, cancellationToken);
 
-            return CreatedAtAction(nameof(GetFoodTypeAsync), 
+            return CreatedAtAction(nameof(GetFoodTypeAsync),
                                    new { id = readFoodTypeDTO.Id }, readFoodTypeDTO);
         }
 
@@ -73,6 +73,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteFoodTypeAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {

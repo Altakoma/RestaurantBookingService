@@ -2,6 +2,7 @@
 using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Restaurant;
+using CatalogService.Application.Interfaces.Services;
 using CatalogService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +14,12 @@ namespace CatalogService.Presentation.Controllers
     [Authorize]
     public class RestaurantController : ControllerBase
     {
-        private readonly IRestaurantService _restaurantService;
+        private readonly IBaseRestaurantService _restaurantService;
         private readonly IMenuService _menuService;
-        private readonly IEmployeeService _employeeService;
+        private readonly IBaseEmployeeService _employeeService;
 
-        public RestaurantController(IRestaurantService restaurantService,
-            IMenuService menuService, IEmployeeService employeeService)
+        public RestaurantController(IBaseRestaurantService restaurantService,
+            IMenuService menuService, IBaseEmployeeService employeeService)
         {
             _restaurantService = restaurantService;
             _menuService = menuService;
@@ -52,6 +53,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadRestaurantDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InsertRestaurantAsync(
             [FromBody] InsertRestaurantDTO insertRestaurantDTO,
             CancellationToken cancellationToken)
@@ -69,6 +71,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRestaurantAsync([FromRoute] int id,
             [FromBody] UpdateRestaurantDTO updateRestaurantDTO,
             CancellationToken cancellationToken)
@@ -84,6 +87,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteRestaurantAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
@@ -105,6 +109,7 @@ namespace CatalogService.Presentation.Controllers
 
         [HttpGet("{id}/employee")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadEmployeeDTO>))]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetEmployeesAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {

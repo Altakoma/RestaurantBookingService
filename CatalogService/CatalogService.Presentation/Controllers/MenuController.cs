@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Exception;
 using CatalogService.Application.DTOs.Menu;
-using CatalogService.Domain.Interfaces.Services;
+using CatalogService.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ namespace CatalogService.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
