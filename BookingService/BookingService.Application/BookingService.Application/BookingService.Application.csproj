@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Validators\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\BookingService.Domain\BookingService.Domain\BookingService.Domain.csproj" />
   </ItemGroup>
 
