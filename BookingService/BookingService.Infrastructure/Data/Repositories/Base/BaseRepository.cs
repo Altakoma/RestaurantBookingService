@@ -12,6 +12,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
         protected readonly BookingServiceDbContext _bookingServiceDbContext;
         protected readonly IMapper _mapper;
 
+        private const int DefaultTakePaginationValue = 15;
+
         public BaseRepository(BookingServiceDbContext bookingServiceDbContext,
             IMapper mapper)
         {
@@ -23,7 +25,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             CancellationToken cancellationToken)
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
-                _bookingServiceDbContext.Set<T>().Select(item => item))
+                _bookingServiceDbContext.Set<T>().Select(item => item)
+                .Take(DefaultTakePaginationValue))
                 .ToListAsync(cancellationToken);
 
             return items;
