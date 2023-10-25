@@ -31,7 +31,8 @@ namespace IdentityService.API.Controllers
             ReadUserDTO readUserDTO = await _userService
                 .InsertAsync(insertUserDTO, cancellationToken);
 
-            return CreatedAtRoute(nameof(UserController.GetUserByIdAsync),
+            return CreatedAtAction(nameof(UserController.GetUserByIdAsync),
+                nameof(UserController).Replace("Controller", string.Empty),
                 new { id = readUserDTO.Id }, readUserDTO);
         }
 
