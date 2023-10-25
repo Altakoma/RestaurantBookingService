@@ -24,6 +24,8 @@ namespace CatalogService.Presentation.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddDatabaseContext(builder);
 
             services.AddEndpointsApiExplorer();

@@ -41,36 +41,6 @@ namespace CatalogService.Presentation.Controllers
             return Ok(employeeDTO);
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadEmployeeDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> InsertEmployeeAsync([FromBody] InsertEmployeeDTO employeeDTO,
-            CancellationToken cancellationToken)
-        {
-            ReadEmployeeDTO readEmployeeDTO = await _employeeService
-                .InsertAsync<InsertEmployeeDTO, ReadEmployeeDTO>(employeeDTO, cancellationToken);
-
-            return CreatedAtAction(nameof(GetEmployeeAsync), 
-                                   new { id = employeeDTO.Id }, employeeDTO);
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadEmployeeDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> UpdateEmployeeAsync([FromRoute] int id,
-            [FromBody] UpdateEmployeeDTO updateEmployeeDTO,
-            CancellationToken cancellationToken)
-        {
-            ReadEmployeeDTO employeeDTO = await _employeeService
-                .UpdateAsync<UpdateEmployeeDTO, ReadEmployeeDTO>(id,
-                updateEmployeeDTO, cancellationToken);
-
-            return Ok(employeeDTO);
-        }
-
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
