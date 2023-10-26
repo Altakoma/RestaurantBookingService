@@ -20,8 +20,7 @@ namespace BookingService.Presentation.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadTableDTO>))]
-        public async Task<IActionResult> GetAllTablesAsync(
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllTablesAsync(CancellationToken cancellationToken)
         {
             ICollection<ReadTableDTO> tableDTOs =
                 await _tableService.GetAllAsync<ReadTableDTO>(cancellationToken);
@@ -65,8 +64,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadTableDTO tableDTO = await _tableService
-                .UpdateAsync<UpdateTableDTO, ReadTableDTO>(id,
-                updateTableDTO, cancellationToken);
+                .UpdateAsync<UpdateTableDTO, ReadTableDTO>(id, updateTableDTO, cancellationToken);
 
             return Ok(tableDTO);
         }

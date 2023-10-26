@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingService.Infrastructure", "BookingService.Infrastructure\BookingService.Infrastructure.csproj", "{424E5290-0769-4CA1-83A3-75456FC464B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingService.Infrastructure", "BookingService.Infrastructure.csproj", "{450DC5E6-F456-4FF2-A189-0CCDF7D17BB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{424E5290-0769-4CA1-83A3-75456FC464B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{424E5290-0769-4CA1-83A3-75456FC464B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{424E5290-0769-4CA1-83A3-75456FC464B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{424E5290-0769-4CA1-83A3-75456FC464B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450DC5E6-F456-4FF2-A189-0CCDF7D17BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450DC5E6-F456-4FF2-A189-0CCDF7D17BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450DC5E6-F456-4FF2-A189-0CCDF7D17BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450DC5E6-F456-4FF2-A189-0CCDF7D17BB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {40288E7E-988B-4354-B38F-6B7C9BCB9807}
+		SolutionGuid = {6654220D-6092-47D1-8817-706E4437A7F6}
 	EndGlobalSection
 EndGlobal

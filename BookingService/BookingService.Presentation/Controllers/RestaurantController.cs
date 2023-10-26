@@ -40,47 +40,5 @@ namespace BookingService.Presentation.Controllers
 
             return Ok(restaurantDTO);
         }
-
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadRestaurantDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> InsertRestaurantAsync([FromBody] InsertRestaurantDTO restaurantDTO,
-            CancellationToken cancellationToken)
-        {
-            ReadRestaurantDTO readRestaurantDTO = await _restaurantService
-                .InsertAsync<InsertRestaurantDTO, ReadRestaurantDTO>(restaurantDTO, cancellationToken);
-
-            return CreatedAtAction(nameof(GetRestaurantAsync),
-                                   new { id = readRestaurantDTO }, restaurantDTO);
-        }
-
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReadRestaurantDTO))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> UpdateRestaurantAsync([FromRoute] int id,
-            [FromBody] UpdateRestaurantDTO updateRestaurantDTO,
-            CancellationToken cancellationToken)
-        {
-            ReadRestaurantDTO restaurantDTO = await _restaurantService
-                .UpdateAsync<UpdateRestaurantDTO, ReadRestaurantDTO>(id,
-                updateRestaurantDTO, cancellationToken);
-
-            return Ok(restaurantDTO);
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> DeleteRestaurantAsync([FromRoute] int id,
-            CancellationToken cancellationToken)
-        {
-            await _restaurantService.DeleteAsync(id, cancellationToken);
-
-            return NoContent();
-        }
     }
 }

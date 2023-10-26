@@ -8,16 +8,6 @@ namespace BookingService.Application.MappingProfiles
     {
         public RestaurantProfile()
         {
-            CreateMap<InsertRestaurantDTO, Restaurant>()
-                .ForMember(restaurant => restaurant.Id,
-                options => options.MapFrom(insertRestaurantDTO => insertRestaurantDTO.Id))
-                .ForMember(restaurant => restaurant.Name,
-                options => options.MapFrom(insertRestaurantDTO => insertRestaurantDTO.Name));
-
-            CreateMap<UpdateRestaurantDTO, Restaurant>()
-                .ForMember(restaurant => restaurant.Name,
-                options => options.MapFrom(updateRestaurantDTO => updateRestaurantDTO.Name));
-
             CreateMap<Restaurant, ReadRestaurantDTO>()
                 .ForMember(readRestaurantDTO => readRestaurantDTO.Id,
                 options => options.MapFrom(restaurant => restaurant.Id))

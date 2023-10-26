@@ -65,8 +65,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadBookingDTO bookingDTO = await _bookingService
-                .UpdateAsync<UpdateBookingDTO, ReadBookingDTO>(id,
-                updateBookingDTO, cancellationToken);
+                .UpdateAsync<UpdateBookingDTO, ReadBookingDTO>(id, updateBookingDTO, cancellationToken);
 
             return Ok(bookingDTO);
         }
