@@ -32,7 +32,7 @@ namespace OrderService.Infrastructure.Repositories.Base
 
         public async Task InsertAsync(T item, CancellationToken cancellationToken)
         {
-            await _collection.InsertOneAsync(item, null, cancellationToken);
+            await _collection.InsertOneAsync(item, cancellationToken: cancellationToken);
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)

@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Microsoft.EntityFrameworkCore;
-using OrderService.Application.DTOs.Order;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Domain.Entities;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;

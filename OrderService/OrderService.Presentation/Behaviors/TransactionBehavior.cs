@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using OrderService.Application.Interfaces.Command;
+using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using System.Data.Common;
 
@@ -33,7 +34,8 @@ namespace OrderService.Application.Behaviors
             {
                 transaction.Rollback();
 
-                throw new Exception();
+                throw new NotCommittedTransactionException(
+                    ExceptionMessages.NotCommittedTransactionAtBehaviorMessage);
             }
 
             return response;

@@ -17,15 +17,8 @@ namespace OrderService.Infrastructure.Repositories.Read
             var filterDefinition = Builders<ReadOrderDTO>.Filter
                                               .Eq(element => element.Id, item.Id);
 
-            var updateDefinition = Builders<ReadOrderDTO>.Update
-                .Set(element => element.ReadMenuDTO, item.ReadMenuDTO)
-                .Set(element => element.ReadClientDTO, item.ReadClientDTO)
-                .Set(element => element.ReadTableDTO, item.ReadTableDTO)
-                .Set(element => element.BookingId, item.BookingId)
-                .Set(element => element.Id, item.Id);
-
-            await _collection.UpdateOneAsync(filterDefinition, updateDefinition,
-                                             null, cancellationToken);
+            await _collection.ReplaceOneAsync(filterDefinition, item,
+                                              cancellationToken: cancellationToken);
         }
     }
 }

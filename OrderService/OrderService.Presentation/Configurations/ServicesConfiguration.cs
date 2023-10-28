@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using MediatR;
-using Microsoft.Data.SqlClient;
+﻿using MediatR;
 using OrderService.Application.Behaviors;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
@@ -13,8 +11,8 @@ namespace OrderService.Presentation.Configurations
 {
     public static class ServicesConfiguration
     {
-        public static IServiceCollection ConfigureServices(this IServiceCollection services,
-            WebApplicationBuilder builder)
+        public static IServiceCollection ConfigureServices(
+            this IServiceCollection services, WebApplicationBuilder builder)
         {
             services.AddControllers();
 
@@ -41,7 +39,8 @@ namespace OrderService.Presentation.Configurations
 
             services.AddAuthorization();
 
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+            services.AddTransient(
+                typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
             services.AddScoped<INoSqlOrderRepository, NoSqlOrderRepository>();
 

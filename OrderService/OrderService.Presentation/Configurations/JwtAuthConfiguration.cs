@@ -6,18 +6,23 @@ namespace OrderService.Presentation.Configurations
 {
     public static class JwtTokenAuthConfiguration
     {
-        public static IServiceCollection AddJwtTokenAuthConfiguration(this IServiceCollection services,
-            WebApplicationBuilder builder)
+        public const string JWTSecretConfigurationName = "JWTSecret";
+        public const string JWTSecretEnvironmentName = "JWTSecret";
+
+        public static IServiceCollection AddJwtTokenAuthConfiguration(
+            this IServiceCollection services, WebApplicationBuilder builder)
         {
             byte[] key;
 
             if (builder.Environment.IsDevelopment())
             {
-                key = Encoding.UTF8.GetBytes(builder.Configuration["JWTSecret"]!);
+                key = Encoding.UTF8.GetBytes(
+                    builder.Configuration[JWTSecretConfigurationName]!);
             }
             else
             {
-                key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecret")!);
+                key = Encoding.UTF8.GetBytes(
+                    Environment.GetEnvironmentVariable(JWTSecretEnvironmentName)!);
             }
 
             var tokenValidationParams = new TokenValidationParameters

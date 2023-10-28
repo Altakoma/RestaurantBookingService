@@ -10,6 +10,9 @@
 
         public const string BadConfigurationProvidedMessage = "Configuration string {0} was not defined or was uncorrect";
 
+        public const string NotCommittedTransactionAtBehaviorMessage = "A transaction hasn't been committed at the" +
+            " transactional behavior";
+
         public const string EmployeeAuthorizationExceptionMessage = "Token provided {0} key of {1} and it doesn't give you" +
             "permission to do that action, because there is no such a {2}";
 

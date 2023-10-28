@@ -2,7 +2,6 @@
 using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Table;
-using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Table.Commands;
 using OrderService.Domain.Exceptions;
