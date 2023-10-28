@@ -1,6 +1,8 @@
-﻿using MediatR;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+﻿using Hangfire;
+using MediatR;
+using OrderService.Application.DTOs.Order;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -8,31 +10,34 @@ namespace OrderService.Application.MediatR.Order.Handlers
 {
     public class DeleteOrderHandler : IRequestHandler<DeleteOrderCommand>
     {
-        private readonly IWriteOrderRepository _writeOrderRepository;
-        private readonly IReadOrderRepository _readOrderRepository;
+        private readonly ISqlOrderRepository _sqlOrderRepository;
+        private readonly INoSqlOrderRepository _noSqlOrderRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public DeleteOrderHandler(IWriteOrderRepository writeOrderRepository,
-            IReadOrderRepository readOrderRepository)
+        public DeleteOrderHandler(ISqlOrderRepository sqlClientRepository,
+            INoSqlOrderRepository noSqlClientRepository,
+            IBackgroundJobClient backgroundJobClient)
         {
-            _writeOrderRepository = writeOrderRepository;
-            _readOrderRepository = readOrderRepository;
+            _sqlOrderRepository = sqlClientRepository;
+            _noSqlOrderRepository = noSqlClientRepository;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteOrderCommand request,
             CancellationToken cancellationToken)
         {
-            Domain.Entities.Order order = await _readOrderRepository
-                                                  .GetByIdAsync(request.Id, cancellationToken);
+            ReadOrderDTO? orderDTO = await _noSqlOrderRepository
+                .GetByIdAsync(request.Id, cancellationToken);
 
-            if (order is null)
+            if (orderDTO is null)
             {
                 throw new NotFoundException(nameof(Domain.Entities.Order),
                     request.Id.ToString(), typeof(Domain.Entities.Order));
             }
 
-            await _writeOrderRepository.DeleteAsync(request.Id, cancellationToken);
+            await _sqlOrderRepository.DeleteAsync(request.Id, cancellationToken);
 
-            bool isDeleted = await _writeOrderRepository
+            bool isDeleted = await _sqlOrderRepository
                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)
@@ -40,6 +45,9 @@ namespace OrderService.Application.MediatR.Order.Handlers
                 throw new DbOperationException(nameof(DeleteOrderCommand),
                     request.Id.ToString(), typeof(Domain.Entities.Order));
             }
+
+            _backgroundJobClient.Enqueue(
+                () => _noSqlOrderRepository.DeleteAsync(orderDTO.Id, cancellationToken));
         }
     }
 }

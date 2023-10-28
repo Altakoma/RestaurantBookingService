@@ -9,16 +9,6 @@ namespace OrderService.Application.MappingProfiles
     {
         public TableProfile()
         {
-            CreateMap<InsertTableDTO, InsertTableCommand>()
-                .ForMember(insertTableCommand => insertTableCommand.Id,
-                           options => options.MapFrom(insertTableDTO => insertTableDTO.Id))
-                .ForMember(insertTableCommand => insertTableCommand.RestaurantId,
-                           options => options.MapFrom(insertTableDTO => insertTableDTO.RestaurantId));
-
-            CreateMap<UpdateTableDTO, UpdateTableCommand>()
-                .ForMember(updateTableCommand => updateTableCommand.RestaurantId,
-                           options => options.MapFrom(updateTableDTO => updateTableDTO.RestaurantId));
-
             CreateMap<InsertTableCommand, Table>()
                 .ForMember(table => table.Id,
                            options => options.MapFrom(insertTableCommand => insertTableCommand.Id))

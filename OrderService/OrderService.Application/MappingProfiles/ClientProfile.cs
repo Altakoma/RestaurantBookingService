@@ -9,16 +9,6 @@ namespace OrderService.Application.MappingProfiles
     {
         public ClientProfile()
         {
-            CreateMap<InsertClientDTO, InsertClientCommand>()
-                .ForMember(insertClientCommand => insertClientCommand.Id,
-                options => options.MapFrom(insertClientDTO => insertClientDTO.Id))
-                .ForMember(insertClientCommand => insertClientCommand.Name,
-                options => options.MapFrom(insertClientDTO => insertClientDTO.Name));
-
-            CreateMap<UpdateClientDTO, UpdateClientCommand>()
-                .ForMember(updateClientCommand => updateClientCommand.Name,
-                options => options.MapFrom(updateClientDTO => updateClientDTO.Name));
-
             CreateMap<InsertClientCommand, Client>()
                 .ForMember(client => client.Id,
                 options => options.MapFrom(insertClientCommand => insertClientCommand.Id))

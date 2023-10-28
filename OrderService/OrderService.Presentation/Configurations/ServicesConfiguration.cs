@@ -1,7 +1,11 @@
-﻿using BookingService.Infrastructure.Data;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+﻿using Hangfire;
+using MediatR;
+using Microsoft.Data.SqlClient;
+using OrderService.Application.Behaviors;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.ServicesConfigurations;
+using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Repositories.Read;
 using OrderService.Infrastructure.Repositories.Write;
 
@@ -21,6 +25,8 @@ namespace OrderService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
+            services.AddHangfire(builder.Configuration);
+
             services.AddEndpointsApiExplorer();
 
             services.AddSwagger();
@@ -35,15 +41,14 @@ namespace OrderService.Presentation.Configurations
 
             services.AddAuthorization();
 
-            services.AddScoped<IReadClientRepository, ReadClientRepository>();
-            services.AddScoped<IReadMenuRepository, ReadMenuRepository>();
-            services.AddScoped<IReadOrderRepository, ReadOrderRepository>();
-            services.AddScoped<IReadTableRepository, ReadTableRepository>();
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
-            services.AddScoped<IWriteClientRepository, WriteClientRepository>();
-            services.AddScoped<IWriteMenuRepository, WriteMenuRepository>();
-            services.AddScoped<IWriteOrderRepository, WriteOrderRepository>();
-            services.AddScoped<IWriteTableRepository, WriteTableRepository>();
+            services.AddScoped<INoSqlOrderRepository, NoSqlOrderRepository>();
+
+            services.AddScoped<ISqlClientRepository, SqlClientRepository>();
+            services.AddScoped<ISqlMenuRepository, SqlMenuRepository>();
+            services.AddScoped<ISqlOrderRepository, SqlOrderRepository>();
+            services.AddScoped<ISqlTableRepository, SqlTableRepository>();
 
             services.AddSingleton<Seed>();
 

@@ -1,6 +1,7 @@
-﻿using MediatR;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+﻿using Hangfire;
+using MediatR;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -8,21 +9,21 @@ namespace OrderService.Application.MediatR.Client.Handlers
 {
     public class DeleteClientHandler : IRequestHandler<DeleteClientCommand>
     {
-        private readonly IWriteClientRepository _writeClientRepository;
-        private readonly IReadClientRepository _readClientRepository;
+        private readonly ISqlClientRepository _sqlRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public DeleteClientHandler(IWriteClientRepository writeClientRepository,
-            IReadClientRepository readClientRepository)
+        public DeleteClientHandler(ISqlClientRepository sqlRepository,
+            IBackgroundJobClient backgroundJobClient)
         {
-            _writeClientRepository = writeClientRepository;
-            _readClientRepository = readClientRepository;
+            _sqlRepository = sqlRepository;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteClientCommand request,
             CancellationToken cancellationToken)
         {
-            Domain.Entities.Client client = await _readClientRepository
-                                                  .GetByIdAsync(request.Id, cancellationToken);
+             var client = await _sqlRepository
+                .GetByIdAsync<Domain.Entities.Client>(request.Id, cancellationToken);
 
             if (client is null)
             {
@@ -30,9 +31,9 @@ namespace OrderService.Application.MediatR.Client.Handlers
                     request.Id.ToString(), typeof(Domain.Entities.Client));
             }
 
-            await _writeClientRepository.DeleteAsync(request.Id, cancellationToken);
+            await _sqlRepository.DeleteAsync(request.Id, cancellationToken);
 
-            bool isDeleted = await _writeClientRepository
+            bool isDeleted = await _sqlRepository
                                    .SaveChangesToDbAsync(cancellationToken);
 
             if (!isDeleted)

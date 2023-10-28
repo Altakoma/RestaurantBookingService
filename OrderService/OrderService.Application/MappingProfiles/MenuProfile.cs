@@ -9,16 +9,6 @@ namespace OrderService.Application.MappingProfiles
     {
         public MenuProfile()
         {
-            CreateMap<InsertMenuDTO, InsertMenuCommand>()
-                .ForMember(insertMenuCommand => insertMenuCommand.Id,
-                options => options.MapFrom(insertMenuDTO => insertMenuDTO.Id))
-                .ForMember(insertMenuCommand => insertMenuCommand.FoodName,
-                options => options.MapFrom(insertMenuDTO => insertMenuDTO.FoodName));
-
-            CreateMap<UpdateMenuDTO, UpdateMenuCommand>()
-                .ForMember(updateMenuCommand => updateMenuCommand.FoodName,
-                options => options.MapFrom(updateMenuDTO => updateMenuDTO.FoodName));
-
             CreateMap<InsertMenuCommand, Menu>()
                 .ForMember(menu => menu.Id,
                 options => options.MapFrom(insertMenuCommand => insertMenuCommand.Id))

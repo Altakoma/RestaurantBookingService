@@ -1,24 +1,30 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Order;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Order.Commands;
+using OrderService.Domain.Entities;
 using OrderService.Domain.Exceptions;
 
 namespace OrderService.Application.MediatR.Order.Handlers
 {
     public class InsertOrderHandler : IRequestHandler<InsertOrderCommand, ReadOrderDTO>
     {
-        private readonly IWriteOrderRepository _writeOrderRepository;
-        private readonly IReadOrderRepository _readOrderRepository;
+        private readonly ISqlOrderRepository _sqlOrderRepository;
+        private readonly INoSqlOrderRepository _noSqlOrderRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
-        public InsertOrderHandler(IWriteOrderRepository writeOrderRepository,
-            IReadOrderRepository readOrderRepository, IMapper mapper)
+        public InsertOrderHandler(ISqlOrderRepository sqlClientRepository,
+            INoSqlOrderRepository noSqlClientRepository,
+            IBackgroundJobClient backgroundJobClient,
+            IMapper mapper)
         {
-            _writeOrderRepository = writeOrderRepository;
-            _readOrderRepository = readOrderRepository;
+            _sqlOrderRepository = sqlClientRepository;
+            _noSqlOrderRepository = noSqlClientRepository;
+            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
@@ -27,18 +33,22 @@ namespace OrderService.Application.MediatR.Order.Handlers
         {
             var order = _mapper.Map<Domain.Entities.Order>(request);
 
-            await _writeOrderRepository.InsertAsync(order, cancellationToken);
+            await _sqlOrderRepository.InsertAsync(order, cancellationToken);
 
-            bool isInserted = await _writeOrderRepository
+            bool isInserted = await _sqlOrderRepository
                 .SaveChangesToDbAsync(cancellationToken);
 
-            if (!isInserted)
+            var readOrderDTO = await _sqlOrderRepository
+                .GetByIdAsync<ReadOrderDTO>(order.Id,cancellationToken);
+
+            if (!isInserted || readOrderDTO is null)
             {
                 throw new DbOperationException(nameof(InsertOrderHandler.Handle),
                     nameof(InsertOrderCommand), typeof(Domain.Entities.Order));
             }
 
-            var readOrderDTO = _mapper.Map<ReadOrderDTO>(order);
+            _backgroundJobClient.Enqueue(
+                () => _noSqlOrderRepository.InsertAsync(readOrderDTO, cancellationToken));
 
             return readOrderDTO;
         }

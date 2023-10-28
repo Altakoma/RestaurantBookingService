@@ -1,12 +1,13 @@
 ﻿using OrderService.Application.DTOs.Client;
 using OrderService.Application.DTOs.Menu;
 using OrderService.Application.DTOs.Table;
+using OrderService.Domain.Entities;
 
 namespace OrderService.Application.DTOs.Order
 {
-    public class ReadOrderDTO
+    public class ReadOrderDTO : BaseEntity
     {
-        public int Id { get; set; }
+        public int BookingId { get; set; }
         public ReadMenuDTO ReadMenuDTO { get; set; } = null!;
         public ReadClientDTO ReadClientDTO { get; set; } = null!;
         public ReadTableDTO ReadTableDTO { get; set; } = null!;

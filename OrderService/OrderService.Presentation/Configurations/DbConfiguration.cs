@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using OrderService.Infrastructure.Data.ApplicationNoSqlDbContext;
+using OrderService.Domain.Exceptions;
+using OrderService.Infrastructure.Data.ApplicationNoSqlDbSettings;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using System.Text.Json;
 
@@ -24,7 +24,8 @@ namespace OrderService.Presentation.Configurations
                 }
                 else
                 {
-                    options.UseSqlServer(Environment.GetEnvironmentVariable(EnvironmentSqlDbDevelopmentConnectionString));
+                    options.UseSqlServer(
+                        Environment.GetEnvironmentVariable(EnvironmentSqlDbDevelopmentConnectionString));
                 }
             });
 
@@ -41,14 +42,16 @@ namespace OrderService.Presentation.Configurations
 
                 if (mongoDbConnectionSection is null)
                 {
-                    throw new Exception();
+                    throw new BadConfigurationProvidedException(
+                        string.Format(ExceptionMessages.BadConfigurationProvidedMessage, MongoDbConnectionSection));
                 }
 
                 MongoDbSettings? configuration = JsonSerializer.Deserialize<MongoDbSettings>(mongoDbConnectionSection);
 
                 if (configuration is null)
                 {
-                    throw new Exception();
+                    throw new BadConfigurationProvidedException(
+                        string.Format(ExceptionMessages.BadConfigurationProvidedMessage, MongoDbConnectionSection));
                 }
 
                 services.AddSingleton<IMongoDbSettings>(configuration);

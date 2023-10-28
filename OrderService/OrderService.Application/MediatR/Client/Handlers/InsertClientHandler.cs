@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Client;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -10,15 +10,16 @@ namespace OrderService.Application.MediatR.Client.Handlers
 {
     public class InsertClientHandler : IRequestHandler<InsertClientCommand, ReadClientDTO>
     {
-        private readonly IWriteClientRepository _writeClientRepository;
-        private readonly IReadClientRepository _readClientRepository;
+        private readonly ISqlClientRepository _sqlRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
-        public InsertClientHandler(IWriteClientRepository writeClientRepository,
-            IReadClientRepository readClientRepository, IMapper mapper)
+        public InsertClientHandler(ISqlClientRepository sqlClientRepository,
+            IBackgroundJobClient backgroundJobClient,
+            IMapper mapper)
         {
-            _writeClientRepository = writeClientRepository;
-            _readClientRepository = readClientRepository;
+            _sqlRepository = sqlClientRepository;
+            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
@@ -27,9 +28,9 @@ namespace OrderService.Application.MediatR.Client.Handlers
         {
             var client = _mapper.Map<Domain.Entities.Client>(request);
 
-            await _writeClientRepository.InsertAsync(client, cancellationToken);
+            await _sqlRepository.InsertAsync(client, cancellationToken);
 
-            bool isInserted = await _writeClientRepository
+            bool isInserted = await _sqlRepository
                 .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)

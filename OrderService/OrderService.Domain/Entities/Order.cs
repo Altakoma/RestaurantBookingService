@@ -5,6 +5,7 @@
         public int ClientId { get; set; }
         public int TableId { get; set; }
         public int MenuId { get; set; }
+        public int BookingId { get; set; }
 
         public Menu Menu { get; set; } = null!;
         public Table Table { get; set; } = null!;

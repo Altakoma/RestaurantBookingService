@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Table;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Table.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -10,15 +11,16 @@ namespace OrderService.Application.MediatR.Table.Handlers
 {
     public class InsertTableHandler : IRequestHandler<InsertTableCommand, ReadTableDTO>
     {
-        private readonly IWriteTableRepository _writeTableRepository;
-        private readonly IReadTableRepository _readTableRepository;
+        private readonly ISqlTableRepository _sqlTableRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
-        public InsertTableHandler(IWriteTableRepository writeTableRepository,
-            IReadTableRepository readTableRepository, IMapper mapper)
+        public InsertTableHandler(ISqlTableRepository sqlTableRepository,
+            IBackgroundJobClient backgroundJobClient,
+            IMapper mapper)
         {
-            _writeTableRepository = writeTableRepository;
-            _readTableRepository = readTableRepository;
+            _sqlTableRepository = sqlTableRepository;
+            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
@@ -27,9 +29,9 @@ namespace OrderService.Application.MediatR.Table.Handlers
         {
             var table = _mapper.Map<Domain.Entities.Table>(request);
 
-            await _writeTableRepository.InsertAsync(table, cancellationToken);
+            await _sqlTableRepository.InsertAsync(table, cancellationToken);
 
-            bool isInserted = await _writeTableRepository
+            bool isInserted = await _sqlTableRepository
                 .SaveChangesToDbAsync(cancellationToken);
 
             if (!isInserted)

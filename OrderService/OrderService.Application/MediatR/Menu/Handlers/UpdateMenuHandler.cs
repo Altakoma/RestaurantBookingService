@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Menu;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+using OrderService.Application.Interfaces.Repositories.NoSql;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -10,22 +11,24 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 {
     public class UpdateMenuHandler : IRequestHandler<UpdateMenuCommand, ReadMenuDTO>
     {
-        private readonly IWriteMenuRepository _writeMenuRepository;
-        private readonly IReadMenuRepository _readMenuRepository;
+        private readonly ISqlMenuRepository _sqlMenuRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
-        public UpdateMenuHandler(IWriteMenuRepository writeMenuRepository,
-            IReadMenuRepository readMenuRepository, IMapper mapper)
+        public UpdateMenuHandler(ISqlMenuRepository sqlClientRepository,
+            IBackgroundJobClient backgroundJobClient,
+            IMapper mapper)
         {
-            _writeMenuRepository = writeMenuRepository;
-            _readMenuRepository = readMenuRepository;
+            _sqlMenuRepository = sqlClientRepository;
+            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
         public async Task<ReadMenuDTO> Handle(UpdateMenuCommand request,
             CancellationToken cancellationToken)
         {
-            Domain.Entities.Menu menu = await _readMenuRepository.GetByIdAsync(request.Id, cancellationToken);
+            var menu = await _sqlMenuRepository
+                .GetByIdAsync<Domain.Entities.Menu>(request.Id, cancellationToken);
 
             if (menu is null)
             {
@@ -35,9 +38,9 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             menu = _mapper.Map<Domain.Entities.Menu>(request);
 
-            _writeMenuRepository.Update(menu);
+            _sqlMenuRepository.Update(menu);
 
-            bool isUpdated = await _writeMenuRepository.
+            bool isUpdated = await _sqlMenuRepository.
                                    SaveChangesToDbAsync(cancellationToken);
 
             if (!isUpdated)

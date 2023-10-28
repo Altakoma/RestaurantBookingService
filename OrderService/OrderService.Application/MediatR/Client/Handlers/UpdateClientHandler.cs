@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Client;
-using OrderService.Application.Interfaces.Repositories.Read;
-using OrderService.Application.Interfaces.Repositories.Write;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Domain.Exceptions;
 
@@ -10,44 +10,46 @@ namespace OrderService.Application.MediatR.Client.Handlers
 {
     public class UpdateClientHandler : IRequestHandler<UpdateClientCommand, ReadClientDTO>
     {
-        private readonly IWriteClientRepository _writeClientRepository;
-        private readonly IReadClientRepository _readClientRepository;
+        private readonly ISqlClientRepository _sqlClientRepository;
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
-        public UpdateClientHandler(IWriteClientRepository writeClientRepository,
-            IReadClientRepository readClientRepository, IMapper mapper)
+        public UpdateClientHandler(ISqlClientRepository sqlClientRepository,
+            IBackgroundJobClient backgroundJobClient,
+            IMapper mapper)
         {
-            _writeClientRepository = writeClientRepository;
-            _readClientRepository = readClientRepository;
+            _sqlClientRepository = sqlClientRepository;
+            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
         public async Task<ReadClientDTO> Handle(UpdateClientCommand request,
             CancellationToken cancellationToken)
         {
-            Domain.Entities.Client client = await _readClientRepository
-                                                  .GetByIdAsync(request.Id, cancellationToken);
+            ReadClientDTO? readClientDTO = await _sqlClientRepository
+                .GetByIdAsync<ReadClientDTO>(request.Id, cancellationToken);
 
-            if (client is null)
+            if (readClientDTO is null)
             {
                 throw new NotFoundException(nameof(Domain.Entities.Client),
                     request.Id.ToString(), typeof(Domain.Entities.Client));
             }
 
-            client = _mapper.Map<Domain.Entities.Client>(request);
+            var client = _mapper.Map<Domain.Entities.Client>(request);
 
-            _writeClientRepository.Update(client);
+            _sqlClientRepository.Update(client);
 
-            bool isUpdated = await _writeClientRepository
+            bool isUpdated = await _sqlClientRepository
                                    .SaveChangesToDbAsync(cancellationToken);
 
-            if (!isUpdated)
+            readClientDTO = await _sqlClientRepository
+                .GetByIdAsync<ReadClientDTO>(client.Id, cancellationToken);
+
+            if (!isUpdated || readClientDTO is null)
             {
                 throw new DbOperationException(nameof(UpdateClientHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Client));
             }
-
-            var readClientDTO = _mapper.Map<ReadClientDTO>(client);
 
             return readClientDTO;
         }

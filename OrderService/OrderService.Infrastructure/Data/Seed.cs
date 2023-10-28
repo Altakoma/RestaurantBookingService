@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 
-namespace BookingService.Infrastructure.Data
+namespace OrderService.Infrastructure.Data
 {
     public class Seed
     {

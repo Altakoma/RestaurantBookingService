@@ -1,5 +1,6 @@
-using BookingService.Infrastructure.Data;
+using Hangfire;
 using Microsoft.AspNetCore.Diagnostics;
+using OrderService.Infrastructure.Data;
 using OrderService.Presentation.Configurations;
 
 namespace OrderService.Presentation
@@ -17,6 +18,8 @@ namespace OrderService.Presentation
             var seed = app.Services.GetRequiredService<Seed>();
 
             seed.SeedData();
+
+            app.UseHangfireDashboard();
 
             app.UseSwagger();
             app.UseSwaggerUI();
