@@ -25,12 +25,22 @@ namespace CatalogService.Infrastructure.Data.Repositories
             return readEmployeeDTOs;
         }
 
-        public async Task<bool> Exists(int id, CancellationToken cancellationToken)
+        public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken)
         {
             bool isEmployeeExist = await _catalogServiceDbContext
                 .Employees.AnyAsync(employee => employee.Id == id, cancellationToken);
 
             return isEmployeeExist;
+        }
+
+        public async Task<bool> WorksAtRestaurantAsync(int employeeId, int restaurantId,
+            CancellationToken cancellationToken)
+        {
+            bool isEmployeeWorkingAtRestaurant = await _catalogServiceDbContext
+                .Employees.AnyAsync(employee => employee.Id == employeeId 
+                && employee.RestaurantId == restaurantId, cancellationToken);
+
+            return isEmployeeWorkingAtRestaurant;
         }
     }
 }

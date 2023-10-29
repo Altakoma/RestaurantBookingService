@@ -7,6 +7,7 @@ using CatalogService.Application.TokenParsers.Interfaces;
 using CatalogService.Domain.Interfaces.Services;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.Data.Repositories;
+using Google.Protobuf.WellKnownTypes;
 
 namespace CatalogService.Presentation.Configurations
 {
@@ -18,6 +19,8 @@ namespace CatalogService.Presentation.Configurations
             services.AddHttpContextAccessor();
 
             services.AddControllers();
+
+            builder.Services.AddGrpc();
 
             services.AddMvc(options =>
             {

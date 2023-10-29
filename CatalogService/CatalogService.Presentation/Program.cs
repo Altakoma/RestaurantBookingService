@@ -1,4 +1,6 @@
+using CatalogService.Infrastructure;
 using CatalogService.Infrastructure.Data;
+using CatalogService.Infrastructure.Grpc.Services;
 using CatalogService.Presentation.Configurations;
 using CatalogService.Presentation.Middlewares;
 
@@ -27,6 +29,8 @@ namespace CatalogService.Presentation
             app.UseAuthorization();
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+            app.MapGrpcService<GrpcEmployeeService>();
 
             app.MapControllers();
 

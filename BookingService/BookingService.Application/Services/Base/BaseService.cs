@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BookingService.Application.DTOs.Booking;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Domain.Entities;
 using BookingService.Domain.Exceptions;
@@ -37,7 +38,7 @@ namespace BookingService.Application.Services.Base
             return items;
         }
 
-        public async Task<T> InsertAsync<U, T>(U insertItemDTO,
+        public virtual async Task<T> InsertAsync<U, T>(U insertItemDTO,
             CancellationToken cancellationToken)
         {
             var item = _mapper.Map<K>(insertItemDTO);
@@ -57,7 +58,7 @@ namespace BookingService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
+        public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
             T? readItemDTO = await _repository
@@ -86,7 +87,7 @@ namespace BookingService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             K? item = await _repository.GetByIdAsync<K>(id, cancellationToken);
 

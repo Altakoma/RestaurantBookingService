@@ -14,5 +14,20 @@ namespace BookingService.Infrastructure.Data.Repositories
             IMapper mapper) : base(bookingServiceDbContext, mapper)
         {
         }
+
+        public async Task<int> GetRestaurantIdByTableIdAsync(int id,
+            CancellationToken cancellationToken)
+        {
+            Table? table = await _bookingServiceDbContext.Tables
+                .FirstOrDefaultAsync(table => table.Id == id);
+
+            if (table is null)
+            {
+                throw new NotFoundException(nameof(Table),
+                                            id.ToString(), typeof(Type));
+            }
+
+            return table.RestaurantId;
+        }
     }
 }
