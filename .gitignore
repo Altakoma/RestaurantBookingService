@@ -18,6 +18,7 @@ nupkg/
 *.sln.docstates
 
 # Build results
+BookingService/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -35,6 +36,3 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
-
-# Custom
-BookingService/
