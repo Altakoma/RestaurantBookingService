@@ -1,4 +1,5 @@
-﻿using CatalogService.Application.Interfaces.Repositories;
+﻿using CatalogService.Application;
+using CatalogService.Application.Interfaces.Repositories;
 using Grpc.Core;
 
 namespace CatalogService.Infrastructure.Grpc.Services
