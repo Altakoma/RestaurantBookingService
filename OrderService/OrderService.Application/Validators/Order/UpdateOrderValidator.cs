@@ -22,7 +22,7 @@ namespace OrderService.Application.Validators.Order
 
             RuleFor(updateOrderDTO => updateOrderDTO.BookingId).NotEqual(ValidationResources.ZeroId)
                 .WithMessage(
-                string.Format(ValidationResources.NotEnteredPropertyMessage, nameof(InsertOrderDTO.BookingId)));
+                string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(InsertOrderDTO.BookingId)));
         }
     }
 }

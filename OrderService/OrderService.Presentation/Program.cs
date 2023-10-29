@@ -1,7 +1,7 @@
 using Hangfire;
-using Microsoft.AspNetCore.Diagnostics;
 using OrderService.Infrastructure.Data;
 using OrderService.Presentation.Configurations;
+using OrderService.Presentation.Middlewares;
 
 namespace OrderService.Presentation
 {
@@ -14,6 +14,8 @@ namespace OrderService.Presentation
             builder.Services.ConfigureServices(builder);
 
             var app = builder.Build();
+
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             var seed = app.Services.GetRequiredService<Seed>();
 

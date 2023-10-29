@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using OrderService.Application.Behaviors;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.ServicesConfigurations;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Repositories.Read;
 using OrderService.Infrastructure.Repositories.Write;
+using OrderService.Presentation.Behaviors;
 
 namespace OrderService.Presentation.Configurations
 {

@@ -5,7 +5,7 @@ using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using System.Data.Common;
 
-namespace OrderService.Application.Behaviors
+namespace OrderService.Presentation.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse>
         : IPipelineBehavior<TRequest, TResponse> where TRequest : ITransactional
