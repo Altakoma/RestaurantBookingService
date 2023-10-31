@@ -65,15 +65,13 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             var order = _mapper.Map<Domain.Entities.Order>(request);
 
-            await _sqlOrderRepository.InsertAsync(order, cancellationToken);
+            var readOrderDTO = await _sqlOrderRepository
+                .InsertAsync<ReadOrderDTO>(order, cancellationToken);
 
             bool isInserted = await _sqlOrderRepository
                 .SaveChangesToDbAsync(cancellationToken);
 
-            var readOrderDTO = await _sqlOrderRepository
-                .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
-
-            if (!isInserted || readOrderDTO is null)
+            if (!isInserted)
             {
                 throw new DbOperationException(nameof(InsertOrderHandler.Handle),
                     nameof(InsertOrderCommand), typeof(Domain.Entities.Order));

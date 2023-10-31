@@ -49,8 +49,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (readOrderDTO is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Order),
-                    request.Id.ToString(), typeof(Domain.Entities.Order));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Order));
             }
 
             if (readOrderDTO.ReadClientDTO.Id != subjectId)
@@ -68,14 +68,14 @@ namespace OrderService.Application.MediatR.Order.Handlers
             bool isUpdated = await _sqlOrderRepository.
                                    SaveChangesToDbAsync(cancellationToken);
 
-            readOrderDTO = await _sqlOrderRepository
-                .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
-
-            if (!isUpdated || readOrderDTO is null)
+            if (!isUpdated)
             {
                 throw new DbOperationException(nameof(UpdateOrderHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Order));
             }
+
+            readOrderDTO = await _sqlOrderRepository
+                .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
 
             _backgroundJobClient.Enqueue(
                 () => _noSqlOrderRepository.UpdateAsync(readOrderDTO, cancellationToken));

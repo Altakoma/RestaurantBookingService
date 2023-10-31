@@ -31,8 +31,8 @@ namespace OrderService.Application.MediatR.Client.Handlers
 
             if (readClientDTO is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Client),
-                    request.Id.ToString(), typeof(Domain.Entities.Client));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Client));
             }
 
             var client = _mapper.Map<Domain.Entities.Client>(request);
@@ -42,14 +42,14 @@ namespace OrderService.Application.MediatR.Client.Handlers
             bool isUpdated = await _sqlClientRepository
                                    .SaveChangesToDbAsync(cancellationToken);
 
-            readClientDTO = await _sqlClientRepository
-                .GetByIdAsync<ReadClientDTO>(client.Id, cancellationToken);
-
-            if (!isUpdated || readClientDTO is null)
+            if (!isUpdated)
             {
                 throw new DbOperationException(nameof(UpdateClientHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Client));
             }
+
+            readClientDTO = await _sqlClientRepository
+                .GetByIdAsync<ReadClientDTO>(client.Id, cancellationToken);
 
             return readClientDTO;
         }

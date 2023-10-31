@@ -48,7 +48,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadTableDTO readTableDTO = await _tableService
-                .InsertAsync<ReadTableDTO>(tableDTO, cancellationToken);
+                .InsertAsync<InsertTableDTO, ReadTableDTO>(tableDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetTableAsync),
                                    new { id = readTableDTO }, tableDTO);

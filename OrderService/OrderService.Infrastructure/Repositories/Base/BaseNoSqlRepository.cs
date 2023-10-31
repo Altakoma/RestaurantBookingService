@@ -7,6 +7,8 @@ namespace OrderService.Infrastructure.Repositories.Base
 {
     public class BaseNoSqlRepository<T> : INoSqlRepository<T> where T : BaseEntity
     {
+        public const int DefaultPaginationValue = 15;
+
         protected readonly IMongoCollection<T> _collection;
 
         public BaseNoSqlRepository(IMongoDbSettings settings)
@@ -26,7 +28,7 @@ namespace OrderService.Infrastructure.Repositories.Base
         {
             var filterDefinition = Builders<T>.Filter.Empty;
 
-            return await _collection.Find(filterDefinition)
+            return await _collection.Find(filterDefinition).Limit(DefaultPaginationValue)
                                     .ToListAsync(cancellationToken);
         }
 
@@ -49,7 +51,7 @@ namespace OrderService.Infrastructure.Repositories.Base
                                               .Eq(element => element.Id, id);
 
             T? item = await _collection.Find(filterDefinition)
-                                    .SingleOrDefaultAsync(cancellationToken);
+                                       .SingleOrDefaultAsync(cancellationToken);
 
             return item;
         }

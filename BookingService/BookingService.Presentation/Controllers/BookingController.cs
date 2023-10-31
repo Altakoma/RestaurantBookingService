@@ -49,7 +49,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadBookingDTO readBookingDTO = await _bookingService
-                .InsertAsync<ReadBookingDTO>(bookingDTO, cancellationToken);
+                .InsertAsync<InsertBookingDTO, ReadBookingDTO>(bookingDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetBookingAsync),
                                    new { id = readBookingDTO }, bookingDTO);
@@ -65,7 +65,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadBookingDTO bookingDTO = await _bookingService
-                .UpdateAsync<ReadBookingDTO>(id, updateBookingDTO, cancellationToken);
+                .UpdateAsync<UpdateBookingDTO, ReadBookingDTO>(id, updateBookingDTO, cancellationToken);
 
             return Ok(bookingDTO);
         }

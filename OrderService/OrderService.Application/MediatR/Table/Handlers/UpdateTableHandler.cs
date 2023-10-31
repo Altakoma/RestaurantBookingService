@@ -31,8 +31,8 @@ namespace OrderService.Application.MediatR.Table.Handlers
 
             if (table is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Table),
-                    request.Id.ToString(), typeof(Domain.Entities.Table));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Table));
             }
 
             table = _mapper.Map<Domain.Entities.Table>(request);
@@ -48,7 +48,8 @@ namespace OrderService.Application.MediatR.Table.Handlers
                     request.Id.ToString(), typeof(Domain.Entities.Table));
             }
 
-            var readTableDTO = _mapper.Map<ReadTableDTO>(table);
+            ReadTableDTO readTableDTO = await _sqlTableRepository
+                .GetByIdAsync<ReadTableDTO>(table.Id, cancellationToken);
 
             return readTableDTO;
         }

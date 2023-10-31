@@ -27,8 +27,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (readOrderDTO is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Order),
-                    request.Id.ToString(), typeof(Domain.Entities.Order));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Order));
             }
 
             return readOrderDTO;

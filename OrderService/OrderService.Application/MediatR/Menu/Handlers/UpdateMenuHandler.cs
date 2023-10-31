@@ -32,8 +32,8 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             if (menu is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Menu),
-                    request.Id.ToString(), typeof(Domain.Entities.Menu));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Menu));
             }
 
             menu = _mapper.Map<Domain.Entities.Menu>(request);
@@ -49,7 +49,8 @@ namespace OrderService.Application.MediatR.Menu.Handlers
                     request.Id.ToString(), typeof(Domain.Entities.Menu));
             }
 
-            var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
+            ReadMenuDTO readMenuDTO = await _sqlMenuRepository
+                .GetByIdAsync<ReadMenuDTO>(menu.Id, cancellationToken);
 
             return readMenuDTO;
         }
