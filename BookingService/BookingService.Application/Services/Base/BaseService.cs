@@ -52,7 +52,9 @@ namespace BookingService.Application.Services.Base
         public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            var item = _mapper.Map<K>(updateItemDTO);
+            K item = await _repository.GetByIdAsync<K>(id, cancellationToken);
+
+            _mapper.Map(updateItemDTO, item);
             item.Id = id;
 
             T itemDTO = await _repository.UpdateAsync<T>(item, cancellationToken);
