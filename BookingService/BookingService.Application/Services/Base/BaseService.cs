@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BookingService.Application.DTOs.Booking;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Domain.Entities;
 using BookingService.Domain.Exceptions;
@@ -7,7 +6,7 @@ using BookingService.Domain.Interfaces.Services.Base;
 
 namespace BookingService.Application.Services.Base
 {
-    public class BaseService<K> : IBaseService where K : BaseEntity
+    public abstract class BaseService<K> : IBaseService where K : BaseEntity
     {
         private readonly IRepository<K> _repository;
         protected readonly IMapper _mapper;
@@ -61,16 +60,16 @@ namespace BookingService.Application.Services.Base
         public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            T? readItemDTO = await _repository
-                                   .GetByIdAsync<T>(id, cancellationToken);
+            K? item = await _repository
+                                   .GetByIdAsync<K>(id, cancellationToken);
 
-            if (readItemDTO is null)
+            if (item is null)
             {
                 throw new NotFoundException(nameof(K),
                     id.ToString(), typeof(K));
             }
 
-            var item = _mapper.Map<K>(updateItemDTO);
+            _mapper.Map(updateItemDTO, item);
             item.Id = id;
 
             _repository.Update(item);
@@ -81,6 +80,15 @@ namespace BookingService.Application.Services.Base
             if (!isUpdated)
             {
                 throw new DbOperationException(nameof(UpdateAsync),
+                    id.ToString(), typeof(K));
+            }
+
+            T? readItemDTO = await _repository
+                                   .GetByIdAsync<T>(id, cancellationToken);
+
+            if (readItemDTO is null)
+            {
+                throw new NotFoundException(nameof(K),
                     id.ToString(), typeof(K));
             }
 

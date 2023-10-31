@@ -4,7 +4,7 @@ using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Infrastructure.Data.ApplicationNoSqlDbSettings;
 using OrderService.Infrastructure.Repositories.Base;
 
-namespace OrderService.Infrastructure.Repositories.Read
+namespace OrderService.Infrastructure.Repositories.NoSql
 {
     public class NoSqlOrderRepository : BaseNoSqlRepository<ReadOrderDTO>, INoSqlOrderRepository
     {

@@ -1,6 +1,6 @@
 ﻿namespace BookingService.Application.Interfaces.GrpcServices
 {
-    public interface IGrpcEmployeeClientService
+    public interface IGrpcClientEmployeeService
     {
         Task<IsWorkingAtRestaurantReply> EmployeeWorksAtRestaurant(
             IsWorkingAtRestaurantRequest request, CancellationToken cancellationToken);

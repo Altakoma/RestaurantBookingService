@@ -8,6 +8,8 @@
 
         public const string NullReferenceMessage = "Object of type {0} has been null";
 
+        public const string NotClientBookingMessage = "Booking of key {0} is not your and you can not do anything with it";
+
         public const string BadConfigurationProvidedMessage = "Configuration string {0} was not defined or was uncorrect";
 
         public const string NotCommittedTransactionAtBehaviorMessage = "A transaction hasn't been committed at the" +

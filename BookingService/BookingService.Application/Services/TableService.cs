@@ -16,12 +16,12 @@ namespace BookingService.Application.Services
         private readonly ITokenParser _tokenParser;
         private readonly ITableRepository _tableRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IGrpcEmployeeClientService _grpcEmployeeClientService;
+        private readonly IGrpcClientEmployeeService _grpcEmployeeClientService;
 
         public TableService(ITableRepository tableRepository,
             IMapper mapper, ITokenParser tokenParser,
             IHttpContextAccessor httpContextAccessor,
-            IGrpcEmployeeClientService grpcEmployeeClientService)
+            IGrpcClientEmployeeService grpcEmployeeClientService)
             : base(tableRepository, mapper)
         {
             _tableRepository = tableRepository;
@@ -32,7 +32,7 @@ namespace BookingService.Application.Services
 
         public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await EmployeeWorksAtRestaurant(id, cancellationToken);
+            await EmployeeWorksAtRestaurantByTableId(id, cancellationToken);
 
             await base.DeleteAsync(id, cancellationToken);
         }
@@ -48,7 +48,7 @@ namespace BookingService.Application.Services
         public async override Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            await EmployeeWorksAtRestaurant(id, cancellationToken);
+            await EmployeeWorksAtRestaurantByTableId(id, cancellationToken);
 
             return await base.UpdateAsync<U, T>(id, updateItemDTO, cancellationToken);
         }

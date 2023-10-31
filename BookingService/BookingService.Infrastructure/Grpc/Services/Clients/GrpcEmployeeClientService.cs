@@ -6,14 +6,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace BookingService.Infrastructure.Grpc.Services.Clients
 {
-    public class EmployeeClientService : IGrpcEmployeeClientService
+    public class GrpcClientEmployeeService : IGrpcClientEmployeeService
     {
         public const string EnvironmentServerAddressString = "CatalogService";
         public const string ConfigurationServerAddressString = "CatalogService";
 
         private readonly IConfiguration _configuration;
 
-        public EmployeeClientService(IConfiguration configuration)
+        public GrpcClientEmployeeService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -33,7 +33,7 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
 
             using (var channel = GrpcChannel.ForAddress(serverAddress))
             {
-                var client = new EmployeeService.EmployeeServiceClient(channel);
+                var client = new EmployeeGrpcService.EmployeeGrpcServiceClient(channel);
                 var reply = await client.EmployeeWorksAtRestaurantAsync(request,
                     cancellationToken: cancellationToken);
 

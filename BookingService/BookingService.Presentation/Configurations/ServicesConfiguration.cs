@@ -18,6 +18,8 @@ namespace BookingService.Presentation.Configurations
         {
             services.AddControllers();
 
+            builder.Services.AddGrpc();
+
             services.AddHttpContextAccessor();
 
             services.AddMvc(options =>
@@ -53,7 +55,7 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
 
-            services.AddScoped<IGrpcEmployeeClientService, EmployeeClientService>();
+            services.AddSingleton<IGrpcClientEmployeeService, GrpcClientEmployeeService>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 

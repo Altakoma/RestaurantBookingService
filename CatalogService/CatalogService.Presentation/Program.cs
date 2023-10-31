@@ -30,7 +30,7 @@ namespace CatalogService.Presentation
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
-            app.MapGrpcService<GrpcEmployeeService>();
+            app.MapGrpcService<GrpcServerEmployeeService>();
 
             app.MapControllers();
 

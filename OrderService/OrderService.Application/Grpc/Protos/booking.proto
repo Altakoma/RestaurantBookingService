@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "OrderService.Application";
+
+package bookingGrpcService;
+
+service BookingGrpcService {
+	rpc IsClientBookedTable (IsClientBookedTableRequest) returns (IsClientBookedTableReply);
+}
+
+message IsClientBookedTableRequest{
+	int32 client_id = 1;
+	int32 table_id = 2;
+}
+
+message IsClientBookedTableReply{
+	bool is_client_booked_table = 1;
+}

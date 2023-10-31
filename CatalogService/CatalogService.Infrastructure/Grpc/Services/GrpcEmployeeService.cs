@@ -4,11 +4,11 @@ using Grpc.Core;
 
 namespace CatalogService.Infrastructure.Grpc.Services
 {
-    public class GrpcEmployeeService : EmployeeService.EmployeeServiceBase
+    public class GrpcServerEmployeeService : EmployeeGrpcService.EmployeeGrpcServiceBase
     {
         private readonly IEmployeeRepository _employeeRepository;
 
-        public GrpcEmployeeService(IEmployeeRepository employeeRepository)
+        public GrpcServerEmployeeService(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
         }

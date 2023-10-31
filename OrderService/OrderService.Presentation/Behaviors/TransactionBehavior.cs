@@ -34,8 +34,7 @@ namespace OrderService.Presentation.Behaviors
             {
                 transaction.Rollback();
 
-                throw new NotCommittedTransactionException(
-                    ExceptionMessages.NotCommittedTransactionAtBehaviorMessage);
+                throw;
             }
 
             return response;
