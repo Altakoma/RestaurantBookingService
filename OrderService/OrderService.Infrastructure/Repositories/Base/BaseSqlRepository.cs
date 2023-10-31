@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using OrderService.Application.DTOs.Order;
 using OrderService.Application.Interfaces.Repositories.Base;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Exceptions;
@@ -20,12 +19,17 @@ namespace OrderService.Infrastructure.Repositories.Base
             _mapper = mapper;
         }
 
-        public async Task<U?> GetByIdAsync<U>(int id,
+        public async Task<U> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
             U? item = await _mapper.ProjectTo<U>(
                 _orderServiceSqlDbContext.Set<T>().Where(item => item.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
+
+            if (item is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(T));
+            }
 
             return item;
         }
@@ -37,7 +41,7 @@ namespace OrderService.Infrastructure.Repositories.Base
 
             if (item is null)
             {
-                throw new NotFoundException(nameof(T), id.ToString(),
+                throw new NotFoundException(id.ToString(),
                     typeof(T));
             }
 
@@ -49,16 +53,6 @@ namespace OrderService.Infrastructure.Repositories.Base
             _orderServiceSqlDbContext.Remove(item);
         }
 
-        public async Task InsertAsync(T item, CancellationToken cancellationToken)
-        {
-            await _orderServiceSqlDbContext.AddAsync(item, cancellationToken);
-        }
-
-        public void Update(T item)
-        {
-            _orderServiceSqlDbContext.Update(item);
-        }
-
         public async Task<bool> SaveChangesToDbAsync(
             CancellationToken cancellationToken)
         {
@@ -66,6 +60,20 @@ namespace OrderService.Infrastructure.Repositories.Base
                               .SaveChangesAsync(cancellationToken);
 
             return saved > 0;
+        }
+
+        public async Task<U> InsertAsync<U>(T item, CancellationToken cancellationToken)
+        {
+            await _orderServiceSqlDbContext.AddAsync(item, cancellationToken);
+
+            return await GetByIdAsync<U>(item.Id, cancellationToken);
+        }
+
+        public async Task<U> UpdateAsync<U>(T item, CancellationToken cancellationToken)
+        {
+            _orderServiceSqlDbContext.Update(item);
+
+            return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
     }
 }

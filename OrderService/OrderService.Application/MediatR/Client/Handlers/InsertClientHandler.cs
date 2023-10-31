@@ -28,7 +28,8 @@ namespace OrderService.Application.MediatR.Client.Handlers
         {
             var client = _mapper.Map<Domain.Entities.Client>(request);
 
-            await _sqlRepository.InsertAsync(client, cancellationToken);
+            ReadClientDTO readClientDTO = await _sqlRepository
+                .InsertAsync<ReadClientDTO>(client, cancellationToken);
 
             bool isInserted = await _sqlRepository
                 .SaveChangesToDbAsync(cancellationToken);
@@ -38,8 +39,6 @@ namespace OrderService.Application.MediatR.Client.Handlers
                 throw new DbOperationException(nameof(InsertClientHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Client));
             }
-
-            var readClientDTO = _mapper.Map<ReadClientDTO>(client);
 
             return readClientDTO;
         }

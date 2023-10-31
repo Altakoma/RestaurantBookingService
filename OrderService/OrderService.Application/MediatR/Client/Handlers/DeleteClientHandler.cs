@@ -27,8 +27,8 @@ namespace OrderService.Application.MediatR.Client.Handlers
 
             if (client is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Client),
-                    request.Id.ToString(), typeof(Domain.Entities.Client));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Client));
             }
 
             await _sqlRepository.DeleteAsync(request.Id, cancellationToken);

@@ -26,8 +26,8 @@ namespace OrderService.Application.MediatR.Table.Handlers
 
             if (table is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Table),
-                    request.Id.ToString(), typeof(Domain.Entities.Table));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Table));
             }
 
             await _sqlTableRepository.DeleteAsync(request.Id, cancellationToken);

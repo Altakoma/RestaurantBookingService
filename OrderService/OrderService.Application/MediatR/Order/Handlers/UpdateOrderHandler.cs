@@ -35,21 +35,19 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (readOrderDTO is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Order),
-                    request.Id.ToString(), typeof(Domain.Entities.Order));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Order));
             }
 
             var order = _mapper.Map<Domain.Entities.Order>(request);
 
-            _sqlOrderRepository.Update(order);
+            readOrderDTO = await _sqlOrderRepository
+                .UpdateAsync<ReadOrderDTO>(order,cancellationToken);
 
             bool isUpdated = await _sqlOrderRepository.
                                    SaveChangesToDbAsync(cancellationToken);
 
-            readOrderDTO = await _sqlOrderRepository
-                .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
-
-            if (!isUpdated || readOrderDTO is null)
+            if (!isUpdated)
             {
                 throw new DbOperationException(nameof(UpdateOrderHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Order));

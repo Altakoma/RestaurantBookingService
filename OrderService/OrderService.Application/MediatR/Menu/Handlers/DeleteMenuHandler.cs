@@ -26,8 +26,8 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             if (menu is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Menu),
-                    request.Id.ToString(), typeof(Domain.Entities.Menu));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Menu));
             }
 
             await _sqlMenuRepository.DeleteAsync(request.Id, cancellationToken);

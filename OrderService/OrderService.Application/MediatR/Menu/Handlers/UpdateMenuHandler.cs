@@ -32,13 +32,14 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             if (menu is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Menu),
-                    request.Id.ToString(), typeof(Domain.Entities.Menu));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Menu));
             }
 
             menu = _mapper.Map<Domain.Entities.Menu>(request);
 
-            _sqlMenuRepository.Update(menu);
+            ReadMenuDTO readMenuDTO = await _sqlMenuRepository
+                .UpdateAsync<ReadMenuDTO>(menu,cancellationToken);
 
             bool isUpdated = await _sqlMenuRepository.
                                    SaveChangesToDbAsync(cancellationToken);
@@ -48,8 +49,6 @@ namespace OrderService.Application.MediatR.Menu.Handlers
                 throw new DbOperationException(nameof(UpdateMenuHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Menu));
             }
-
-            var readMenuDTO = _mapper.Map<ReadMenuDTO>(menu);
 
             return readMenuDTO;
         }

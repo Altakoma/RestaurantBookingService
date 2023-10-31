@@ -31,13 +31,14 @@ namespace OrderService.Application.MediatR.Table.Handlers
 
             if (table is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Table),
-                    request.Id.ToString(), typeof(Domain.Entities.Table));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Table));
             }
 
             table = _mapper.Map<Domain.Entities.Table>(request);
 
-            _sqlTableRepository.Update(table);
+            ReadTableDTO readTableDTO = await _sqlTableRepository
+                .UpdateAsync<ReadTableDTO>(table, cancellationToken);
 
             bool isUpdated = await _sqlTableRepository.
                                    SaveChangesToDbAsync(cancellationToken);
@@ -47,8 +48,6 @@ namespace OrderService.Application.MediatR.Table.Handlers
                 throw new DbOperationException(nameof(UpdateTableHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Table));
             }
-
-            var readTableDTO = _mapper.Map<ReadTableDTO>(table);
 
             return readTableDTO;
         }

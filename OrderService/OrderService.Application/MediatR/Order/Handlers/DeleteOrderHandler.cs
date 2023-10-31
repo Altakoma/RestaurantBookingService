@@ -31,8 +31,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (orderDTO is null)
             {
-                throw new NotFoundException(nameof(Domain.Entities.Order),
-                    request.Id.ToString(), typeof(Domain.Entities.Order));
+                throw new NotFoundException(request.Id.ToString(),
+                    typeof(Domain.Entities.Order));
             }
 
             await _sqlOrderRepository.DeleteAsync(request.Id, cancellationToken);
