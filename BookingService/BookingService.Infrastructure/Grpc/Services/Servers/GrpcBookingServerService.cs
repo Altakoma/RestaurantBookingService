@@ -17,7 +17,7 @@ namespace BookingService.Infrastructure.Grpc.Services.Servers
             IsClientBookedTableRequest request, ServerCallContext context)
         {
             bool isClientBookedTable = await _bookingRepository.IsClientBookedTableAsync(
-                request.ClientId, request.TableId, context.CancellationToken);
+                request.ClientId, request.BookingId, context.CancellationToken);
 
             var isClientBookedTableReply = new IsClientBookedTableReply
             {

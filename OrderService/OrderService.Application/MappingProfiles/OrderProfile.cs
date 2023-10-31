@@ -13,9 +13,7 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(insertOrderCommand => insertOrderCommand.BookingId,
                 options => options.MapFrom(insertOrderDTO => insertOrderDTO.BookingId))
                 .ForMember(insertOrderCommand => insertOrderCommand.MenuId,
-                options => options.MapFrom(insertOrderDTO => insertOrderDTO.MenuId))
-                .ForMember(insertOrderCommand => insertOrderCommand.TableId,
-                options => options.MapFrom(insertOrderDTO => insertOrderDTO.TableId));
+                options => options.MapFrom(insertOrderDTO => insertOrderDTO.MenuId));
 
             CreateMap<UpdateOrderDTO, UpdateOrderCommand>()
                 .ForMember(updateOrderCommand => updateOrderCommand.MenuId,
@@ -27,9 +25,7 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(order => order.MenuId,
                 options => options.MapFrom(insertOrderCommand => insertOrderCommand.MenuId))
                 .ForMember(order => order.ClientId,
-                options => options.MapFrom(insertOrderCommand => insertOrderCommand.ClientId))
-                .ForMember(order => order.TableId,
-                options => options.MapFrom(insertOrderCommand => insertOrderCommand.TableId));
+                options => options.MapFrom(insertOrderCommand => insertOrderCommand.ClientId));
 
             CreateMap<UpdateOrderCommand, Order>()
                 .ForMember(order => order.Id,

@@ -10,7 +10,7 @@ service BookingGrpcService {
 
 message IsClientBookedTableRequest{
 	int32 client_id = 1;
-	int32 table_id = 2;
+	int32 booking_id = 2;
 }
 
 message IsClientBookedTableReply{

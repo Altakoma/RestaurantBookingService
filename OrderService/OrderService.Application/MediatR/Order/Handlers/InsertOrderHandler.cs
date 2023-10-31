@@ -50,7 +50,7 @@ namespace OrderService.Application.MediatR.Order.Handlers
             var isClientBookedTableRequest = new IsClientBookedTableRequest
             {
                 ClientId = subjectId,
-                TableId = request.TableId,
+                BookingId = request.BookingId,
             };
 
             IsClientBookedTableReply reply =
@@ -59,7 +59,7 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (!reply.IsClientBookedTable)
             {
-                throw new AuthorizationException(request.TableId.ToString(),
+                throw new AuthorizationException(request.BookingId.ToString(),
                     ExceptionMessages.NotClientBookingMessage);
             }
 
