@@ -32,26 +32,24 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             return items;
         }
 
-        public async Task<U?> GetByIdAsync<U>(int id,
+        public async Task<U> GetByIdAsync<U>(int id,
             CancellationToken cancellationToken)
         {
             U? item = await _mapper.ProjectTo<U>(
                 _bookingServiceDbContext.Set<T>().Where(item => item.Id == id))
                 .SingleOrDefaultAsync(cancellationToken);
 
+            if (item is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(T));
+            }
+
             return item;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            T? item = await _bookingServiceDbContext.Set<T>()
-                .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-            if (item is null)
-            {
-                throw new NotFoundException(nameof(T), id.ToString(),
-                    typeof(T));
-            }
+            T item = await ItemExistsAsync(id, cancellationToken);
 
             Delete(item);
         }
@@ -61,14 +59,20 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             _bookingServiceDbContext.Remove(item);
         }
 
-        public async Task InsertAsync(T item, CancellationToken cancellationToken)
+        public async Task<U> InsertAsync<U>(T item, CancellationToken cancellationToken)
         {
             await _bookingServiceDbContext.AddAsync(item, cancellationToken);
+
+            return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
 
-        public void Update(T item)
+        public async Task<U> UpdateAsync<U>(T item, CancellationToken cancellationToken)
         {
+            await ItemExistsAsync(item.Id, cancellationToken);
+
             _bookingServiceDbContext.Update(item);
+
+            return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
 
         public async Task<bool> SaveChangesToDbAsync(
@@ -78,6 +82,19 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
                               .SaveChangesAsync(cancellationToken);
 
             return saved > 0;
+        }
+
+        private async Task<T> ItemExistsAsync(int id, CancellationToken cancellationToken)
+        {
+            T? item = await _bookingServiceDbContext.Set<T>()
+                .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+            if (item is null)
+            {
+                throw new NotFoundException(id.ToString(), typeof(T));
+            }
+
+            return item;
         }
     }
 }

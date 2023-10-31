@@ -4,7 +4,7 @@
     {
         public const string NotEnteredProperty = "Please ensure you have entered your {PropertyName}";
 
-        public const string NotFoundExceptionMessage = "Object of type {0} hasn't been found by {1} key of {2}";
+        public const string NotFoundExceptionMessage = "Object of type {0} hasn't been found by {1} key";
 
         public const string EmployeeAuthorizationExceptionMessage = "Token provided {0} key and it doesn't give you" +
             "permission to do that action";
