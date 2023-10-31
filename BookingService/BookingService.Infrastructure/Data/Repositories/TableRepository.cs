@@ -23,8 +23,7 @@ namespace BookingService.Infrastructure.Data.Repositories
 
             if (table is null)
             {
-                throw new NotFoundException(nameof(Table),
-                                            id.ToString(), typeof(Type));
+                throw new NotFoundException(id.ToString(), typeof(Type));
             }
 
             return table.RestaurantId;

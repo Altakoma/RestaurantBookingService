@@ -37,13 +37,12 @@ namespace BookingService.Application.TokenParsers
                 }
                 else
                 {
-                    throw new NotFoundException("AuthorizationToken", "sub", typeof(Claim));
+                    throw new NotFoundException("sub", typeof(Claim));
                 }
             }
             else
             {
-                throw new NotFoundException(nameof(IHeaderDictionary),
-                    "Authorization", typeof(IHeaderDictionary));
+                throw new NotFoundException("Authorization", typeof(IHeaderDictionary));
             }
         }
     }
