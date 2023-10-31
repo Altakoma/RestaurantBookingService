@@ -19,13 +19,7 @@ namespace BookingService.Application.Services.Base
 
         public async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
         {
-            T? readItemDTO = await _repository.GetByIdAsync<T>(id, cancellationToken);
-
-            if (readItemDTO is null)
-            {
-                throw new NotFoundException(nameof(K),
-                    id.ToString(), typeof(K));
-            }
+            T readItemDTO = await _repository.GetByIdAsync<T>(id, cancellationToken);
 
             return readItemDTO;
         }
@@ -42,7 +36,7 @@ namespace BookingService.Application.Services.Base
         {
             var item = _mapper.Map<K>(insertItemDTO);
 
-            await _repository.InsertAsync(item, cancellationToken);
+            T readItemDTO = await _repository.InsertAsync<T>(item, cancellationToken);
 
             bool isInserted = await _repository.SaveChangesToDbAsync(cancellationToken);
 
@@ -52,27 +46,16 @@ namespace BookingService.Application.Services.Base
                     item?.ToString() ?? string.Empty, typeof(K));
             }
 
-            T readItemDTO = await GetByIdAsync<T>(item.Id, cancellationToken);
-
             return readItemDTO;
         }
 
         public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            T? readItemDTO = await _repository
-                                   .GetByIdAsync<T>(id, cancellationToken);
-
-            if (readItemDTO is null)
-            {
-                throw new NotFoundException(nameof(K),
-                    id.ToString(), typeof(K));
-            }
-
             var item = _mapper.Map<K>(updateItemDTO);
             item.Id = id;
 
-            _repository.Update(item);
+            T itemDTO = await _repository.UpdateAsync<T>(item, cancellationToken);
 
             bool isUpdated = await _repository
                                    .SaveChangesToDbAsync(cancellationToken);
@@ -83,19 +66,11 @@ namespace BookingService.Application.Services.Base
                     id.ToString(), typeof(K));
             }
 
-            return readItemDTO;
+            return itemDTO;
         }
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            K? item = await _repository.GetByIdAsync<K>(id, cancellationToken);
-
-            if (item is null)
-            {
-                throw new NotFoundException(nameof(K),
-                    id.ToString(), typeof(K));
-            }
-
             await _repository.DeleteAsync(id, cancellationToken);
 
             bool isDeleted = await _repository
