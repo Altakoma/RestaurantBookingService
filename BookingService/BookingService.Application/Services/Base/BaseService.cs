@@ -52,15 +52,7 @@ namespace BookingService.Application.Services.Base
         public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            var item = _mapper.Map<K>(updateItemDTO);
-            K? item = await _repository
-                                   .GetByIdAsync<K>(id, cancellationToken);
-
-            if (item is null)
-            {
-                throw new NotFoundException(nameof(K),
-                    id.ToString(), typeof(K));
-            }
+            K item = await _repository.GetByIdAsync<K>(id, cancellationToken);
 
             _mapper.Map(updateItemDTO, item);
             item.Id = id;
