@@ -23,7 +23,7 @@ namespace OrderService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
-            services.AddHangfire(builder.Configuration);
+            services.AddHangfire(builder);
 
             services.AddEndpointsApiExplorer();
 

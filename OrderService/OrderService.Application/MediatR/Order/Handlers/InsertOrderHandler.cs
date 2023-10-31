@@ -35,15 +35,6 @@ namespace OrderService.Application.MediatR.Order.Handlers
             var readOrderDTO = await _sqlOrderRepository
                 .InsertAsync<ReadOrderDTO>(order, cancellationToken);
 
-            bool isInserted = await _sqlOrderRepository
-                .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isInserted)
-            {
-                throw new DbOperationException(nameof(InsertOrderHandler.Handle),
-                    nameof(InsertOrderCommand), typeof(Domain.Entities.Order));
-            }
-
             _backgroundJobClient.Enqueue(
                 () => _noSqlOrderRepository.InsertAsync(readOrderDTO, cancellationToken));
 

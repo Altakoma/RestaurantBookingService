@@ -4,6 +4,7 @@ using OrderService.Application.Interfaces.Repositories.Base;
 using OrderService.Domain.Entities;
 using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
+using System.Threading;
 
 namespace OrderService.Infrastructure.Repositories.Base
 {
@@ -66,12 +67,18 @@ namespace OrderService.Infrastructure.Repositories.Base
         {
             await _orderServiceSqlDbContext.AddAsync(item, cancellationToken);
 
+            await _orderServiceSqlDbContext.SaveChangesAsync(cancellationToken);
+
             return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
 
-        public void Update(T item)
+        public async Task<U> UpdateAsync<U>(T item, CancellationToken cancellationToken)
         {
             _orderServiceSqlDbContext.Update(item);
+
+            await _orderServiceSqlDbContext.SaveChangesAsync(cancellationToken);
+
+            return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
     }
 }

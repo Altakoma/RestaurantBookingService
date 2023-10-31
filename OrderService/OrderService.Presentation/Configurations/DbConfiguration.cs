@@ -3,13 +3,13 @@ using Microsoft.Extensions.Options;
 using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationNoSqlDbSettings;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
-using System.Text.Json;
 
 namespace OrderService.Presentation.Configurations
 {
     public static class DbConfiguration
     {
-        public const string MongoDbConnectionSection = "MongoDbConnection";
+        public const string MongoDbConnectionString = "MongoDbConnection";
+        public const string MongoDbName = "MongoDbName";
         public const string SqlDbDevelopmentConnectionString = "DefaultSqlConnection";
         public const string EnvironmentSqlDbDevelopmentConnectionString = "DefaultSqlConnection";
 
@@ -33,32 +33,30 @@ namespace OrderService.Presentation.Configurations
             if (builder.Environment.IsDevelopment())
             {
                 services.Configure<MongoDbSettings>(
-                    builder.Configuration.GetSection(MongoDbConnectionSection));
+                    builder.Configuration.GetSection(MongoDbConnectionString));
 
                 services.AddSingleton<IMongoDbSettings>(serviceProvider =>
                     serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
             }
             else
             {
-                string? mongoDbConnectionSection = 
-                    Environment.GetEnvironmentVariable(MongoDbConnectionSection);
+                string? mongoDbConnectionString =
+                    Environment.GetEnvironmentVariable(MongoDbConnectionString);
 
-                if (mongoDbConnectionSection is null)
+                string? mongoDbName = Environment.GetEnvironmentVariable(MongoDbName);
+
+                if (mongoDbConnectionString is null || mongoDbName is null)
                 {
                     throw new BadConfigurationProvidedException(
                         string.Format(ExceptionMessages.BadConfigurationProvidedMessage,
-                                      MongoDbConnectionSection));
+                                      MongoDbConnectionString));
                 }
 
-                MongoDbSettings? configuration =
-                    JsonSerializer.Deserialize<MongoDbSettings>(mongoDbConnectionSection);
-
-                if (configuration is null)
+                var configuration = new MongoDbSettings
                 {
-                    throw new BadConfigurationProvidedException(
-                        string.Format(ExceptionMessages.BadConfigurationProvidedMessage,
-                                      MongoDbConnectionSection));
-                }
+                    ConnectionString = mongoDbConnectionString,
+                    DatabaseName = mongoDbName,
+                };
 
                 services.AddSingleton<IMongoDbSettings>(configuration);
             }

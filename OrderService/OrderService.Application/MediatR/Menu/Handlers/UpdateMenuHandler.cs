@@ -2,7 +2,6 @@
 using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Menu;
-using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Domain.Exceptions;
@@ -38,19 +37,8 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             menu = _mapper.Map<Domain.Entities.Menu>(request);
 
-            _sqlMenuRepository.Update(menu);
-
-            bool isUpdated = await _sqlMenuRepository.
-                                   SaveChangesToDbAsync(cancellationToken);
-
-            if (!isUpdated)
-            {
-                throw new DbOperationException(nameof(UpdateMenuHandler.Handle),
-                    request.Id.ToString(), typeof(Domain.Entities.Menu));
-            }
-
             ReadMenuDTO readMenuDTO = await _sqlMenuRepository
-                .GetByIdAsync<ReadMenuDTO>(menu.Id, cancellationToken);
+                .UpdateAsync<ReadMenuDTO>(menu, cancellationToken);
 
             return readMenuDTO;
         }
