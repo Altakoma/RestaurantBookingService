@@ -63,12 +63,16 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
         {
             await _bookingServiceDbContext.AddAsync(item, cancellationToken);
 
+            await _bookingServiceDbContext.SaveChangesAsync(cancellationToken);
+
             return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
 
         public async Task<U> UpdateAsync<U>(T item, CancellationToken cancellationToken)
         {
             _bookingServiceDbContext.Update(item);
+
+            await _bookingServiceDbContext.SaveChangesAsync(cancellationToken);
 
             return await GetByIdAsync<U>(item.Id, cancellationToken);
         }

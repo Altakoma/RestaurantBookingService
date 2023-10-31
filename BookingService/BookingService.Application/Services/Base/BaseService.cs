@@ -38,14 +38,6 @@ namespace BookingService.Application.Services.Base
 
             T readItemDTO = await _repository.InsertAsync<T>(item, cancellationToken);
 
-            bool isInserted = await _repository.SaveChangesToDbAsync(cancellationToken);
-
-            if (!isInserted)
-            {
-                throw new DbOperationException(nameof(InsertAsync),
-                    item?.ToString() ?? string.Empty, typeof(K));
-            }
-
             return readItemDTO;
         }
 
@@ -58,15 +50,6 @@ namespace BookingService.Application.Services.Base
             item.Id = id;
 
             T itemDTO = await _repository.UpdateAsync<T>(item, cancellationToken);
-
-            bool isUpdated = await _repository
-                                   .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isUpdated)
-            {
-                throw new DbOperationException(nameof(UpdateAsync),
-                    id.ToString(), typeof(K));
-            }
 
             return itemDTO;
         }
