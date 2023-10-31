@@ -38,8 +38,7 @@ namespace OrderService.Application.MediatR.Menu.Handlers
 
             menu = _mapper.Map<Domain.Entities.Menu>(request);
 
-            ReadMenuDTO readMenuDTO = await _sqlMenuRepository
-                .UpdateAsync<ReadMenuDTO>(menu,cancellationToken);
+            _sqlMenuRepository.Update(menu);
 
             bool isUpdated = await _sqlMenuRepository.
                                    SaveChangesToDbAsync(cancellationToken);
@@ -49,6 +48,9 @@ namespace OrderService.Application.MediatR.Menu.Handlers
                 throw new DbOperationException(nameof(UpdateMenuHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Menu));
             }
+
+            ReadMenuDTO readMenuDTO = await _sqlMenuRepository
+                .GetByIdAsync<ReadMenuDTO>(menu.Id, cancellationToken);
 
             return readMenuDTO;
         }

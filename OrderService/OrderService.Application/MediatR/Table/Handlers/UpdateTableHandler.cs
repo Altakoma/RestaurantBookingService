@@ -37,8 +37,7 @@ namespace OrderService.Application.MediatR.Table.Handlers
 
             table = _mapper.Map<Domain.Entities.Table>(request);
 
-            ReadTableDTO readTableDTO = await _sqlTableRepository
-                .UpdateAsync<ReadTableDTO>(table, cancellationToken);
+            _sqlTableRepository.Update(table);
 
             bool isUpdated = await _sqlTableRepository.
                                    SaveChangesToDbAsync(cancellationToken);
@@ -48,6 +47,9 @@ namespace OrderService.Application.MediatR.Table.Handlers
                 throw new DbOperationException(nameof(UpdateTableHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Table));
             }
+
+            ReadTableDTO readTableDTO = await _sqlTableRepository
+                .GetByIdAsync<ReadTableDTO>(table.Id, cancellationToken);
 
             return readTableDTO;
         }

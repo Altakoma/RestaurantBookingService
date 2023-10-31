@@ -41,8 +41,7 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             var order = _mapper.Map<Domain.Entities.Order>(request);
 
-            readOrderDTO = await _sqlOrderRepository
-                .UpdateAsync<ReadOrderDTO>(order,cancellationToken);
+            _sqlOrderRepository.Update(order);
 
             bool isUpdated = await _sqlOrderRepository.
                                    SaveChangesToDbAsync(cancellationToken);
@@ -52,6 +51,9 @@ namespace OrderService.Application.MediatR.Order.Handlers
                 throw new DbOperationException(nameof(UpdateOrderHandler.Handle),
                     request.Id.ToString(), typeof(Domain.Entities.Order));
             }
+
+            readOrderDTO = await _sqlOrderRepository
+                .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
 
             _backgroundJobClient.Enqueue(
                 () => _noSqlOrderRepository.UpdateAsync(readOrderDTO, cancellationToken));

@@ -69,11 +69,9 @@ namespace OrderService.Infrastructure.Repositories.Base
             return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
 
-        public async Task<U> UpdateAsync<U>(T item, CancellationToken cancellationToken)
+        public void Update(T item)
         {
             _orderServiceSqlDbContext.Update(item);
-
-            return await GetByIdAsync<U>(item.Id, cancellationToken);
         }
     }
 }
