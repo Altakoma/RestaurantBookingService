@@ -37,19 +37,8 @@ namespace OrderService.Application.MediatR.Client.Handlers
 
             var client = _mapper.Map<Domain.Entities.Client>(request);
 
-            _sqlClientRepository.Update(client);
-
-            bool isUpdated = await _sqlClientRepository
-                                   .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isUpdated)
-            {
-                throw new DbOperationException(nameof(UpdateClientHandler.Handle),
-                    request.Id.ToString(), typeof(Domain.Entities.Client));
-            }
-
             readClientDTO = await _sqlClientRepository
-                .GetByIdAsync<ReadClientDTO>(client.Id, cancellationToken);
+                .UpdateAsync<ReadClientDTO>(client, cancellationToken);
 
             return readClientDTO;
         }

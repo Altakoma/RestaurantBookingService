@@ -7,11 +7,21 @@ namespace OrderService.Presentation.Configurations
     {
         public const string DefaultDbConnectionString = "DefaultSqlConnection";
 
-        public static IServiceCollection AddHangfire(
-            this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddHangfire(this IServiceCollection services,
+            WebApplicationBuilder builder)
         {
-            string? hangfireConnectionString = 
-                configuration.GetConnectionString(DefaultDbConnectionString);
+            string? hangfireConnectionString;
+
+            if (builder.Environment.IsDevelopment())
+            {
+                hangfireConnectionString = builder.Configuration
+                    .GetConnectionString(DefaultDbConnectionString);
+            }
+            else
+            {
+                hangfireConnectionString = Environment
+                    .GetEnvironmentVariable(DefaultDbConnectionString);
+            }
 
             services.AddHangfire(globalConfiguration =>
                     globalConfiguration.UseSqlServerStorage(
