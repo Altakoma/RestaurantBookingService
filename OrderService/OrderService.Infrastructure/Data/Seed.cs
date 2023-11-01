@@ -34,12 +34,6 @@ namespace OrderService.Infrastructure.Data
                 dbContext.Menu.AddRange(menu);
             }
 
-            if (!dbContext.Tables.Any())
-            {
-                ICollection<Table> tables = GenerateTables();
-                dbContext.Tables.AddRange(tables);
-            }
-
             if (!dbContext.Clients.Any())
             {
                 ICollection<Client> clients = GenerateClients();
@@ -74,60 +68,6 @@ namespace OrderService.Infrastructure.Data
             };
 
             return menu;
-        }
-
-        private ICollection<Table> GenerateTables()
-        {
-            var tables = new List<Table>
-            {
-                new Table
-                {
-                    Id = 1,
-                    RestaurantId = 1,
-                },
-                new Table
-                {
-                    Id = 2,
-                    RestaurantId = 1,
-                },
-                new Table
-                {
-                    Id = 3,
-                    RestaurantId = 1,
-                },
-                new Table
-                {
-                    Id = 4,
-                    RestaurantId = 2,
-                },
-                new Table
-                {
-                    Id = 5,
-                    RestaurantId = 2,
-                },
-                new Table
-                {
-                    Id = 6,
-                    RestaurantId = 2,
-                },
-                new Table
-                {
-                    Id = 7,
-                    RestaurantId = 3,
-                },
-                new Table
-                {
-                    Id = 8,
-                    RestaurantId = 3,
-                },
-                new Table
-                {
-                    Id = 9,
-                    RestaurantId = 3,
-                },
-            };
-
-            return tables;
         }
 
         private ICollection<Client> GenerateClients()

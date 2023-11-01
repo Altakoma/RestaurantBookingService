@@ -11,7 +11,7 @@ services:
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - DefaultConnection=Data Source=restaurant-booking-service-mssql-db;Initial Catalog=RestaurantIdentityService;User ID=sa;Password=1q2w3e4r5t6yY7u8i9o;TrustServerCertificate=True
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
-      - JWTExpirationTime=00:02:59
+      - JWTExpirationTime=00:09:59
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
     image: ${DOCKER_REGISTRY-}identity-service-api
@@ -58,6 +58,7 @@ services:
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
+      - CatalogService=https://catalog-service-api:443
     image: ${DOCKER_REGISTRY-}booking-service-api
     ports:
       - 8072:80
@@ -82,6 +83,7 @@ services:
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
+      - BookingService=https://booking-service-api:443
     image: ${DOCKER_REGISTRY-}order-service-api
     ports:
       - 8073:80

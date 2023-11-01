@@ -53,7 +53,6 @@ namespace OrderService.Presentation.Configurations
             services.AddScoped<ISqlClientRepository, SqlClientRepository>();
             services.AddScoped<ISqlMenuRepository, SqlMenuRepository>();
             services.AddScoped<ISqlOrderRepository, SqlOrderRepository>();
-            services.AddScoped<ISqlTableRepository, SqlTableRepository>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 

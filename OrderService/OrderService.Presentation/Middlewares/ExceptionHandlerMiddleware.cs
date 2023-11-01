@@ -29,7 +29,6 @@ namespace OrderService.Presentation.Middlewares
                 {
                     Message = generalException.Message,
                     ExceptionType = exceptionType,
-                    Data = generalException.InnerException,
                 };
 
                 context.Response.ContentType = "application/json";

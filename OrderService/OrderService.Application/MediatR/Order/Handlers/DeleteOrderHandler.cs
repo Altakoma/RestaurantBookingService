@@ -48,7 +48,7 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             if (orderDTO.ReadClientDTO.Id != subjectId)
             {
-                throw new AuthorizationException(orderDTO.ReadTableDTO.Id.ToString(),
+                throw new AuthorizationException(orderDTO.BookingId.ToString(),
                     ExceptionMessages.NotClientBookingMessage);
             }
 

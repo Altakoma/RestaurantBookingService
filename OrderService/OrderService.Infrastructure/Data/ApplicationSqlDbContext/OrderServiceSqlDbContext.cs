@@ -9,7 +9,6 @@ namespace OrderService.Infrastructure.Data.ApplicationSQLDbContext
         public DbSet<Client> Clients { get; set; }
         public DbSet<Menu> Menu { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Table> Tables { get; set; }
 
         public OrderServiceSqlDbContext(DbContextOptions dbContextOptions)
             : base(dbContextOptions)

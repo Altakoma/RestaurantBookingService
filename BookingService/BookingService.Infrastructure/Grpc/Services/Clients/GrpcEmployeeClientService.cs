@@ -31,7 +31,16 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
                     ExceptionMessages.BadConfigurationProvidedMessage);
             }
 
-            using (var channel = GrpcChannel.ForAddress(serverAddress))
+            var httpHandler = new HttpClientHandler();
+            httpHandler.ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            var channelOptions = new GrpcChannelOptions
+            {
+                HttpHandler = httpHandler,
+            };
+
+            using (var channel = GrpcChannel.ForAddress(serverAddress, channelOptions))
             {
                 var client = new EmployeeGrpcService.EmployeeGrpcServiceClient(channel);
                 var reply = await client.EmployeeWorksAtRestaurantAsync(request,

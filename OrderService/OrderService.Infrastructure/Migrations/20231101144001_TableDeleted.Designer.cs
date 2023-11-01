@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 
@@ -10,9 +11,11 @@ using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 namespace OrderService.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderServiceSqlDbContext))]
-    partial class OrderServiceSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231101144001_TableDeleted")]
+    partial class TableDeleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

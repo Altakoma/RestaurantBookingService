@@ -32,7 +32,16 @@ namespace OrderService.Infrastructure.Grpc.Services.Clients
                     ExceptionMessages.BadConfigurationProvidedMessage);
             }
 
-            using (var channel = GrpcChannel.ForAddress(serverAddress))
+            var httpHandler = new HttpClientHandler();
+            httpHandler.ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+            var channelOptions = new GrpcChannelOptions
+            {
+                HttpHandler = httpHandler,
+            };
+
+            using (var channel = GrpcChannel.ForAddress(serverAddress, channelOptions))
             {
                 var client = new BookingGrpcService.BookingGrpcServiceClient(channel);
                 var reply = await client.IsClientBookedTableAsync(request,

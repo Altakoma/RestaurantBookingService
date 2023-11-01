@@ -40,8 +40,6 @@ namespace OrderService.Application.MappingProfiles
                 options => options.MapFrom(order => order.BookingId))
                 .ForMember(readOrderDTO => readOrderDTO.Id,
                 options => options.MapFrom(order => order.Id))
-                .ForMember(readOrderDTO => readOrderDTO.ReadTableDTO,
-                options => options.MapFrom(order => order.Table))
                 .ForMember(readOrderDTO => readOrderDTO.ReadClientDTO,
                 options => options.MapFrom(order => order.Client))
                 .ForMember(readOrderDTO => readOrderDTO.ReadMenuDTO,
