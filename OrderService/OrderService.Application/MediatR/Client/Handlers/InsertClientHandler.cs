@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Client;
 using OrderService.Application.Interfaces.Repositories.Sql;
@@ -11,15 +10,12 @@ namespace OrderService.Application.MediatR.Client.Handlers
     public class InsertClientHandler : IRequestHandler<InsertClientCommand, ReadClientDTO>
     {
         private readonly ISqlClientRepository _sqlRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
         public InsertClientHandler(ISqlClientRepository sqlClientRepository,
-            IBackgroundJobClient backgroundJobClient,
             IMapper mapper)
         {
             _sqlRepository = sqlClientRepository;
-            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 

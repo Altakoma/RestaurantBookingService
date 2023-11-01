@@ -1,5 +1,4 @@
-﻿using Hangfire;
-using MediatR;
+﻿using MediatR;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Domain.Exceptions;
@@ -9,13 +8,10 @@ namespace OrderService.Application.MediatR.Menu.Handlers
     public class DeleteMenuHandler : IRequestHandler<DeleteMenuCommand>
     {
         private readonly ISqlMenuRepository _sqlMenuRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public DeleteMenuHandler(ISqlMenuRepository sqlClientRepository,
-            IBackgroundJobClient backgroundJobClient)
+        public DeleteMenuHandler(ISqlMenuRepository sqlClientRepository)
         {
             _sqlMenuRepository = sqlClientRepository;
-            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteMenuCommand request,

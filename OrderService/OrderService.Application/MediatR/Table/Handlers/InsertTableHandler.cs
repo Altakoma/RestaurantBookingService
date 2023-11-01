@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Table;
 using OrderService.Application.Interfaces.Repositories.Sql;
@@ -11,15 +10,12 @@ namespace OrderService.Application.MediatR.Table.Handlers
     public class InsertTableHandler : IRequestHandler<InsertTableCommand, ReadTableDTO>
     {
         private readonly ISqlTableRepository _sqlTableRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
         public InsertTableHandler(ISqlTableRepository sqlTableRepository,
-            IBackgroundJobClient backgroundJobClient,
             IMapper mapper)
         {
             _sqlTableRepository = sqlTableRepository;
-            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
@@ -28,7 +24,7 @@ namespace OrderService.Application.MediatR.Table.Handlers
         {
             var table = _mapper.Map<Domain.Entities.Table>(request);
 
-            ReadTableDTO readTableDTO = 
+            ReadTableDTO readTableDTO =
                 await _sqlTableRepository.InsertAsync<ReadTableDTO>(table, cancellationToken);
 
             bool isInserted = await _sqlTableRepository

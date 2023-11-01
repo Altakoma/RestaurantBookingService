@@ -1,5 +1,4 @@
-﻿using Hangfire;
-using MediatR;
+﻿using MediatR;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Table.Commands;
 using OrderService.Domain.Exceptions;
@@ -9,13 +8,10 @@ namespace OrderService.Application.MediatR.Table.Handlers
     public class DeleteTableHandler : IRequestHandler<DeleteTableCommand>
     {
         private readonly ISqlTableRepository _sqlTableRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public DeleteTableHandler(ISqlTableRepository sqlTableRepository,
-            IBackgroundJobClient backgroundJobClient)
+        public DeleteTableHandler(ISqlTableRepository sqlTableRepository)
         {
             _sqlTableRepository = sqlTableRepository;
-            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteTableCommand request,

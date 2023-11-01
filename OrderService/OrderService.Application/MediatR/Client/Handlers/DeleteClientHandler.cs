@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using MediatR;
-using OrderService.Application.Interfaces.Repositories.NoSql;
+﻿using MediatR;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Domain.Exceptions;
@@ -10,20 +8,17 @@ namespace OrderService.Application.MediatR.Client.Handlers
     public class DeleteClientHandler : IRequestHandler<DeleteClientCommand>
     {
         private readonly ISqlClientRepository _sqlRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public DeleteClientHandler(ISqlClientRepository sqlRepository,
-            IBackgroundJobClient backgroundJobClient)
+        public DeleteClientHandler(ISqlClientRepository sqlRepository)
         {
             _sqlRepository = sqlRepository;
-            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteClientCommand request,
             CancellationToken cancellationToken)
         {
-             var client = await _sqlRepository
-                .GetByIdAsync<Domain.Entities.Client>(request.Id, cancellationToken);
+            var client = await _sqlRepository
+               .GetByIdAsync<Domain.Entities.Client>(request.Id, cancellationToken);
 
             if (client is null)
             {

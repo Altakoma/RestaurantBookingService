@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Menu;
 using OrderService.Application.Interfaces.Repositories.Sql;
@@ -11,15 +10,12 @@ namespace OrderService.Application.MediatR.Menu.Handlers
     public class UpdateMenuHandler : IRequestHandler<UpdateMenuCommand, ReadMenuDTO>
     {
         private readonly ISqlMenuRepository _sqlMenuRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
         public UpdateMenuHandler(ISqlMenuRepository sqlClientRepository,
-            IBackgroundJobClient backgroundJobClient,
             IMapper mapper)
         {
             _sqlMenuRepository = sqlClientRepository;
-            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
