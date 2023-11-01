@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Hangfire;
 using MediatR;
 using OrderService.Application.DTOs.Table;
 using OrderService.Application.Interfaces.Repositories.Sql;
@@ -11,15 +10,12 @@ namespace OrderService.Application.MediatR.Table.Handlers
     public class UpdateTableHandler : IRequestHandler<UpdateTableCommand, ReadTableDTO>
     {
         private readonly ISqlTableRepository _sqlTableRepository;
-        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IMapper _mapper;
 
         public UpdateTableHandler(ISqlTableRepository sqlTableRepository,
-            IBackgroundJobClient backgroundJobClient,
             IMapper mapper)
         {
             _sqlTableRepository = sqlTableRepository;
-            _backgroundJobClient = backgroundJobClient;
             _mapper = mapper;
         }
 
