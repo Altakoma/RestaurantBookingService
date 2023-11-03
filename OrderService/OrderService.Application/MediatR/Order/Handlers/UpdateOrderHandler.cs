@@ -3,7 +3,6 @@ using Hangfire;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using OrderService.Application.DTOs.Order;
-using OrderService.Application.Interfaces.GrpcServices;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.MediatR.Order.Commands;
@@ -58,6 +57,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
                 throw new AuthorizationException(readOrderDTO.BookingId.ToString(),
                     ExceptionMessages.NotClientBookingMessage);
             }
+
+            readOrderDTO.ReadMenuDTO = default!;
 
             var order = _mapper.Map<Domain.Entities.Order>(readOrderDTO);
 

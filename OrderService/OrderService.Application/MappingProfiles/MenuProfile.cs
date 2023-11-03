@@ -25,7 +25,8 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(readMenuDTO => readMenuDTO.Id,
                 options => options.MapFrom(client => client.Id))
                 .ForMember(readMenuDTO => readMenuDTO.FoodName,
-                options => options.MapFrom(client => client.FoodName));
+                options => options.MapFrom(client => client.FoodName))
+                .ReverseMap();
         }
     }
 }
