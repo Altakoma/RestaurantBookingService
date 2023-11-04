@@ -36,6 +36,7 @@ services:
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
+      - IdentityService=https://identity-service-api:443
     image: ${DOCKER_REGISTRY-}catalog-service-api
     ports:
       - 8071:80

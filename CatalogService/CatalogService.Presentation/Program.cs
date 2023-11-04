@@ -1,6 +1,6 @@
 using CatalogService.Infrastructure;
 using CatalogService.Infrastructure.Data;
-using CatalogService.Infrastructure.Grpc.Services;
+using CatalogService.Infrastructure.Grpc.Services.Servers;
 using CatalogService.Presentation.Configurations;
 using CatalogService.Presentation.Middlewares;
 

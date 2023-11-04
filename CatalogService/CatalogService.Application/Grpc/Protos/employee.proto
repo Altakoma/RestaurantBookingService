@@ -6,6 +6,7 @@ package employeeGrpcService;
 
 service EmployeeGrpcService {
 	rpc EmployeeWorksAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
+	rpc UserExists (IsUserExistingRequest) returns (IsUserExistingReply);
 }
 
 message IsWorkingAtRestaurantRequest{
@@ -15,4 +16,13 @@ message IsWorkingAtRestaurantRequest{
 
 message IsWorkingAtRestaurantReply{
 	bool is_employee_working_at_restaurant = 1;
+}
+
+message IsUserExistingRequest{
+	int32 user_id = 1;
+}
+
+message IsUserExistingReply{
+	bool is_user_existing = 1;
+	string user_name = 2;
 }

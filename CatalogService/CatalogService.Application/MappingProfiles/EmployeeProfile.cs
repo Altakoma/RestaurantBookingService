@@ -19,6 +19,14 @@ namespace CatalogService.Application.MappingProfiles
                 readEmployeeDTO => readEmployeeDTO.Id,
                 configuration => configuration.MapFrom(employee => employee.Id));
 
+            CreateMap<InsertEmployeeDTO, Employee>()
+                .ForMember(
+                employee => employee.RestaurantId,
+                configuration => configuration.MapFrom(insertEmployeeDTO => insertEmployeeDTO.RestaurantId))
+                .ForMember(
+                employee => employee.Id,
+                configuration => configuration.MapFrom(insertEmployeeDTO => insertEmployeeDTO.Id));
+
             CreateMap<Employee, Employee>();
         }
     }

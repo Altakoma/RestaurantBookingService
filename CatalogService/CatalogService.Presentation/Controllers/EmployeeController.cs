@@ -1,6 +1,6 @@
 ﻿using CatalogService.Application.DTOs.Employee;
 using CatalogService.Application.DTOs.Exception;
-using CatalogService.Domain.Interfaces.Services;
+using CatalogService.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace CatalogService.Presentation.Controllers
     [Authorize(Roles = "Admin")]
     public class EmployeeController : ControllerBase
     {
-        private readonly IBaseEmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeeController(IBaseEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
         }
@@ -39,6 +39,20 @@ namespace CatalogService.Presentation.Controllers
                 .GetByIdAsync<ReadEmployeeDTO>(id, cancellationToken);
 
             return Ok(employeeDTO);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadEmployeeDTO))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
+        public async Task<IActionResult> InsertEmployee([FromBody] InsertEmployeeDTO employeeDTO,
+            CancellationToken cancellationToken)
+        {
+            ReadEmployeeDTO readEmployeeDTO = await _employeeService
+                .InsertAsync<ReadEmployeeDTO>(employeeDTO, cancellationToken);
+
+            return CreatedAtAction(nameof(GetEmployeeAsync),
+                                   new { id = readEmployeeDTO.Id }, readEmployeeDTO);
         }
 
         [HttpDelete("{id}")]

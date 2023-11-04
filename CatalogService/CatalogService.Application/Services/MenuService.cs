@@ -39,7 +39,8 @@ namespace CatalogService.Application.Services
             return readMenuDTOs;
         }
 
-        public new async Task<int> DeleteAsync(int id, CancellationToken cancellationToken)
+        public new async Task<int> DeleteAsync(int id,
+            CancellationToken cancellationToken)
         {
             MenuDTO? menuDTO = await _menuRepository
                 .GetByIdAsync<MenuDTO>(id, cancellationToken);
@@ -49,67 +50,66 @@ namespace CatalogService.Application.Services
                 throw new NotFoundException(nameof(Menu), id.ToString(), typeof(Menu));
             }
 
-            var deleteAsync = async () =>
-            {
-                return await base.DeleteAsync(id, cancellationToken);
-            };
+            await EnsureEmployeeValidOrThrow(menuDTO, cancellationToken);
 
-            return await ExecuteAndCheckEmployeeAsync(deleteAsync, menuDTO, cancellationToken);
+            return await base.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<T> InsertAsync<T>(MenuDTO menuDTO, CancellationToken cancellationToken)
+        public async Task<T> InsertAsync<T>(MenuDTO menuDTO,
+            CancellationToken cancellationToken)
         {
-            var insertAsync = async () =>
-            {
-                return await base.InsertAsync<MenuDTO, T>(menuDTO, cancellationToken);
-            };
+            await EnsureEmployeeValidOrThrow(menuDTO, cancellationToken);
 
-            T readFoodTypeDTO = await ExecuteAndCheckEmployeeAsync<T>(insertAsync,
-                                                                      menuDTO, cancellationToken);
+            T readFoodTypeDTO =  await InsertAsync<MenuDTO, T>(menuDTO, cancellationToken);
 
             return readFoodTypeDTO;
         }
 
-        public async Task<T> UpdateAsync<T>(int id, MenuDTO menuDTO, CancellationToken cancellationToken)
+        public async Task<T> UpdateAsync<T>(int id, MenuDTO menuDTO,
+            CancellationToken cancellationToken)
         {
-            var updateAsync = async () =>
-            {
-                return await base.UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
-            };
+            await EnsureEmployeeValidOrThrow(menuDTO, cancellationToken);
 
-            T readFoodTypeDTO = await ExecuteAndCheckEmployeeAsync<T>(updateAsync,
-                                                                      menuDTO, cancellationToken);
+            T readFoodTypeDTO = await UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
 
             return readFoodTypeDTO;
         }
 
-        public async Task<T> ExecuteAndCheckEmployeeAsync<T>(Func<Task<T>> function,
-            MenuDTO menuDTO, CancellationToken cancellationToken)
+        private async Task EnsureEmployeeValidOrThrow(MenuDTO menuDTO,
+            CancellationToken cancellationToken)
         {
             int subjectId = _tokenParser
                 .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
 
-            bool isExist = await _employeeRepository.ExistsAsync(subjectId, cancellationToken);
+            await EnsureEmployeeExistsOrThrow(subjectId, cancellationToken);
 
-            if (isExist)
-            {
-                bool isEmployeeWorkAtRestaurant = await _restaurantRepository.WorksAtRestaurant(subjectId,
-                    menuDTO.RestaurantId, cancellationToken);
+            await EnsureEmployeeWorksAtRestaurantOrThrow(subjectId,
+                menuDTO.RestaurantId, cancellationToken);
+        }
 
-                if (isEmployeeWorkAtRestaurant)
-                {
-                    return await function();
-                }
-                else
-                {
-                    throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
-                    ExceptionMessages.NotRestaurantEmployeeAuthorizationExceptionMessage);
-                }
-            }
-            else
+        private async Task EnsureEmployeeExistsOrThrow(int subjectId,
+            CancellationToken cancellationToken)
+        {
+            bool isEmployeeExisting = await _employeeRepository
+                .ExistsAsync(subjectId, cancellationToken);
+
+            if (!isEmployeeExisting)
             {
                 throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
                     ExceptionMessages.EmployeeAuthorizationExceptionMessage);
+            }
+        }
+
+        private async Task EnsureEmployeeWorksAtRestaurantOrThrow(int subjectId,
+            int restaurantId, CancellationToken cancellationToken)
+        {
+            bool isEmployeeWorkAtRestaurant = await _restaurantRepository
+                .WorksAtRestaurant(subjectId, restaurantId, cancellationToken);
+
+            if (!isEmployeeWorkAtRestaurant)
+            {
+                throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
+                ExceptionMessages.NotRestaurantEmployeeAuthorizationExceptionMessage);
             }
         }
     }

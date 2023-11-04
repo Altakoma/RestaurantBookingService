@@ -2,7 +2,7 @@
 using CatalogService.Application.Interfaces.Repositories;
 using Grpc.Core;
 
-namespace CatalogService.Infrastructure.Grpc.Services
+namespace CatalogService.Infrastructure.Grpc.Services.Servers
 {
     public class GrpcServerEmployeeService : EmployeeGrpcService.EmployeeGrpcServiceBase
     {
