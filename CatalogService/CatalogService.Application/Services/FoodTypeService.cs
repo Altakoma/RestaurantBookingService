@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Services.Base;
 using CatalogService.Application.TokenParsers.Interfaces;
@@ -28,42 +27,27 @@ namespace CatalogService.Application.Services
 
         public new async Task<T> InsertAsync<U, T>(U foodTypeDTO, CancellationToken cancellationToken)
         {
-            var insertAsync = async () =>
-            {
-                return await base.InsertAsync<U, T>(foodTypeDTO, cancellationToken);
-            };
+            await EnsureTokenValidOrThrowAsync(cancellationToken);
 
-            T readFoodTypeDTO = await ExecuteAndCheckAsync<T>(insertAsync, cancellationToken);
-
-            return readFoodTypeDTO;
+            return await InsertAsync<U, T>(foodTypeDTO, cancellationToken);
         }
 
-        public new async Task<T> UpdateAsync<U, T>(int id, U foodTypeDTO, 
+        public new async Task<T> UpdateAsync<U, T>(int id, U foodTypeDTO,
             CancellationToken cancellationToken)
         {
-            var updateAsync = async () =>
-            {
-                return await UpdateAsync<U, T>(id, foodTypeDTO, cancellationToken);
-            };
+            await EnsureTokenValidOrThrowAsync(cancellationToken);
 
-            T readFoodTypeDTO = await ExecuteAndCheckAsync(updateAsync, cancellationToken);
-
-            return readFoodTypeDTO;
+            return await UpdateAsync<U, T>(id, foodTypeDTO, cancellationToken);
         }
 
-        public async Task<T> ExecuteAndCheckAsync<T>(Func<Task<T>> function,
-            CancellationToken cancellationToken)
+        private async Task EnsureTokenValidOrThrowAsync(CancellationToken cancellationToken)
         {
             int subjectId = _tokenParser
                 .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
 
             bool isExist = await _employeeRepository.ExistsAsync(subjectId, cancellationToken);
 
-            if (isExist)
-            {
-                return await function();
-            }
-            else
+            if (!isExist)
             {
                 throw new AuthorizationException(subjectId.ToString(), typeof(Employee),
                     ExceptionMessages.EmployeeAuthorizationExceptionMessage);
