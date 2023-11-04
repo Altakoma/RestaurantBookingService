@@ -1,5 +1,4 @@
-﻿using Grpc.Core;
-using Grpc.Net.Client;
+﻿using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using OrderService.Application;
 using OrderService.Application.Interfaces.GrpcServices;
@@ -9,8 +8,8 @@ namespace OrderService.Infrastructure.Grpc.Services.Clients
 {
     public class GrpcClientBookingService : IGrpcClientBookingService
     {
-        public const string EnvironmentServerAddressString = "BookingService";
-        public const string ConfigurationServerAddressString = "BookingService";
+        private const string EnvironmentServerAddressString = "BookingService";
+        private const string ConfigurationServerAddressString = "BookingService";
 
         private readonly IConfiguration _configuration;
 
@@ -32,9 +31,11 @@ namespace OrderService.Infrastructure.Grpc.Services.Clients
                     ExceptionMessages.BadConfigurationProvidedMessage);
             }
 
-            var httpHandler = new HttpClientHandler();
-            httpHandler.ServerCertificateCustomValidationCallback =
-                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            var httpHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
 
             var channelOptions = new GrpcChannelOptions
             {
@@ -44,6 +45,7 @@ namespace OrderService.Infrastructure.Grpc.Services.Clients
             using (var channel = GrpcChannel.ForAddress(serverAddress, channelOptions))
             {
                 var client = new BookingGrpcService.BookingGrpcServiceClient(channel);
+
                 var reply = await client.IsClientBookedTableAsync(request,
                     cancellationToken: cancellationToken);
 
