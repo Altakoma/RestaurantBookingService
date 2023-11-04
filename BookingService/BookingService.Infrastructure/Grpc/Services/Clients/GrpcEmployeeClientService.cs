@@ -8,8 +8,8 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
 {
     public class GrpcClientEmployeeService : IGrpcClientEmployeeService
     {
-        public const string EnvironmentServerAddressString = "CatalogService";
-        public const string ConfigurationServerAddressString = "CatalogService";
+        private const string EnvironmentServerAddressString = "CatalogService";
+        private const string ConfigurationServerAddressString = "CatalogService";
 
         private readonly IConfiguration _configuration;
 
