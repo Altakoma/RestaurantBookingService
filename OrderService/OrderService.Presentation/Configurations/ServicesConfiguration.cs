@@ -1,12 +1,17 @@
 ﻿using MediatR;
+using OrderService.Application.BackgroundServices;
 using OrderService.Application.Interfaces.GrpcServices;
+using OrderService.Application.Interfaces.Kafka.Consumers;
+using OrderService.Application.Interfaces.Repositories.Base;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.ServicesConfigurations;
 using OrderService.Application.TokenParsers;
 using OrderService.Application.TokenParsers.Interfaces;
+using OrderService.Domain.Entities;
 using OrderService.Infrastructure.Data;
 using OrderService.Infrastructure.Grpc.Services.Clients;
+using OrderService.Infrastructure.KafkaMessageBroker.Consumers;
 using OrderService.Infrastructure.Repositories.NoSql;
 using OrderService.Infrastructure.Repositories.Sql;
 using OrderService.Presentation.Behaviors;
@@ -59,6 +64,12 @@ namespace OrderService.Presentation.Configurations
             services.AddSingleton<IGrpcClientBookingService, GrpcClientBookingService>();
 
             services.AddSingleton<Seed>();
+
+            services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
+            services.AddSingleton<IMenuMessageConsumer, MenuMessageConsumer>();
+
+            services.AddHostedService<ClientConsumingMessagesHandlingService>();
+            services.AddHostedService<MenuConsumingMessagesHandlingService>();
 
             return services;
         }

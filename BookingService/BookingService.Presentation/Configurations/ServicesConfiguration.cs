@@ -1,13 +1,17 @@
 ﻿using BookingService.Application.Interfaces.GrpcServices;
+using BookingService.Application.Interfaces.Kafka.Consumers;
 using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services;
+using BookingService.Application.Services.Background;
 using BookingService.Application.ServicesConfigurations;
 using BookingService.Application.TokenParsers;
 using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
 using BookingService.Infrastructure.Grpc.Services.Clients;
+using BookingService.Infrastructure.KafkaMessageBroker.Consumers;
+using CatalogService.Presentation.Configurations;
 
 namespace BookingService.Presentation.Configurations
 {
@@ -30,6 +34,8 @@ namespace BookingService.Presentation.Configurations
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddDatabaseContext(builder);
+
+            services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddEndpointsApiExplorer();
 
@@ -58,6 +64,12 @@ namespace BookingService.Presentation.Configurations
             services.AddSingleton<IGrpcClientEmployeeService, GrpcClientEmployeeService>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
+
+            services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
+            services.AddSingleton<IRestaurantMessageConsumer, RestaurantMessageConsumer>();
+
+            services.AddHostedService<ClientConsumingMessagesHandlingService>();
+            services.AddHostedService<RestaurantConsumingMessagesHandlingService>();
 
             return services;
         }
