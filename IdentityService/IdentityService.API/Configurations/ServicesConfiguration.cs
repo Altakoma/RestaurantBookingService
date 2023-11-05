@@ -1,5 +1,5 @@
-﻿using FluentValidation;
-using IdentityService.BusinessLogic.DTOs.User;
+﻿using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
+using IdentityService.BusinessLogic.KafkaMessageBroker.Producers;
 using IdentityService.BusinessLogic.Services;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.ServicesConfigurations;
@@ -32,6 +32,8 @@ namespace IdentityService.API.Configurations
 
             services.AddSwagger();
 
+            services.ConfigureKafkaOptions(builder.Configuration);
+
             services.AddFluentValidation();
 
             services.AddJwtTokenAuthConfiguration(builder);
@@ -51,6 +53,7 @@ namespace IdentityService.API.Configurations
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             services.AddSingleton<ITokenGenerator, JwtGenerator>();
+            services.AddSingleton<IUserMessageProducer, UserMessageProducer>();
 
             return services;
         }

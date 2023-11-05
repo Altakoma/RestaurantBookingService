@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.DTOs.User;
+using IdentityService.BusinessLogic.DTOs.User.Messages;
 using IdentityService.BusinessLogic.Exceptions;
+using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.Entities;
@@ -16,16 +18,19 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IMapper _mapper;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IUserMessageProducer _userMessageProducer;
 
         public UserService(IUserRepository userRepository,
             IMapper mapper,
             ITokenGenerator tokenGenerator,
-            IRefreshTokenService refreshTokenService)
+            IRefreshTokenService refreshTokenService,
+            IUserMessageProducer userMessageProducer)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
             _refreshTokenService = refreshTokenService;
+            _userMessageProducer = userMessageProducer;
         }
 
         public async Task DeleteAsync(int id,
@@ -35,6 +40,11 @@ namespace IdentityService.BusinessLogic.Services
 
             bool isDeleted = await _userRepository
                                    .SaveChangesToDbAsync(cancellationToken);
+
+            var message = new DeleteUserMessageDTO { Id = id };
+
+            await _userMessageProducer.ProduceMessageAsync(message,
+                cancellationToken);
 
             if (!isDeleted)
             {
@@ -104,6 +114,11 @@ namespace IdentityService.BusinessLogic.Services
                     nameof(InsertAsync), user.Id.ToString(), typeof(User));
             }
 
+            var message = _mapper.Map<InsertUserMessageDTO>(user);
+
+            await _userMessageProducer.ProduceMessageAsync(message,
+                cancellationToken);
+
             ReadUserDTO? readUserDTO = await _userRepository
                 .GetByIdAsync<ReadUserDTO>(user.Id, cancellationToken);
 
@@ -132,6 +147,11 @@ namespace IdentityService.BusinessLogic.Services
                 throw new DbOperationException(
                     nameof(UpdateAsync), user.Id.ToString(), typeof(User));
             }
+
+            var message = _mapper.Map<UpdateUserMessageDTO>(user);
+
+            await _userMessageProducer.ProduceMessageAsync(message,
+                cancellationToken);
 
             ReadUserDTO? readUserDTO = await _userRepository
                 .GetByIdAsync<ReadUserDTO>(id, cancellationToken);

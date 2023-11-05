@@ -1,6 +1,6 @@
 ﻿using BookingService.Application.DTOs.Exception;
 using BookingService.Application.DTOs.Restaurant;
-using BookingService.Domain.Interfaces.Services;
+using BookingService.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BookingService.Application.DTOs.Booking;
 using BookingService.Application.Interfaces.Repositories;
+using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services.Base;
 using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Entities;
-using BookingService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace BookingService.Application.Services

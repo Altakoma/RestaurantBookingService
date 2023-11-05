@@ -2,11 +2,11 @@
 using BookingService.Application.DTOs.Table;
 using BookingService.Application.Interfaces.GrpcServices;
 using BookingService.Application.Interfaces.Repositories;
+using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services.Base;
 using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Entities;
 using BookingService.Domain.Exceptions;
-using BookingService.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace BookingService.Application.Services

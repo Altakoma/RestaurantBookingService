@@ -1,4 +1,5 @@
 ﻿using CatalogService.Application.Interfaces.GrpcServices;
+using CatalogService.Application.Interfaces.Kafka.Producers;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Interfaces.Services;
 using CatalogService.Application.Services;
@@ -9,6 +10,7 @@ using CatalogService.Domain.Interfaces.Services;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.Data.Repositories;
 using CatalogService.Infrastructure.Grpc.Services.Clients;
+using CatalogService.Infrastructure.KafkaMessageBroker.Producers;
 
 namespace CatalogService.Presentation.Configurations
 {
@@ -31,6 +33,8 @@ namespace CatalogService.Presentation.Configurations
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
             services.AddDatabaseContext(builder);
+
+            services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddEndpointsApiExplorer();
 
@@ -59,6 +63,8 @@ namespace CatalogService.Presentation.Configurations
             services.AddScoped<IGrpcEmployeeClientService, GrpcEmployeeClientService>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
+            services.AddSingleton<IMenuMessageProducer, MenuMessageProducer>();
+            services.AddSingleton<IRestaurantMessageProducer, RestaurantMessageProducer>();
 
             return services;
         }

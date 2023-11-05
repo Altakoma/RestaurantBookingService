@@ -1,10 +1,10 @@
 ﻿using BookingService.Application.Interfaces.GrpcServices;
 using BookingService.Application.Interfaces.Repositories;
+using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services;
 using BookingService.Application.ServicesConfigurations;
 using BookingService.Application.TokenParsers;
 using BookingService.Application.TokenParsers.Interfaces;
-using BookingService.Domain.Interfaces.Services;
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
 using BookingService.Infrastructure.Grpc.Services.Clients;
