@@ -1,8 +1,10 @@
 ﻿using CatalogService.Application.Interfaces.Kafka.Producers.Base;
+using CatalogService.Application.Serializers;
 using CatalogService.Domain.Exceptions;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace CatalogService.Infrastructure.KafkaMessageBroker.Producers
 {
@@ -10,8 +12,6 @@ namespace CatalogService.Infrastructure.KafkaMessageBroker.Producers
     {
         protected readonly IOptions<KafkaOptions> _options;
         protected readonly IConfiguration _configuration;
-
-        private const SecurityProtocol SaslSecurityProtocol = SecurityProtocol.SaslSsl;
 
         public BaseMessageProducer(IOptions<KafkaOptions> options,
             IConfiguration configuration)
@@ -26,13 +26,12 @@ namespace CatalogService.Infrastructure.KafkaMessageBroker.Producers
             var config = new ProducerConfig
             {
                 BootstrapServers = _options.Value.BootstrapServer,
-                SecurityProtocol = SaslSecurityProtocol,
-                SaslUsername = _options.Value.SaslUsername,
-                SaslPassword = _options.Value.SaslPassword,
                 Acks = _options.Value.Acks,
             };
 
             var producerBuilder = new ProducerBuilder<Null, T>(config);
+
+            producerBuilder.SetValueSerializer(new JsonKafkaSerializer<T>());
 
             using (var producer = producerBuilder.Build())
             {

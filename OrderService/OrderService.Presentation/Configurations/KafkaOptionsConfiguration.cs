@@ -1,13 +1,13 @@
-﻿using CatalogService.Domain.Exceptions;
-using CatalogService.Infrastructure.KafkaMessageBroker;
-using Confluent.Kafka;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using OrderService.Domain.Exceptions;
+using OrderService.Infrastructure.KafkaMessageBroker;
 
-namespace CatalogService.Presentation.Configurations
+namespace OrderService.Presentation.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
         private const string BootstrapServerString = "BootstrapServer";
+        private const string GroupNameString = "GroupName";
 
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
@@ -18,13 +18,22 @@ namespace CatalogService.Presentation.Configurations
             if (bootstrapServer is null)
             {
                 throw new NotFoundException(nameof(bootstrapServer),
-                    BootstrapServerString, typeof(string));
+                    typeof(string));
+            }
+
+            string? groupName = configuration[GroupNameString] ??
+                Environment.GetEnvironmentVariable(GroupNameString);
+
+            if (groupName is null)
+            {
+                throw new NotFoundException(nameof(groupName),
+                    typeof(string));
             }
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {
                 BootstrapServer = bootstrapServer,
-                Acks = Acks.All,
+                GroupName = groupName,
             });
 
             services.AddSingleton(options);

@@ -37,7 +37,7 @@ namespace CatalogService.Application.Services.Base
             return items;
         }
 
-        public async Task<T> InsertAsync<U, T>(U insertItemDTO,
+        public virtual async Task<T> InsertAsync<U, T>(U insertItemDTO,
             CancellationToken cancellationToken)
         {
             var item = _mapper.Map<K>(insertItemDTO);
@@ -57,7 +57,7 @@ namespace CatalogService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
+        public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
             T? readItemDTO = await _repository
@@ -95,7 +95,7 @@ namespace CatalogService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task<int> DeleteAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task<int> DeleteAsync(int id, CancellationToken cancellationToken)
         {
             K? item = await _repository.GetByIdAsync<K>(id, cancellationToken);
 

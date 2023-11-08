@@ -7,7 +7,7 @@ namespace IdentityService.BusinessLogic.DTOs.User.Messages
         public int Id { get; set; }
         public string Name { get; set; } = null!;
 
-        public InsertMenuMessageDTO() : base(MessageType.Insert)
+        public InsertUserMessageDTO() : base(MessageType.Insert)
         {
         }
     }

@@ -44,7 +44,7 @@ namespace CatalogService.Application.Services
             return readMenuDTOs;
         }
 
-        public new async Task<int> DeleteAsync(int id,
+        public override async Task<int> DeleteAsync(int id,
             CancellationToken cancellationToken)
         {
             MenuDTO? menuDTO = await _menuRepository

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace IdentityService.BusinessLogic.KafkaMessageBroker.Producers
 {
-    public class UserMessageProducer : BaseMessageProducer, IMessageProducer
+    public class UserMessageProducer : BaseMessageProducer, IUserMessageProducer
     {
         private const string TopicNameConfigurationString = "UserTopic";
         private const string TopicNameEnvironmentString = "UserTopic";

@@ -18,7 +18,7 @@ namespace CatalogService.Application.Services
             _restaurantMessageProducer = restaurantMessageProducer;
         }
 
-        public new async Task<int> DeleteAsync(int id,
+        public override async Task<int> DeleteAsync(int id,
             CancellationToken cancellationToken)
         {
             id = await base.DeleteAsync(id, cancellationToken);
@@ -30,7 +30,7 @@ namespace CatalogService.Application.Services
             return id;
         }
 
-        public new async Task<T> InsertAsync<U, T>(U item,
+        public override async Task<T> InsertAsync<U, T>(U item,
             CancellationToken cancellationToken)
         {
             T readRestaurantDTO = await base.InsertAsync<U, T>(item, cancellationToken);
@@ -42,7 +42,7 @@ namespace CatalogService.Application.Services
             return readRestaurantDTO;
         }
 
-        public new async Task<T> UpdateAsync<U, T>(int id, U item,
+        public override async Task<T> UpdateAsync<U, T>(int id, U item,
             CancellationToken cancellationToken)
         {
             T readRestaurantDTO = await base.UpdateAsync<U, T>(id, item, cancellationToken);

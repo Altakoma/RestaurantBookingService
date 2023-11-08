@@ -18,8 +18,6 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
         protected readonly IConfiguration _configuration;
         protected readonly IMapper _mapper;
 
-        private const SecurityProtocol SaslSecurityProtocol = SecurityProtocol.SaslSsl;
-
         private readonly IServiceProvider _services;
 
         public BaseMessageConsumer(IServiceProvider services,
@@ -38,11 +36,10 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             var config = new ConsumerConfig
             {
                 BootstrapServers = _options.Value.BootstrapServer,
-                SecurityProtocol = SaslSecurityProtocol,
-                SaslUsername = _options.Value.SaslUsername,
-                SaslPassword = _options.Value.SaslPassword,
+                AllowAutoCreateTopics = true,
+                AutoOffsetReset = AutoOffsetReset.Earliest,
                 GroupId = _options.Value.GroupName,
-                Acks = _options.Value.Acks,
+                EnableAutoCommit = false,
             };
 
             var consumerBuilder = new ConsumerBuilder<Null, string>(config);
@@ -55,18 +52,27 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    ConsumeResult<Null, string> result = consumer
-                                                         .Consume(cancellationToken);
-
-                    message = result.Message.Value;
-
-                    MessageDTO? messageDTO = JsonSerializer
-                                             .Deserialize<MessageDTO>(message);
-
-                    if (messageDTO is not null)
+                    try
                     {
-                        await HandleMessage(messageDTO.Type, message,
-                                            cancellationToken);
+                        ConsumeResult<Null, string> result =
+                        await Task.Run(() => consumer.Consume(cancellationToken));
+
+                        message = result.Message.Value;
+
+                        MessageDTO? messageDTO = JsonSerializer
+                                                 .Deserialize<MessageDTO>(message);
+
+                        if (messageDTO is not null)
+                        {
+                            await HandleMessage(messageDTO.Type, message,
+                                                cancellationToken);
+                        }
+
+                        consumer.Commit();
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
             }

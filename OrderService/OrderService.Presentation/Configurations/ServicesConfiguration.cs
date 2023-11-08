@@ -34,6 +34,8 @@ namespace OrderService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
+            services.ConfigureKafkaOptions(builder.Configuration);
+
             services.AddHangfire(builder);
 
             services.AddEndpointsApiExplorer();
@@ -56,7 +58,9 @@ namespace OrderService.Presentation.Configurations
             services.AddScoped<INoSqlOrderRepository, NoSqlOrderRepository>();
 
             services.AddScoped<ISqlClientRepository, SqlClientRepository>();
+            services.AddScoped<ISqlRepository<Client>, SqlClientRepository>();
             services.AddScoped<ISqlMenuRepository, SqlMenuRepository>();
+            services.AddScoped<ISqlRepository<Menu>, SqlMenuRepository>();
             services.AddScoped<ISqlOrderRepository, SqlOrderRepository>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();

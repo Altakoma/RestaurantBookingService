@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.DTOs.Menu;
+using OrderService.Application.DTOs.Menu.Messages;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Domain.Entities;
 
@@ -23,10 +25,28 @@ namespace OrderService.Application.MappingProfiles
 
             CreateMap<Menu, ReadMenuDTO>()
                 .ForMember(readMenuDTO => readMenuDTO.Id,
-                options => options.MapFrom(client => client.Id))
+                options => options.MapFrom(menu => menu.Id))
                 .ForMember(readMenuDTO => readMenuDTO.FoodName,
-                options => options.MapFrom(client => client.FoodName))
+                options => options.MapFrom(menu => menu.FoodName))
                 .ReverseMap();
+
+            CreateMap<UpdateMenuMessageDTO, Menu>()
+                .ForMember(menu => menu.Id,
+                options => options.MapFrom(updateMenuDTO => updateMenuDTO.Id))
+                .ForMember(menu => menu.FoodName,
+                options => options.MapFrom(updateMenuDTO => updateMenuDTO.FoodName))
+                .ForMember(menu => menu.Cost,
+                options => options.MapFrom(updateMenuDTO => updateMenuDTO.Cost));
+
+            CreateMap<InsertMenuMessageDTO, Menu>()
+                .ForMember(menu => menu.Id,
+                options => options.MapFrom(insertClientDTO => insertClientDTO.Id))
+                .ForMember(menu => menu.FoodName,
+                options => options.MapFrom(insertClientDTO => insertClientDTO.FoodName))
+                .ForMember(menu => menu.Cost,
+                options => options.MapFrom(insertClientDTO => insertClientDTO.Cost));
+
+            CreateMap<Menu, Menu>();
         }
     }
 }

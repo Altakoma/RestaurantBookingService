@@ -19,8 +19,6 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
         protected readonly IConfiguration _configuration;
         protected readonly IMapper _mapper;
 
-        private const SecurityProtocol SaslSecurityProtocol = SecurityProtocol.SaslSsl;
-
         private readonly IServiceProvider _services;
 
         public BaseMessageConsumer(IServiceProvider services, 
@@ -39,11 +37,10 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
             var config = new ConsumerConfig
             {
                 BootstrapServers = _options.Value.BootstrapServer,
-                SecurityProtocol = SaslSecurityProtocol,
-                SaslUsername = _options.Value.SaslUsername,
-                SaslPassword = _options.Value.SaslPassword,
+                AllowAutoCreateTopics = true,
+                AutoOffsetReset = AutoOffsetReset.Earliest,
                 GroupId = _options.Value.GroupName,
-                Acks = _options.Value.Acks,
+                EnableAutoCommit = false,
             };
 
             var consumerBuilder = new ConsumerBuilder<Null, string>(config);
@@ -56,18 +53,27 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    ConsumeResult<Null, string> result = consumer
-                                                         .Consume(cancellationToken);
-
-                    message = result.Message.Value;
-
-                    MessageDTO? messageDTO = JsonSerializer
-                                             .Deserialize<MessageDTO>(message);
-
-                    if (messageDTO is not null)
+                    try
                     {
-                        await HandleMessage(messageDTO.Type, message,
-                                            cancellationToken);
+                        ConsumeResult<Null, string> result =
+                            await Task.Run(() => consumer.Consume(cancellationToken));
+
+                        message = result.Message.Value;
+
+                        MessageDTO? messageDTO = JsonSerializer
+                                                 .Deserialize<MessageDTO>(message);
+
+                        if (messageDTO is not null)
+                        {
+                            await HandleMessage(messageDTO.Type, message,
+                                                cancellationToken);
+                        }
+
+                        consumer.Commit();
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
             }
@@ -121,9 +127,9 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
                 throw new NotFoundException(message, typeof(UpdateMessage));
             }
 
-            var restaurant = _mapper.Map<Initial>(messageDTO);
+            var item = _mapper.Map<Initial>(messageDTO);
 
-            await repository.UpdateAsync<Initial>(restaurant, cancellationToken);
+            await repository.UpdateAsync<Initial>(item, cancellationToken);
         }
 
         private async Task InsertAsync(string message, IRepository<Initial> repository,
@@ -136,9 +142,9 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
                 throw new NotFoundException(message, typeof(InsertMessage));
             }
 
-            var restaurant = _mapper.Map<Initial>(messageDTO);
+            var item = _mapper.Map<Initial>(messageDTO);
 
-            await repository.InsertAsync<Initial>(restaurant, cancellationToken);
+            await repository.InsertAsync<Initial>(item, cancellationToken);
         }
 
         public string GetTopicNameOrThrow(string configurationName, string environmentName)

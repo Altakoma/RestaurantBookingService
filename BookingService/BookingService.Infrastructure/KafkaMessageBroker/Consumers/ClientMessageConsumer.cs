@@ -21,12 +21,12 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
         {
         }
 
-        public Task HandleConsumingMessages(CancellationToken cancellationToken)
+        public async Task HandleConsumingMessages(CancellationToken cancellationToken)
         {
             string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
                 TopicNameEnvironmentString);
 
-            return ConsumeMessage(cancellationToken, topicName);
+            await ConsumeMessage(cancellationToken, topicName);
         }
     }
 }

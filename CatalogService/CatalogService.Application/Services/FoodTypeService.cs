@@ -25,14 +25,14 @@ namespace CatalogService.Application.Services
             _employeeRepository = employeeRepository;
         }
 
-        public new async Task<T> InsertAsync<U, T>(U foodTypeDTO, CancellationToken cancellationToken)
+        public override async Task<T> InsertAsync<U, T>(U foodTypeDTO, CancellationToken cancellationToken)
         {
             await EnsureTokenValidOrThrowAsync(cancellationToken);
 
             return await InsertAsync<U, T>(foodTypeDTO, cancellationToken);
         }
 
-        public new async Task<T> UpdateAsync<U, T>(int id, U foodTypeDTO,
+        public override async Task<T> UpdateAsync<U, T>(int id, U foodTypeDTO,
             CancellationToken cancellationToken)
         {
             await EnsureTokenValidOrThrowAsync(cancellationToken);
