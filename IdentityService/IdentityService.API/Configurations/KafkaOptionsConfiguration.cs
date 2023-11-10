@@ -12,8 +12,8 @@ namespace IdentityService.API.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString] ??
-                Environment.GetEnvironmentVariable(BootstrapServerString);
+            string? bootstrapServer = Environment.GetEnvironmentVariable(BootstrapServerString) ??
+                configuration[BootstrapServerString];
 
             if (bootstrapServer is null)
             {

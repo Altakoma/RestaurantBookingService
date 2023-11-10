@@ -12,8 +12,8 @@ namespace BookingService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString] ??
-                Environment.GetEnvironmentVariable(BootstrapServerString);
+            string? bootstrapServer = Environment.GetEnvironmentVariable(BootstrapServerString) ??
+                configuration[BootstrapServerString];
 
             if (bootstrapServer is null)
             {
@@ -21,8 +21,8 @@ namespace BookingService.Presentation.Configurations
                     typeof(string));
             }
 
-            string? groupName = configuration[GroupNameString] ??
-                Environment.GetEnvironmentVariable(GroupNameString);
+            string? groupName = Environment.GetEnvironmentVariable(GroupNameString) ??
+                configuration[GroupNameString];
 
             if (groupName is null)
             {

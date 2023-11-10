@@ -114,6 +114,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             }
 
             await repository.DeleteAsync(messageDTO.Id, cancellationToken);
+            await repository.SaveChangesToDbAsync(cancellationToken);
         }
 
         private async Task UpdateAsync(string message, ISqlRepository<Initial> repository,
@@ -148,8 +149,8 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
         public string GetTopicNameOrThrow(string configurationName, string environmentName)
         {
-            string? topicName = _configuration[configurationName] ??
-                Environment.GetEnvironmentVariable(environmentName);
+            string? topicName = Environment.GetEnvironmentVariable(environmentName)??
+                                _configuration[configurationName];
 
             if (topicName is null)
             {

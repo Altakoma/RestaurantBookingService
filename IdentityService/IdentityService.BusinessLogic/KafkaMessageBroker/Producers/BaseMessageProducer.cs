@@ -45,8 +45,8 @@ namespace IdentityService.BusinessLogic.KafkaMessageBroker.Producers
 
         public string GetTopicNameOrThrow(string configurationName, string environmentName)
         {
-            string? topicName = _configuration[configurationName] ??
-                Environment.GetEnvironmentVariable(environmentName);
+            string? topicName = Environment.GetEnvironmentVariable(environmentName) ??
+                _configuration[configurationName];
 
             if (topicName is null)
             {

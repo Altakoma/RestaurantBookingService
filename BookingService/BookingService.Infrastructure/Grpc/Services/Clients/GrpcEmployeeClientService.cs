@@ -22,7 +22,7 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
             IsWorkingAtRestaurantRequest request, CancellationToken cancellationToken)
         {
             string? serverAddress =
-                Environment.GetEnvironmentVariable(EnvironmentServerAddressString) ??
+                Environment.GetEnvironmentVariable(EnvironmentServerAddressString)??
                 _configuration[ConfigurationServerAddressString];
 
             if (serverAddress is null)

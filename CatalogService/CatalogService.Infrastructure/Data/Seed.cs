@@ -97,18 +97,8 @@ namespace CatalogService.Infrastructure.Data
                         new Employee
                         {
                             Id = 1,
-                            Name = "andrei",
-                        },
-                        new Employee
-                        {
-                            Id = 2,
-                            Name = "arthur",
-                        },
-                        new Employee
-                        {
-                            Id = 3,
                             Name = "maksim",
-                        }
+                        },
                     },
                     Menu = menu,
                 },
@@ -122,19 +112,9 @@ namespace CatalogService.Infrastructure.Data
                     {
                         new Employee
                         {
-                            Id = 4,
-                            Name = "dmitriy",
+                            Id = 2,
+                            Name = "andrei",
                         },
-                        new Employee
-                        {
-                            Id = 5,
-                            Name = "nikolai",
-                        },
-                        new Employee
-                        {
-                            Id = 6,
-                            Name = "yaroslav",
-                        }
                     },
                     Menu = menu,
                 },
@@ -148,19 +128,9 @@ namespace CatalogService.Infrastructure.Data
                     {
                         new Employee
                         {
-                            Id = 7,
-                            Name = "ilya",
+                            Id = 3,
+                            Name = "artur",
                         },
-                        new Employee
-                        {
-                            Id = 8,
-                            Name = "anya",
-                        },
-                        new Employee
-                        {
-                            Id = 9,
-                            Name = "gleb",
-                        }
                     },
                     Menu = menu,
                 },
