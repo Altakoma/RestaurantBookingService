@@ -22,8 +22,6 @@ namespace IdentityService.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
-
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseAuthentication();

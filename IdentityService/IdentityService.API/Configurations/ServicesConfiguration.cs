@@ -22,6 +22,8 @@ namespace IdentityService.API.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddGrpc();
 
             services.AddDatabaseContext(builder);

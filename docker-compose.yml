@@ -116,6 +116,28 @@ services:
       - restaurant-booking-service
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+  ocelot-gateway:
+    container_name: ocelot-gateway
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
+    image: ${DOCKER_REGISTRY-}ocelot-gateway
+    ports:
+      - 8084:443
+      - 8074:80
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - order-service-api
+      - booking-service-api
+      - catalog-service-api
+      - identity-service-api
+    networks:
+      - restaurant-booking-service
+    volumes:
+      - ./sertificate.pfx:/var/sertificate.pfx
   mssql-db:
     container_name: restaurant-booking-service-mssql-db
     environment:
@@ -138,8 +160,6 @@ services:
     ports:
       - 8888:5432
     image: postgres:16.0
-    volumes:
-      - postgre-data:/var/lib/postgresql/data
     networks:
       - restaurant-booking-service
   mongo-db:
