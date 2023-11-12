@@ -57,6 +57,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
+      - identity-service-api
       - mssql-db
       - kafka
     networks:
@@ -87,6 +88,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
+      - catalog-service-api
       - postgre-sql
       - kafka
     networks:
@@ -119,6 +121,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
+      - identity-service-api
+      - catalog-service-api
       - mssql-db
       - mongo-db
       - kafka
