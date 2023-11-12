@@ -12,7 +12,7 @@ namespace BookingService.Infrastructure.Data.ApplicationDbContext.Configurations
 
             builder.HasKey(table => table.Id);
 
-            builder.HasOne(table => table.Booking)
+            builder.HasMany(table => table.Bookings)
                    .WithOne(booking => booking.Table);
 
             builder.HasOne(table => table.Restaurant)

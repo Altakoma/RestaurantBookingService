@@ -43,13 +43,16 @@ namespace OrderService.Application.MediatR.Order.Handlers
                     typeof(Domain.Entities.Order));
             }
 
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            if (orderDTO.ReadClientDTO.Id != subjectId)
+            if (!request.IsRequestedBySystem)
             {
-                throw new AuthorizationException(orderDTO.BookingId.ToString(),
-                    ExceptionMessages.NotClientBookingMessage);
+                int subjectId = _tokenParser
+                    .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
+
+                if (orderDTO.ReadClientDTO.Id != subjectId)
+                {
+                    throw new AuthorizationException(orderDTO.BookingId.ToString(),
+                        ExceptionMessages.NotClientBookingMessage);
+                }
             }
 
             await _sqlOrderRepository.DeleteAsync(request.Id, cancellationToken);
@@ -63,8 +66,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
                     request.Id.ToString(), typeof(Domain.Entities.Order));
             }
 
-            _backgroundJobClient.Enqueue(
-                () => _noSqlOrderRepository.DeleteAsync(orderDTO.Id, cancellationToken));
+            _backgroundJobClient.Enqueue(() =>
+                _noSqlOrderRepository.DeleteAsync(orderDTO.Id, cancellationToken));
         }
     }
 }

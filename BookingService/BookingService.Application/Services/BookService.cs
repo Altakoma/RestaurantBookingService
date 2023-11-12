@@ -5,6 +5,7 @@ using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services.Base;
 using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Entities;
+using BookingService.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace BookingService.Application.Services
@@ -45,6 +46,22 @@ namespace BookingService.Application.Services
             booking.ClientId = subjectId;
 
             return await base.InsertAsync<Booking, T>(booking, cancellationToken);
+        }
+
+        public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            int subjectId = _tokenParser.ParseSubjectId(_httpContextAccessor?
+                                                        .HttpContext?.Request.Headers);
+
+            var booking = await GetByIdAsync<Booking>(id, cancellationToken);
+
+            if (booking.ClientId != subjectId)
+            {
+                throw new AuthorizationException(subjectId.ToString(),
+                    ExceptionMessages.AuthorizationExceptionMessage);
+            }
+
+            await base.DeleteAsync(id, cancellationToken);
         }
     }
 }

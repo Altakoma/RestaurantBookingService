@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using OrderService.Application.DTOs.Base.Messages;
 using OrderService.Application.DTOs.Client;
 using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.MediatR.Client.Commands;
@@ -40,6 +41,10 @@ namespace OrderService.Application.MappingProfiles
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Id))
                 .ForMember(client => client.Name,
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Name));
+
+            CreateMap<Client, DeleteClientCommand>()
+                .ForMember(deleteClientCommand => deleteClientCommand.Id,
+                options => options.MapFrom(client => client.Id));
 
             CreateMap<Client, Client>();
         }

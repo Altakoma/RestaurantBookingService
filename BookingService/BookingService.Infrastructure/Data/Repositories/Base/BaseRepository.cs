@@ -26,7 +26,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
         {
             ICollection<U> items = await _mapper.ProjectTo<U>(
                 _bookingServiceDbContext.Set<T>().Select(item => item)
-                .Take(DefaultTakePaginationValue))
+                .Take(DefaultTakePaginationValue)
+                .AsNoTracking())
                 .ToListAsync(cancellationToken);
 
             return items;
@@ -36,7 +37,8 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             CancellationToken cancellationToken)
         {
             U? item = await _mapper.ProjectTo<U>(
-                _bookingServiceDbContext.Set<T>().Where(item => item.Id == id))
+                _bookingServiceDbContext.Set<T>().Where(item => item.Id == id)
+                .AsNoTracking())
                 .SingleOrDefaultAsync(cancellationToken);
 
             if (item is null)

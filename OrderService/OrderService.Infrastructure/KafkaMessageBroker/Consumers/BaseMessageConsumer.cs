@@ -14,11 +14,11 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
     public abstract class BaseMessageConsumer<InsertMessage, UpdateMessage, Initial>
         : IBaseMessageConsumer
     {
+        protected readonly IServiceProvider _services;
+
         protected readonly IOptions<KafkaOptions> _options;
         protected readonly IConfiguration _configuration;
         protected readonly IMapper _mapper;
-
-        private readonly IServiceProvider _services;
 
         public BaseMessageConsumer(IServiceProvider services,
             IOptions<KafkaOptions> options,
@@ -103,7 +103,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             }
         }
 
-        private async Task DeleteAsync(string message, ISqlRepository<Initial> repository,
+        protected virtual async Task DeleteAsync(string message, ISqlRepository<Initial> repository,
             CancellationToken cancellationToken)
         {
             var messageDTO = JsonSerializer.Deserialize<DeleteMessageDTO>(message);
@@ -117,7 +117,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             await repository.SaveChangesToDbAsync(cancellationToken);
         }
 
-        private async Task UpdateAsync(string message, ISqlRepository<Initial> repository,
+        protected virtual async Task UpdateAsync(string message, ISqlRepository<Initial> repository,
             CancellationToken cancellationToken)
         {
             var messageDTO = JsonSerializer.Deserialize<UpdateMessage>(message);
@@ -132,7 +132,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             await repository.UpdateAsync<Initial>(restaurant, cancellationToken);
         }
 
-        private async Task InsertAsync(string message, ISqlRepository<Initial> repository,
+        protected virtual async Task InsertAsync(string message, ISqlRepository<Initial> repository,
             CancellationToken cancellationToken)
         {
             var messageDTO = JsonSerializer.Deserialize<InsertMessage>(message);
