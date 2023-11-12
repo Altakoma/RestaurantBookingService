@@ -138,7 +138,7 @@ services:
       - 14433:1433
     image: mcr.microsoft.com/mssql/server:2022-latest
     volumes:
-      - mssql-data:/var/opt/mssql/data/
+      - mssql-data:/var/opt/mssql
     networks:
       - ms-sql-services-network
   postgre-sql:
