@@ -36,6 +36,7 @@ services:
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   catalog-service-api:
     container_name: catalog-service-api
     environment:
@@ -58,14 +59,13 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - identity-service-api
-      - mssql-db
-      - kafka
     networks:
       - ms-sql-services-network
       - kafka-network
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   booking-service-api:
     container_name: booking-service-api
     environment:
@@ -90,13 +90,13 @@ services:
     depends_on:
       - catalog-service-api
       - postgre-sql
-      - kafka
     networks:
       - postgre-sql-services-network
       - kafka-network
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   order-service-api:
     container_name: order-service-api
     environment:
@@ -121,11 +121,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-      - identity-service-api
       - catalog-service-api
-      - mssql-db
       - mongo-db
-      - kafka
     networks:
       - ms-sql-services-network
       - mongo-nosql-services-network
@@ -133,6 +130,7 @@ services:
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   ocelot-gateway:
     container_name: ocelot-gateway
     environment:
