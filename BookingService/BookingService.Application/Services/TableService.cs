@@ -80,7 +80,7 @@ namespace BookingService.Application.Services
             if (!reply.IsEmployeeWorkingAtRestaurant)
             {
                 throw new AuthorizationException(subjectId.ToString(),
-                    ExceptionMessages.EmployeeAuthorizationExceptionMessage);
+                    ExceptionMessages.AuthorizationExceptionMessage);
             }
         }
     }

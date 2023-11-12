@@ -6,6 +6,6 @@
         public int SeatsCount { get; set; }
 
         public Restaurant Restaurant { get; set; } = null!;
-        public Booking Booking { get; set; } = null!;
+        public ICollection<Booking> Bookings { get; set; } = null!;
     }
 }

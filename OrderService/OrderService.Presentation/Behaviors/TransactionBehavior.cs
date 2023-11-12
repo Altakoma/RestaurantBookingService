@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using OrderService.Application.Interfaces.Command;
-using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using System.Data.Common;
 
 namespace OrderService.Presentation.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse>
-        : IPipelineBehavior<TRequest, TResponse> where TRequest : ITransactional
+        : IPipelineBehavior<TRequest, TResponse> where TRequest : Transactional
     {
         private readonly OrderServiceSqlDbContext _dbContext;
 
@@ -20,21 +19,28 @@ namespace OrderService.Presentation.Behaviors
         public async Task<TResponse> Handle(TRequest request,
             RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            using var transaction = await BeginTransactionAsync(cancellationToken);
-
             TResponse response;
 
-            try
+            if (request.IsTransactionSkipped)
             {
                 response = await next();
-
-                transaction.Commit();
             }
-            catch
+            else
             {
-                transaction.Rollback();
+                using var transaction = await BeginTransactionAsync(cancellationToken);
 
-                throw;
+                try
+                {
+                    response = await next();
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+
+                    throw;
+                }
             }
 
             return response;

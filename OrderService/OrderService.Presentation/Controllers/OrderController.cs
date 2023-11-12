@@ -84,7 +84,8 @@ namespace OrderService.Presentation.Controllers
         public async Task<IActionResult> DeleteOrderAsync([FromRoute] int id,
             CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteOrderCommand { Id = id }, cancellationToken);
+            await _mediator.Send(new DeleteOrderCommand { Id = id, IsRequestedBySystem = false },
+                                                          cancellationToken);
 
             return NoContent();
         }

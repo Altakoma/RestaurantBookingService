@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OrderService.Application.DTOs.Order;
+using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Entities;
 
@@ -45,6 +46,10 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(readOrderDTO => readOrderDTO.ReadMenuDTO,
                 options => options.MapFrom(order => order.Menu))
                 .ReverseMap();
+
+            CreateMap<Order, DeleteOrderCommand>()
+                .ForMember(deleteOrderCommand => deleteOrderCommand.Id,
+                options => options.MapFrom(order => order.Id));
         }
     }
 }

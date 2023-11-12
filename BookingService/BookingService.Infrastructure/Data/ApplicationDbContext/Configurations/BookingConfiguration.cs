@@ -14,7 +14,7 @@ namespace BookingService.Infrastructure.Data.ApplicationDbContext.Configurations
                    .WithMany(client => client.Bookings);
 
             builder.HasOne(booking => booking.Table)
-                   .WithOne(table => table.Booking);
+                   .WithMany(table => table.Bookings);
 
             builder.HasKey(booking => booking.Id);
         }

@@ -4,7 +4,7 @@ using OrderService.Application.Interfaces.Command;
 
 namespace OrderService.Application.MediatR.Order.Commands
 {
-    public class InsertOrderCommand : IRequest<ReadOrderDTO>, ITransactional
+    public class InsertOrderCommand : Transactional, IRequest<ReadOrderDTO>
     {
         public int BookingId { get; set; }
         public int ClientId { get; set; }
