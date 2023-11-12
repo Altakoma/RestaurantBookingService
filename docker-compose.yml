@@ -137,9 +137,13 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - 8888:5432
+<<<<<<< HEAD
     image: postgres:16.0
     volumes:
       - postgre-data:/var/lib/postgresql/data
+=======
+    image: postgres:12.16-bullseye
+>>>>>>> bac957d (Versions of some images have been chaged)
     networks:
       - restaurant-booking-service
   mongo-db:
@@ -147,7 +151,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pwdpwddwp
-    image: mongo
+    image: mongo:latest
     ports:
       - 27017:27017
     volumes:
@@ -155,7 +159,7 @@ services:
     networks:
       - restaurant-booking-service
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.4.3
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -164,7 +168,7 @@ services:
     networks:
       - restaurant-booking-service
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.3
     depends_on:
       - zookeeper
     container_name: kafka
@@ -181,7 +185,7 @@ services:
     networks:
       - restaurant-booking-service
   kafka-setup:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.4.3
     container_name: kafka-setup
     depends_on:
       - kafka
