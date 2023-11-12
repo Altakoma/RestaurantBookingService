@@ -1,7 +1,11 @@
 version: '3.4'
 
 networks:
-  restaurant-booking-service:
+  ms-sql-services-network:
+  postgre-sql-services-network:
+  mongo-nosql-services-network:
+  kafka-network:
+  services-network:
 
 services:
   identity-service-api:
@@ -27,7 +31,9 @@ services:
       - mssql-db
       - kafka
     networks:
-      - restaurant-booking-service
+      - ms-sql-services-network
+      - kafka-network
+      - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
   catalog-service-api:
@@ -54,7 +60,9 @@ services:
       - mssql-db
       - kafka
     networks:
-      - restaurant-booking-service
+      - ms-sql-services-network
+      - kafka-network
+      - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
   booking-service-api:
@@ -82,7 +90,9 @@ services:
       - postgre-sql
       - kafka
     networks:
-      - restaurant-booking-service
+      - postgre-sql-services-network
+      - kafka-network
+      - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
   order-service-api:
@@ -113,7 +123,10 @@ services:
       - mongo-db
       - kafka
     networks:
-      - restaurant-booking-service
+      - ms-sql-services-network
+      - mongo-nosql-services-network
+      - kafka-network
+      - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
   mssql-db:
@@ -123,18 +136,17 @@ services:
       -  MSSQL_SA_PASSWORD=1q2w3e4r5t6yY7u8i9o
     ports:
       - 14433:1433
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     volumes:
-      - mssql-data:/var/lib/mssql-data
+      - mssql-data:/var/opt/mssql/data/
     networks:
-      - restaurant-booking-service
+      - ms-sql-services-network
   postgre-sql:
     container_name: restaurant-booking-service-postgre-sql
     environment:
       - POSTGRES_DB=RestaurantBookingServiceDb
       - POSTGRES_USER=altakomauser
       - POSTGRES_PASSWORD=mypwd
-      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - 8888:5432
 <<<<<<< HEAD
@@ -145,7 +157,9 @@ services:
     image: postgres:12.16-bullseye
 >>>>>>> bac957d (Versions of some images have been chaged)
     networks:
-      - restaurant-booking-service
+      - postgre-sql-services-network
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
   mongo-db:
     container_name: restaurant-booking-service-mongo-db
     environment:
@@ -155,9 +169,9 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongodb-data:/var/lib/mongodb/data
+      - mongodb-data:/data/db/
     networks:
-      - restaurant-booking-service
+      - mongo-nosql-services-network
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.3
     container_name: zookeeper
@@ -166,7 +180,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: "2181"
     networks:
-      - restaurant-booking-service
+      - kafka-network
   kafka:
     image: confluentinc/cp-kafka:7.4.3
     depends_on:
@@ -183,7 +197,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PlAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
-      - restaurant-booking-service
+      - kafka-network
   kafka-setup:
     image: confluentinc/cp-kafka:7.4.3
     container_name: kafka-setup
@@ -198,8 +212,8 @@ services:
       kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic menu --replication-factor 1 --partitions 1
       "
     networks:
-      - restaurant-booking-service
+      - kafka-network
 volumes:
   mssql-data:
-  postgre-data:
   mongodb-data:
+  pgdata:
