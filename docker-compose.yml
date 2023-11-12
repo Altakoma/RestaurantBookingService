@@ -149,13 +149,7 @@ services:
       - POSTGRES_PASSWORD=mypwd
     ports:
       - 8888:5432
-<<<<<<< HEAD
-    image: postgres:16.0
-    volumes:
-      - postgre-data:/var/lib/postgresql/data
-=======
     image: postgres:12.16-bullseye
->>>>>>> bac957d (Versions of some images have been chaged)
     networks:
       - postgre-sql-services-network
     volumes:
