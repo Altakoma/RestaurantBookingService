@@ -19,8 +19,8 @@ namespace IdentityService.BusinessLogic.TokenGenerators
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         }
 
-        public (TokenDTO, RefreshToken) GenerateToken(string name,
-            string roleName, int userId)
+        public (AccessTokenDTO, string) GenerateTokens(string name,
+            string roleName, string userId)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
@@ -29,25 +29,16 @@ namespace IdentityService.BusinessLogic.TokenGenerators
 
             SecurityToken token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
-            var refreshToken = new RefreshToken
-            {
-                Id = userId,
-                Token = GetRandomRefreshToken(40),
-                isRevoked = false,
-                AddedDate = DateTime.Now,
-                ExpirationDate = DateTime.Now.AddMinutes(20),
-            };
-
-            var tokenDTO = new TokenDTO
+            var tokenDTO = new AccessTokenDTO
             {
                 EncodedToken = jwtTokenHandler.WriteToken(token),
             };
 
-            return (tokenDTO, refreshToken);
+            return (tokenDTO, GetRandomRefreshToken(40));
         }
 
         private SecurityTokenDescriptor GetTokenDescriptor(string name,
-            string roleName, int userId)
+            string roleName, string userId)
         {
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Name, name),

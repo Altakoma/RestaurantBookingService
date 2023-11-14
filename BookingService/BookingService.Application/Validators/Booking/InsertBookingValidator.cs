@@ -11,7 +11,7 @@ namespace BookingService.Application.Validators.Booking
                 .WithMessage(
                 string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(InsertBookingDTO.TableId)));
 
-            RuleFor(insertBookingDTO => insertBookingDTO.BookingTime).LessThanOrEqualTo(DateTime.Now)
+            RuleFor(insertBookingDTO => insertBookingDTO.BookingTime).GreaterThanOrEqualTo(DateTime.Now)
                 .WithMessage(ValidationResources.ProvidedDataIsNotValid);
         }
     }

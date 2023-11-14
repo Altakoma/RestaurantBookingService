@@ -18,5 +18,9 @@
 
         public const string DbOperationExceptionMessage = "Method {0} has called database exception when" +
             " attempting to perform an action on an object of type {1} having {2} key wasn't found";
+
+        public const string ValueIsNotNumber = "Value {0} is not number";
+
+        public const string BadDeserialization = "Bad deserialization has been performed";
     }
 }

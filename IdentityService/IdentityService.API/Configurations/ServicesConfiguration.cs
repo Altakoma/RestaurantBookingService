@@ -5,6 +5,8 @@ using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.ServicesConfigurations;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess;
+using IdentityService.DataAccess.CacheAccess;
+using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Repositories;
 using IdentityService.DataAccess.Repositories.Interfaces;
 
@@ -21,6 +23,8 @@ namespace IdentityService.API.Configurations
             {
                 options.SuppressAsyncSuffixInActionNames = false;
             });
+
+            services.ConfigureRedis(builder.Configuration);
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
@@ -48,8 +52,10 @@ namespace IdentityService.API.Configurations
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
+            services.AddScoped<IRefreshTokenCacheAccessor, RefreshTokenCacheAccessor>();
+
+            services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
