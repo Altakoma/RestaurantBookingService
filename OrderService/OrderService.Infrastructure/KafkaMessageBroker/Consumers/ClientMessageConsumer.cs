@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrderService.Application.DTOs.Base.Messages;
+using OrderService.Application.DTOs.Client;
 using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.Interfaces.Kafka.Consumers;
 using OrderService.Application.Interfaces.Repositories.Base;
@@ -85,19 +86,25 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             {
                 IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                foreach (var order in client.Orders)
-                {
-                    var command = _mapper.Map<UpdateOrderCommand>(order);
-                    command.IsRequestedBySystem = true;
-                    command.IsTransactionSkipped = true;
-
-                    await mediator.Send(command);
-                }
-
                 var clientCommand = _mapper.Map<UpdateClientCommand>(client);
                 clientCommand.IsTransactionSkipped = true;
 
-                await mediator.Send(clientCommand);
+                ReadClientDTO readClientDTO = await mediator.Send(clientCommand);
+
+                foreach (var order in client.Orders)
+                {
+                    var deleteCommand = _mapper.Map<DeleteOrderCommand>(order);
+                    deleteCommand.IsRequestedBySystem = true;
+                    deleteCommand.IsTransactionSkipped = true;
+
+                    await mediator.Send(deleteCommand);
+
+                    var insertCommand = _mapper.Map<InsertOrderCommand>(order);
+                    insertCommand.IsRequestedBySystem = true;
+                    insertCommand.IsTransactionSkipped = true;
+
+                    await mediator.Send(insertCommand);
+                }
             }
         }
     }

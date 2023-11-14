@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using OrderService.Application.DTOs.Order;
-using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Entities;
 
@@ -15,6 +14,14 @@ namespace OrderService.Application.MappingProfiles
                 options => options.MapFrom(insertOrderDTO => insertOrderDTO.BookingId))
                 .ForMember(insertOrderCommand => insertOrderCommand.MenuId,
                 options => options.MapFrom(insertOrderDTO => insertOrderDTO.MenuId));
+
+            CreateMap<Order, InsertOrderCommand>()
+                .ForMember(insertOrderCommand => insertOrderCommand.BookingId,
+                options => options.MapFrom(order => order.BookingId))
+                .ForMember(insertOrderCommand => insertOrderCommand.MenuId,
+                options => options.MapFrom(order => order.MenuId))
+                .ForMember(insertOrderCommand => insertOrderCommand.ClientId,
+                options => options.MapFrom(order => order.ClientId));
 
             CreateMap<UpdateOrderDTO, UpdateOrderCommand>()
                 .ForMember(updateOrderCommand => updateOrderCommand.MenuId,
