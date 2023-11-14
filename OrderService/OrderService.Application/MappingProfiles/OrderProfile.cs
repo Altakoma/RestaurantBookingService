@@ -34,7 +34,8 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(order => order.MenuId,
                 options => options.MapFrom(updateOrderCommand => updateOrderCommand.MenuId))
                 .ForMember(order => order.ClientId,
-                options => options.MapFrom(updateOrderCommand => updateOrderCommand.ClientId));
+                options => options.MapFrom(updateOrderCommand => updateOrderCommand.ClientId))
+                .ReverseMap();
 
             CreateMap<Order, ReadOrderDTO>()
                 .ForMember(readOrderDTO => readOrderDTO.BookingId,
@@ -44,8 +45,17 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(readOrderDTO => readOrderDTO.ReadClientDTO,
                 options => options.MapFrom(order => order.Client))
                 .ForMember(readOrderDTO => readOrderDTO.ReadMenuDTO,
-                options => options.MapFrom(order => order.Menu))
-                .ReverseMap();
+                options => options.MapFrom(order => order.Menu));
+
+            CreateMap<ReadOrderDTO, Order>()
+                .ForMember(order => order.BookingId,
+                options => options.MapFrom(readOrderDTO => readOrderDTO.BookingId))
+                .ForMember(order => order.Id,
+                options => options.MapFrom(readOrderDTO => readOrderDTO.Id))
+                .ForMember(order => order.MenuId,
+                options => options.MapFrom(readOrderDTO => readOrderDTO.ReadMenuDTO.Id))
+                .ForMember(order => order.ClientId,
+                options => options.MapFrom(readOrderDTO => readOrderDTO.ReadClientDTO.Id));
 
             CreateMap<Order, DeleteOrderCommand>()
                 .ForMember(deleteOrderCommand => deleteOrderCommand.Id,

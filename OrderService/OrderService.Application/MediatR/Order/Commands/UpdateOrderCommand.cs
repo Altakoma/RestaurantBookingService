@@ -9,5 +9,6 @@ namespace OrderService.Application.MediatR.Order.Commands
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int MenuId { get; set; }
+        public bool IsRequestedBySystem { get; set; }
     }
 }
