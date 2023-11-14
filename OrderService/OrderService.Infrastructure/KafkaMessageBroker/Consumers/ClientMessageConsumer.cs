@@ -68,5 +68,37 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
                 await mediator.Send(clientCommand);
             }
         }
+
+        protected override async Task UpdateAsync(string message,
+            ISqlRepository<Client> repository, CancellationToken cancellationToken)
+        {
+            var messageDTO = JsonSerializer.Deserialize<UpdateClientMessageDTO>(message);
+
+            if (messageDTO is null)
+            {
+                throw new NotFoundException(message, typeof(UpdateClientMessageDTO));
+            }
+
+            var client = await repository.GetByIdAsync<Client>(messageDTO.Id, cancellationToken);
+
+            using (var scope = _services.CreateScope())
+            {
+                IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                foreach (var order in client.Orders)
+                {
+                    var command = _mapper.Map<UpdateOrderCommand>(order);
+                    command.IsRequestedBySystem = true;
+                    command.IsTransactionSkipped = true;
+
+                    await mediator.Send(command);
+                }
+
+                var clientCommand = _mapper.Map<UpdateClientCommand>(client);
+                clientCommand.IsTransactionSkipped = true;
+
+                await mediator.Send(clientCommand);
+            }
+        }
     }
 }
