@@ -47,18 +47,15 @@ namespace OrderService.Application.MediatR.Order.Handlers
                     typeof(Domain.Entities.Order));
             }
 
-            if (!request.IsRequestedBySystem)
+            int subjectId = _tokenParser
+            .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
+
+            request.ClientId = subjectId;
+
+            if (readOrderDTO.ReadClientDTO.Id != subjectId)
             {
-                int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-                request.ClientId = subjectId;
-
-                if (readOrderDTO.ReadClientDTO.Id != subjectId)
-                {
-                    throw new AuthorizationException(readOrderDTO.BookingId.ToString(),
-                        ExceptionMessages.NotClientBookingMessage);
-                }
+                throw new AuthorizationException(readOrderDTO.BookingId.ToString(),
+                    ExceptionMessages.NotClientBookingMessage);
             }
 
             var order = _mapper.Map<Domain.Entities.Order>(readOrderDTO);

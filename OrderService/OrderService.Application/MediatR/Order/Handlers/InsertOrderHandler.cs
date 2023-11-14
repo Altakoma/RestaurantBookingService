@@ -42,25 +42,28 @@ namespace OrderService.Application.MediatR.Order.Handlers
         public async Task<ReadOrderDTO> Handle(InsertOrderCommand request,
             CancellationToken cancellationToken)
         {
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            request.ClientId = subjectId;
-
-            var isClientBookedTableRequest = new IsClientBookedTableRequest
+            if (!request.IsRequestedBySystem)
             {
-                ClientId = subjectId,
-                BookingId = request.BookingId,
-            };
+                int subjectId = _tokenParser
+                    .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
 
-            IsClientBookedTableReply reply =
-                await _grpcClientBookingService.IsClientBookedTable(
-                      isClientBookedTableRequest, cancellationToken);
+                request.ClientId = subjectId;
 
-            if (!reply.IsClientBookedTable)
-            {
-                throw new AuthorizationException(request.BookingId.ToString(),
-                    ExceptionMessages.NotClientBookingMessage);
+                var isClientBookedTableRequest = new IsClientBookedTableRequest
+                {
+                    ClientId = subjectId,
+                    BookingId = request.BookingId,
+                };
+
+                IsClientBookedTableReply reply =
+                    await _grpcClientBookingService.IsClientBookedTable(
+                          isClientBookedTableRequest, cancellationToken);
+
+                if (!reply.IsClientBookedTable)
+                {
+                    throw new AuthorizationException(request.BookingId.ToString(),
+                        ExceptionMessages.NotClientBookingMessage);
+                }
             }
 
             var order = _mapper.Map<Domain.Entities.Order>(request);
