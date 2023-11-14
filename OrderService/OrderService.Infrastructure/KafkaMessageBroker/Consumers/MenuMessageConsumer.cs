@@ -4,11 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrderService.Application.DTOs.Base.Messages;
-using OrderService.Application.DTOs.Client.Messages;
+using OrderService.Application.DTOs.Menu;
 using OrderService.Application.DTOs.Menu.Messages;
 using OrderService.Application.Interfaces.Kafka.Consumers;
 using OrderService.Application.Interfaces.Repositories.Base;
-using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Entities;
@@ -86,19 +85,25 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             {
                 IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                foreach (var order in menu.Orders)
-                {
-                    var command = _mapper.Map<UpdateOrderCommand>(order);
-                    command.IsRequestedBySystem = true;
-                    command.IsTransactionSkipped = true;
-
-                    await mediator.Send(command);
-                }
-
                 var menuCommand = _mapper.Map<UpdateMenuCommand>(menu);
                 menuCommand.IsTransactionSkipped = true;
 
-                await mediator.Send(menuCommand);
+                ReadMenuDTO readMenuDTO = await mediator.Send(menuCommand);
+
+                foreach (var order in menu.Orders)
+                {
+                    var deleteCommand = _mapper.Map<DeleteOrderCommand>(order);
+                    deleteCommand.IsRequestedBySystem = true;
+                    deleteCommand.IsTransactionSkipped = true;
+
+                    await mediator.Send(deleteCommand);
+
+                    var insertCommand = _mapper.Map<InsertOrderCommand>(order);
+                    insertCommand.IsRequestedBySystem = true;
+                    insertCommand.IsTransactionSkipped = true;
+
+                    await mediator.Send(insertCommand);
+                }
             }
         }
     }
