@@ -9,6 +9,5 @@ namespace OrderService.Application.MediatR.Order.Commands
         public int BookingId { get; set; }
         public int ClientId { get; set; }
         public int MenuId { get; set; }
-        public bool IsRequestedBySystem { get; set; } = false;
     }
 }

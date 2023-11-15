@@ -36,12 +36,6 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(client => client.Name,
                 options => options.MapFrom(updateClientDTO => updateClientDTO.Name));
 
-            CreateMap<UpdateClientMessageDTO, UpdateClientCommand>()
-                .ForMember(updateClientCommand => updateClientCommand.Id,
-                options => options.MapFrom(updateClientMessageDTO => updateClientMessageDTO.Id))
-                .ForMember(updateClientCommand => updateClientCommand.Name,
-                options => options.MapFrom(updateClientMessageDTO => updateClientMessageDTO.Name));
-
             CreateMap<InsertClientMessageDTO, Client>()
                 .ForMember(client => client.Id,
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Id))

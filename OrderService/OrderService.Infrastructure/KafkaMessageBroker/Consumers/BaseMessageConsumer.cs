@@ -117,8 +117,8 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             await repository.SaveChangesToDbAsync(cancellationToken);
         }
 
-        protected virtual async Task UpdateAsync(string message, ISqlRepository<Initial> repository,
-            CancellationToken cancellationToken)
+        protected virtual async Task<Initial> UpdateAsync(string message,
+            ISqlRepository<Initial> repository, CancellationToken cancellationToken)
         {
             var messageDTO = JsonSerializer.Deserialize<UpdateMessage>(message);
 
@@ -129,7 +129,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
             var restaurant = _mapper.Map<Initial>(messageDTO);
 
-            await repository.UpdateAsync<Initial>(restaurant, cancellationToken);
+            return await repository.UpdateAsync<Initial>(restaurant, cancellationToken);
         }
 
         protected virtual async Task InsertAsync(string message, ISqlRepository<Initial> repository,
