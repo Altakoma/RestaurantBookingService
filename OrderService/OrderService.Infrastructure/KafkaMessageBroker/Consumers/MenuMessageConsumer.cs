@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrderService.Application.DTOs.Base.Messages;
-using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.DTOs.Menu;
 using OrderService.Application.DTOs.Menu.Messages;
 using OrderService.Application.Interfaces.Kafka.Consumers;
 using OrderService.Application.Interfaces.Repositories.Base;
+using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.MediatR.Menu.Commands;
 using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Entities;
@@ -43,70 +43,35 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
         {
             var messageDTO = JsonSerializer.Deserialize<DeleteMessageDTO>(message);
 
-            if (messageDTO is null)
-            {
-                throw new NotFoundException(message, typeof(DeleteMessageDTO));
-            }
-
-            var menu = await repository.GetByIdAsync<Menu>(messageDTO.Id, cancellationToken);
+            await base.DeleteAsync(message, repository, cancellationToken);
 
             using (var scope = _services.CreateScope())
             {
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                var noSqlRepository = scope.ServiceProvider
+                                           .GetRequiredService<INoSqlOrderRepository>();
 
-                foreach (var order in menu.Orders)
-                {
-                    var command = _mapper.Map<DeleteOrderCommand>(order);
-                    command.IsRequestedBySystem = true;
-                    command.IsTransactionSkipped = true;
-
-                    await mediator.Send(command);
-                }
-
-                var menuCommand = _mapper.Map<DeleteMenuCommand>(menu);
-                menuCommand.IsTransactionSkipped = true;
-
-                await mediator.Send(menuCommand);
+                await noSqlRepository.DeleteOrderByMenuIdAsync(messageDTO!.Id, cancellationToken);
             }
         }
 
-        protected override async Task UpdateAsync(string message,
+        protected override async Task<Menu> UpdateAsync(string message,
             ISqlRepository<Menu> repository, CancellationToken cancellationToken)
         {
-            var messageDTO = JsonSerializer.Deserialize<UpdateMenuMessageDTO>(message);
-
-            if (messageDTO is null)
-            {
-                throw new NotFoundException(message, typeof(UpdateMenuMessageDTO));
-            }
-
-            var menu = await repository.GetByIdAsync<Menu>(messageDTO.Id, cancellationToken);
-            var updateMenuDTO = JsonSerializer.Deserialize<UpdateMenuMessageDTO>(message);
+            Menu menu = await base.UpdateAsync(message, repository, cancellationToken);
 
             using (var scope = _services.CreateScope())
             {
                 IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                var menuCommand = _mapper.Map<UpdateMenuCommand>(updateMenuDTO);
-                menuCommand.IsTransactionSkipped = true;
-
-                ReadMenuDTO readMenuDTO = await mediator.Send(menuCommand);
-
                 foreach (var order in menu.Orders)
                 {
-                    var deleteCommand = _mapper.Map<DeleteOrderCommand>(order);
-                    deleteCommand.IsRequestedBySystem = true;
-                    deleteCommand.IsTransactionSkipped = true;
+                    var updateCommand = _mapper.Map<UpdateOrderBySynchronizationCommand>(order);
 
-                    await mediator.Send(deleteCommand);
-
-                    var insertCommand = _mapper.Map<InsertOrderCommand>(order);
-                    insertCommand.IsRequestedBySystem = true;
-                    insertCommand.IsTransactionSkipped = true;
-
-                    await mediator.Send(insertCommand);
+                    await mediator.Send(updateCommand);
                 }
             }
+
+            return menu;
         }
     }
 }

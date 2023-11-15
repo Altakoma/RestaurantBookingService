@@ -19,28 +19,21 @@ namespace OrderService.Presentation.Behaviors
         public async Task<TResponse> Handle(TRequest request,
             RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
+            using var transaction = await BeginTransactionAsync(cancellationToken);
+
             TResponse response;
 
-            if (request.IsTransactionSkipped)
+            try
             {
                 response = await next();
+
+                transaction.Commit();
             }
-            else
+            catch
             {
-                using var transaction = await BeginTransactionAsync(cancellationToken);
+                transaction.Rollback();
 
-                try
-                {
-                    response = await next();
-
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-
-                    throw;
-                }
+                throw;
             }
 
             return response;
