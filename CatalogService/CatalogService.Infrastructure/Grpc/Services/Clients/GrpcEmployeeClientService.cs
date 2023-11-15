@@ -8,7 +8,6 @@ namespace CatalogService.Infrastructure.Grpc.Services.Clients
 {
     public class GrpcEmployeeClientService :IGrpcEmployeeClientService
     {
-        private const string EnvironmentServerAddressString = "IdentityService";
         private const string ConfigurationServerAddressString = "IdentityService";
 
         private readonly IConfiguration _configuration;
@@ -21,9 +20,7 @@ namespace CatalogService.Infrastructure.Grpc.Services.Clients
         public async Task<IsUserExistingReply> UserExists(
             IsUserExistingRequest request, CancellationToken cancellationToken)
         {
-            string? serverAddress =
-                Environment.GetEnvironmentVariable(EnvironmentServerAddressString) ??
-                _configuration[ConfigurationServerAddressString];
+            string? serverAddress = _configuration[ConfigurationServerAddressString];
 
             if (serverAddress is null)
             {

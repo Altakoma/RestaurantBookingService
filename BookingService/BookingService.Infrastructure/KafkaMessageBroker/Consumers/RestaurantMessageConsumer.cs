@@ -12,8 +12,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
         BaseMessageConsumer<InsertRestaurantMessageDTO, UpdateRestaurantMessageDTO, Restaurant>,
         IRestaurantMessageConsumer
     {
-        private const string TopicNameConfigurationString = "RestaurantTopic";
-        private const string TopicNameEnvironmentString = "RestaurantTopic";
+        private const string TopicNameString = "RestaurantTopic";
 
         public RestaurantMessageConsumer(IOptions<KafkaOptions> options,
             IConfiguration configuration, IServiceProvider serviceProvider,
@@ -23,8 +22,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
 
         public async Task HandleConsumingMessages(CancellationToken cancellationToken)
         {
-            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
-                TopicNameEnvironmentString);
+            string topicName = GetTopicNameOrThrow(TopicNameString);
 
             await ConsumeMessage(cancellationToken, topicName);
         }

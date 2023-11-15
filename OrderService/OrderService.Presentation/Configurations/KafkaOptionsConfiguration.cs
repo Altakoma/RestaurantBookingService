@@ -12,8 +12,7 @@ namespace OrderService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = Environment.GetEnvironmentVariable(BootstrapServerString) ??
-                                      configuration[BootstrapServerString];
+            string? bootstrapServer = configuration[BootstrapServerString];
 
             if (bootstrapServer is null)
             {
@@ -21,8 +20,7 @@ namespace OrderService.Presentation.Configurations
                     typeof(string));
             }
 
-            string? groupName = Environment.GetEnvironmentVariable(GroupNameString) ??
-                configuration[GroupNameString];
+            string? groupName = configuration[GroupNameString];
 
             if (groupName is null)
             {
