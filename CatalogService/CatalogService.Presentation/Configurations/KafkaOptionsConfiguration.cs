@@ -12,8 +12,7 @@ namespace CatalogService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = Environment.GetEnvironmentVariable(BootstrapServerString) ??
-                configuration[BootstrapServerString];
+            string? bootstrapServer = configuration[BootstrapServerString];
 
             if (bootstrapServer is null)
             {

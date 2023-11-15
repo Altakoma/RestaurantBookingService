@@ -18,8 +18,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
         : BaseMessageConsumer<InsertClientMessageDTO, UpdateClientMessageDTO, Client>,
         IClientMessageConsumer
     {
-        private const string TopicNameConfigurationString = "UserTopic";
-        private const string TopicNameEnvironmentString = "UserTopic";
+        private const string TopicNameString = "UserTopic";
 
         public ClientMessageConsumer(IOptions<KafkaOptions> options,
             IConfiguration configuration, IServiceProvider serviceProvider,
@@ -30,8 +29,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
         public async Task HandleConsumingMessages(CancellationToken cancellationToken)
         {
-            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
-                TopicNameEnvironmentString);
+            string topicName = GetTopicNameOrThrow(TopicNameString);
 
             await ConsumeMessage(cancellationToken, topicName);
         }

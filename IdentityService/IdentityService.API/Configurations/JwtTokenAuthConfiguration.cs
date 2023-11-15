@@ -13,16 +13,8 @@ namespace IdentityService.API.Configurations
         {
             byte[] key;
 
-            if (builder.Environment.IsDevelopment())
-            {
-                key = Encoding.UTF8.GetBytes(
-                    builder.Configuration[JwtGenerator.JWTSecretVariableName]!);
-            }
-            else
-            {
-                key = Encoding.UTF8.GetBytes(
-                    Environment.GetEnvironmentVariable(JwtGenerator.JWTSecretVariableName)!);
-            }
+            key = Encoding.UTF8.GetBytes(
+                builder.Configuration[JwtGenerator.JWTSecretVariableName]!);
 
             var tokenValidationParams = new TokenValidationParameters
             {

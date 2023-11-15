@@ -18,8 +18,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
         : BaseMessageConsumer<InsertMenuMessageDTO, UpdateMenuMessageDTO, Menu>,
         IMenuMessageConsumer
     {
-        private const string TopicNameConfigurationString = "MenuTopic";
-        private const string TopicNameEnvironmentString = "MenuTopic";
+        private const string TopicNameString = "MenuTopic";
 
         public MenuMessageConsumer(IOptions<KafkaOptions> options,
             IConfiguration configuration, IServiceProvider serviceProvider,
@@ -29,8 +28,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
         public async Task HandleConsumingMessages(CancellationToken cancellationToken)
         {
-            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
-                TopicNameEnvironmentString);
+            string topicName = GetTopicNameOrThrow(TopicNameString);
 
             await ConsumeMessage(cancellationToken, topicName);
         }

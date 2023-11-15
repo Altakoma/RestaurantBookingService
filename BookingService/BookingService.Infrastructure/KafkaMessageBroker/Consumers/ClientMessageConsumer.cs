@@ -13,7 +13,6 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
         IClientMessageConsumer
     {
         private const string TopicNameConfigurationString = "UserTopic";
-        private const string TopicNameEnvironmentString = "UserTopic";
 
         public ClientMessageConsumer(IOptions<KafkaOptions> options,
             IConfiguration configuration, IServiceProvider serviceProvider,
@@ -23,8 +22,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
 
         public async Task HandleConsumingMessages(CancellationToken cancellationToken)
         {
-            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
-                TopicNameEnvironmentString);
+            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString);
 
             await ConsumeMessage(cancellationToken, topicName);
         }

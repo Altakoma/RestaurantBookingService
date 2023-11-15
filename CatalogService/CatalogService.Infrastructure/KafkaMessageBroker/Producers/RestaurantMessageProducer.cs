@@ -6,8 +6,7 @@ namespace CatalogService.Infrastructure.KafkaMessageBroker.Producers
 {
     public class RestaurantMessageProducer : BaseMessageProducer, IRestaurantMessageProducer
     {
-        private const string TopicNameConfigurationString = "RestaurantTopic";
-        private const string TopicNameEnvironmentString = "RestaurantTopic";
+        private const string TopicNameString = "RestaurantTopic";
 
         public RestaurantMessageProducer(IOptions<KafkaOptions> options,
             IConfiguration configuration) : base(options, configuration)
@@ -17,8 +16,7 @@ namespace CatalogService.Infrastructure.KafkaMessageBroker.Producers
         public async Task ProduceMessageAsync<T>(T item,
             CancellationToken cancellationToken)
         {
-            string topicName = GetTopicNameOrThrow(TopicNameConfigurationString,
-                TopicNameEnvironmentString);
+            string topicName = GetTopicNameOrThrow(TopicNameString);
 
             await ProduceMessageAsync<T>(item, cancellationToken, topicName);
         }
