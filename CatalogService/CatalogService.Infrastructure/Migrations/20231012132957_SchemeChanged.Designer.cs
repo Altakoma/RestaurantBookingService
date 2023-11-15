@@ -30,9 +30,6 @@ namespace CatalogService.Infrastructure.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("MenuId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -42,8 +39,6 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MenuId");
 
                     b.HasIndex("RestaurantId");
 
@@ -134,10 +129,6 @@ namespace CatalogService.Infrastructure.Migrations
 
             modelBuilder.Entity("CatalogService.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("CatalogService.Domain.Entities.Menu", null)
-                        .WithMany("Employees")
-                        .HasForeignKey("MenuId");
-
                     b.HasOne("CatalogService.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("Employees")
                         .HasForeignKey("RestaurantId")

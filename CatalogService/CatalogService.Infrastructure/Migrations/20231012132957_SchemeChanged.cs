@@ -24,12 +24,6 @@ namespace CatalogService.Infrastructure.Migrations
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "MenuId",
-                table: "Employee",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
                 name: "RestaurantId",
                 table: "Employee",
                 type: "int",
@@ -42,21 +36,9 @@ namespace CatalogService.Infrastructure.Migrations
                 column: "RestaurantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employee_MenuId",
-                table: "Employee",
-                column: "MenuId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Employee_RestaurantId",
                 table: "Employee",
                 column: "RestaurantId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Employee_Menu_MenuId",
-                table: "Employee",
-                column: "MenuId",
-                principalTable: "Menu",
-                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Employee_Restaurant_RestaurantId",
@@ -79,10 +61,6 @@ namespace CatalogService.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Employee_Menu_MenuId",
-                table: "Employee");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Employee_Restaurant_RestaurantId",
                 table: "Employee");
 
@@ -95,20 +73,12 @@ namespace CatalogService.Infrastructure.Migrations
                 table: "Menu");
 
             migrationBuilder.DropIndex(
-                name: "IX_Employee_MenuId",
-                table: "Employee");
-
-            migrationBuilder.DropIndex(
                 name: "IX_Employee_RestaurantId",
                 table: "Employee");
 
             migrationBuilder.DropColumn(
                 name: "RestaurantId",
                 table: "Menu");
-
-            migrationBuilder.DropColumn(
-                name: "MenuId",
-                table: "Employee");
 
             migrationBuilder.DropColumn(
                 name: "RestaurantId",
