@@ -7,21 +7,13 @@ namespace CatalogService.Presentation.Configurations
     public static class JwtTokenAuthConfiguration
     {
         public const string JWTSecretConfigurationName = "JWTSecret";
-        public const string JWTSecretEnvironmentName = "JWTSecret";
 
         public static IServiceCollection AddJwtTokenAuthConfiguration(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
             byte[] key;
 
-            if (builder.Environment.IsDevelopment())
-            {
-                key = Encoding.UTF8.GetBytes(builder.Configuration[JWTSecretConfigurationName]!);
-            }
-            else
-            {
-                key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(JWTSecretEnvironmentName)!);
-            }
+            key = Encoding.UTF8.GetBytes(builder.Configuration[JWTSecretConfigurationName]!);
 
             var tokenValidationParams = new TokenValidationParameters
             {
