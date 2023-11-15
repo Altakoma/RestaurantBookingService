@@ -8,7 +8,6 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
 {
     public class GrpcClientEmployeeService : IGrpcClientEmployeeService
     {
-        private const string EnvironmentServerAddressString = "CatalogService";
         private const string ConfigurationServerAddressString = "CatalogService";
 
         private readonly IConfiguration _configuration;
@@ -21,9 +20,7 @@ namespace BookingService.Infrastructure.Grpc.Services.Clients
         public async Task<IsWorkingAtRestaurantReply> EmployeeWorksAtRestaurant(
             IsWorkingAtRestaurantRequest request, CancellationToken cancellationToken)
         {
-            string? serverAddress =
-                Environment.GetEnvironmentVariable(EnvironmentServerAddressString) ??
-                _configuration[ConfigurationServerAddressString];
+            string? serverAddress = _configuration[ConfigurationServerAddressString];
 
             if (serverAddress is null)
             {
