@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrderService.Application.DTOs.Base.Messages;
+using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.DTOs.Menu;
 using OrderService.Application.DTOs.Menu.Messages;
 using OrderService.Application.Interfaces.Kafka.Consumers;
@@ -80,12 +81,13 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             }
 
             var menu = await repository.GetByIdAsync<Menu>(messageDTO.Id, cancellationToken);
+            var updateMenuDTO = JsonSerializer.Deserialize<UpdateMenuMessageDTO>(message);
 
             using (var scope = _services.CreateScope())
             {
                 IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                var menuCommand = _mapper.Map<UpdateMenuCommand>(menu);
+                var menuCommand = _mapper.Map<UpdateMenuCommand>(updateMenuDTO);
                 menuCommand.IsTransactionSkipped = true;
 
                 ReadMenuDTO readMenuDTO = await mediator.Send(menuCommand);

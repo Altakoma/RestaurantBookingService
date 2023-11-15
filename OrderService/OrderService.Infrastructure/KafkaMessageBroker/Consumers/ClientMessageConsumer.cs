@@ -81,12 +81,13 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             }
 
             var client = await repository.GetByIdAsync<Client>(messageDTO.Id, cancellationToken);
+            var updateClientDTO = JsonSerializer.Deserialize<UpdateClientMessageDTO>(message);
 
             using (var scope = _services.CreateScope())
             {
                 IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                var clientCommand = _mapper.Map<UpdateClientCommand>(client);
+                var clientCommand = _mapper.Map<UpdateClientCommand>(updateClientDTO);
                 clientCommand.IsTransactionSkipped = true;
 
                 ReadClientDTO readClientDTO = await mediator.Send(clientCommand);
