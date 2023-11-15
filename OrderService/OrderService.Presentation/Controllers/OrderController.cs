@@ -23,10 +23,15 @@ namespace OrderService.Presentation.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<ReadOrderDTO>))]
-        public async Task<IActionResult> GetAllOrderAsync(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllOrderAsync([FromQuery] int skipCount,
+            [FromQuery] int selectionAmount, CancellationToken cancellationToken)
         {
             ICollection<ReadOrderDTO> orderDTOs =
-                await _mediator.Send(new GetAllOrdersQuery(), cancellationToken);
+                await _mediator.Send(new GetAllOrdersQuery
+                                    {
+                                        SelectionAmount = selectionAmount,
+                                        SkipCount = skipCount
+                                    }, cancellationToken);
 
             return Ok(orderDTOs);
         }

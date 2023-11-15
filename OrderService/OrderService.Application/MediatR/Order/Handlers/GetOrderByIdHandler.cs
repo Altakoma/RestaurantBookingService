@@ -10,13 +10,10 @@ namespace OrderService.Application.MediatR.Order.Handlers
     public class GetOrderByIdHandler : IRequestHandler<GetOrderByIdQuery, ReadOrderDTO>
     {
         private readonly INoSqlOrderRepository _noSqlOrderRepository;
-        private readonly IMapper _mapper;
 
-        public GetOrderByIdHandler(INoSqlOrderRepository noSqlClientRepository,
-            IMapper mapper)
+        public GetOrderByIdHandler(INoSqlOrderRepository noSqlClientRepository)
         {
             _noSqlOrderRepository = noSqlClientRepository;
-            _mapper = mapper;
         }
 
         public async Task<ReadOrderDTO> Handle(GetOrderByIdQuery request,
