@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OrderService.Application.DTOs.Base.Messages;
 using OrderService.Application.DTOs.Client.Messages;
+using OrderService.Application.DTOs.Order;
 using OrderService.Application.Interfaces.Kafka.Consumers;
 using OrderService.Application.Interfaces.Repositories.Base;
 using OrderService.Application.Interfaces.Repositories.NoSql;
-using OrderService.Application.MediatR.Order.Commands;
+using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Domain.Entities;
 using System.Text.Json;
 
@@ -59,13 +59,18 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
             using (var scope = _services.CreateScope())
             {
-                IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                var SqlRepository = scope.ServiceProvider
+                                           .GetRequiredService<ISqlOrderRepository>();
+
+                var noSqlRepository = scope.ServiceProvider
+                                           .GetRequiredService<INoSqlOrderRepository>();
 
                 foreach (var order in client.Orders)
                 {
-                    var updateCommand = _mapper.Map<UpdateOrderBySynchronizationCommand>(order);
+                    var readOrderDTO = await SqlRepository
+                    .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
 
-                    await mediator.Send(updateCommand);
+                    await noSqlRepository.UpdateAsync(readOrderDTO, cancellationToken);
                 }
             }
 
