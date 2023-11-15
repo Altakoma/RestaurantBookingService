@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using OrderService.Application.DTOs.Client.Messages;
 using OrderService.Application.DTOs.Menu;
 using OrderService.Application.DTOs.Menu.Messages;
 using OrderService.Application.MediatR.Menu.Commands;
-using OrderService.Application.MediatR.Order.Commands;
 using OrderService.Domain.Entities;
 
 namespace OrderService.Application.MappingProfiles
@@ -23,6 +21,12 @@ namespace OrderService.Application.MappingProfiles
                 options => options.MapFrom(updateMenuCommand => updateMenuCommand.Id))
                 .ForMember(menu => menu.FoodName,
                 options => options.MapFrom(updateMenuCommand => updateMenuCommand.FoodName));
+
+            CreateMap<UpdateMenuMessageDTO, UpdateMenuCommand>()
+                .ForMember(updateMenuCommand => updateMenuCommand.Id,
+                options => options.MapFrom(updateMenuMessageDTO => updateMenuMessageDTO.Id))
+                .ForMember(updateMenuCommand => updateMenuCommand.FoodName,
+                options => options.MapFrom(updateMenuMessageDTO => updateMenuMessageDTO.FoodName));
 
             CreateMap<Menu, ReadMenuDTO>()
                 .ForMember(readMenuDTO => readMenuDTO.Id,

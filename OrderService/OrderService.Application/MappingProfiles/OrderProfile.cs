@@ -21,19 +21,12 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(insertOrderCommand => insertOrderCommand.MenuId,
                 options => options.MapFrom(order => order.MenuId))
                 .ForMember(insertOrderCommand => insertOrderCommand.ClientId,
-                options => options.MapFrom(order => order.ClientId));
+                options => options.MapFrom(order => order.ClientId))
+                .ReverseMap();
 
             CreateMap<UpdateOrderDTO, UpdateOrderCommand>()
                 .ForMember(updateOrderCommand => updateOrderCommand.MenuId,
                 options => options.MapFrom(updateOrderDTO => updateOrderDTO.MenuId));
-
-            CreateMap<InsertOrderCommand, Order>()
-                .ForMember(order => order.BookingId,
-                options => options.MapFrom(insertOrderCommand => insertOrderCommand.BookingId))
-                .ForMember(order => order.MenuId,
-                options => options.MapFrom(insertOrderCommand => insertOrderCommand.MenuId))
-                .ForMember(order => order.ClientId,
-                options => options.MapFrom(insertOrderCommand => insertOrderCommand.ClientId));
 
             CreateMap<UpdateOrderCommand, Order>()
                 .ForMember(order => order.Id,
