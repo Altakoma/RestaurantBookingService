@@ -33,7 +33,8 @@ namespace CatalogService.Application.Services
             _foodTypeCacheAccessor = foodTypeCacheAccessor;
         }
 
-        public override async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
+        public override async Task<T> GetByIdAsync<T>(int id,
+            CancellationToken cancellationToken)
         {
             T itemDTO = await _foodTypeCacheAccessor
                 .GetByResourceIdAsync<T>(id.ToString(), cancellationToken);
@@ -53,7 +54,20 @@ namespace CatalogService.Application.Services
         {
             await EnsureTokenValidOrThrowAsync(cancellationToken);
 
+            await _foodTypeCacheAccessor.DeleteResourceByIdAsync(id.ToString(),
+                                                                 cancellationToken);
+
             return await base.UpdateAsync<U, T>(id, foodTypeDTO, cancellationToken);
+        }
+
+        public override async Task<int> DeleteAsync(int id, CancellationToken cancellationToken)
+        {
+            await EnsureTokenValidOrThrowAsync(cancellationToken);
+
+            await _foodTypeCacheAccessor.DeleteResourceByIdAsync(id.ToString(),
+                                                                 cancellationToken);
+
+            return await base.DeleteAsync(id, cancellationToken);
         }
 
         private async Task EnsureTokenValidOrThrowAsync(CancellationToken cancellationToken)

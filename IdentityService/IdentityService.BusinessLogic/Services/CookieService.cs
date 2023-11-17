@@ -9,8 +9,6 @@ namespace IdentityService.BusinessLogic.Services
     {
         public const string RefreshTokenCookieName = "RefreshToken";
         public const string UserIdCookieName = "UserId";
-        public const string UserNameCookieName = "UserName";
-        public const string UserRoleNameCookieName = "UserRoleName";
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 

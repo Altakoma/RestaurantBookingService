@@ -38,6 +38,9 @@ namespace IdentityService.BusinessLogic.Services
         public async Task DeleteAsync(int id,
             CancellationToken cancellationToken)
         {
+            await _refreshTokenService.DeleteByIdAsync(id.ToString(),
+                                                       cancellationToken);
+
             await _userRepository.DeleteAsync(id, cancellationToken);
 
             bool isDeleted = await _userRepository
@@ -136,6 +139,9 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> UpdateAsync(int id,
             UpdateUserDTO item, CancellationToken cancellationToken)
         {
+            await _refreshTokenService.DeleteByIdAsync(id.ToString(), 
+                cancellationToken);
+
             var user = _mapper.Map<User>(item);
 
             user.Id = id;
@@ -173,10 +179,6 @@ namespace IdentityService.BusinessLogic.Services
                                           refreshToken);
             _cookieService.SetCookieValue(CookieService.UserIdCookieName,
                                           readUserDTO.Id.ToString());
-            _cookieService.SetCookieValue(CookieService.UserNameCookieName,
-                                          readUserDTO.Name);
-            _cookieService.SetCookieValue(CookieService.UserRoleNameCookieName,
-                                          readUserDTO.UserRoleName);
         }
     }
 }

@@ -24,14 +24,14 @@ namespace CatalogService.Application.Services
 
         private readonly IMenuMessageProducer _menuMessageProducer;
 
-        private readonly IMenuCacheAccessor _menuCacheService;
+        private readonly IMenuCacheAccessor _menuCacheAccessor;
 
         public MenuService(IMenuRepository menuRepository,
             IMapper mapper, IHttpContextAccessor httpContextAccessor,
             ITokenParser tokenParser, IEmployeeRepository employeeRepository,
             IRestaurantRepository restaurantRepository,
             IMenuMessageProducer menuMessageProducer,
-            IMenuCacheAccessor menuCacheService)
+            IMenuCacheAccessor menuCacheAccessor)
             : base(menuRepository, mapper)
         {
             _menuRepository = menuRepository;
@@ -42,12 +42,13 @@ namespace CatalogService.Application.Services
             _tokenParser = tokenParser;
 
             _menuMessageProducer = menuMessageProducer;
-            _menuCacheService = menuCacheService;
+            _menuCacheAccessor = menuCacheAccessor;
         }
 
-        public override async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
+        public override async Task<T> GetByIdAsync<T>(int id,
+            CancellationToken cancellationToken)
         {
-            T itemDTO = await _menuCacheService
+            T itemDTO = await _menuCacheAccessor
                 .GetByResourceIdAsync<T>(id.ToString(), cancellationToken);
 
             return itemDTO;
@@ -74,6 +75,8 @@ namespace CatalogService.Application.Services
             }
 
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
+
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
 
             id = await base.DeleteAsync(id, cancellationToken);
 
@@ -102,6 +105,8 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
+
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
 
             T readMenuDTO = await UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
 

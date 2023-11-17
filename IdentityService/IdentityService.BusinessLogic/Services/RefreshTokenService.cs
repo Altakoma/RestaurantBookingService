@@ -4,6 +4,7 @@ using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
+using IdentityService.DataAccess.Repositories.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace IdentityService.BusinessLogic.Services
@@ -12,17 +13,20 @@ namespace IdentityService.BusinessLogic.Services
     {
         public const int ExpirationTime = 25;
 
-        private readonly IRefreshTokenCacheAccessor _refreshTokenRepository;
+        private readonly IRefreshTokenCacheAccessor _refreshTokenAccessor;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly ICookieService _cookieService;
+        private readonly IUserRepository _userRepository;
 
-        public RefreshTokenService(IRefreshTokenCacheAccessor refreshTokenRepository,
+        public RefreshTokenService(IRefreshTokenCacheAccessor refreshTokenAccessor,
             ITokenGenerator tokenGenerator,
-            ICookieService cookieService)
+            ICookieService cookieService,
+            IUserRepository userRepository)
         {
-            _refreshTokenRepository = refreshTokenRepository;
+            _refreshTokenAccessor = refreshTokenAccessor;
             _tokenGenerator = tokenGenerator;
             _cookieService = cookieService;
+            _userRepository = userRepository;
         }
 
         public async Task<AccessTokenDTO> VerifyAndGenerateTokenAsync(
@@ -30,7 +34,7 @@ namespace IdentityService.BusinessLogic.Services
         {
             string userId = _cookieService.GetCookieValue(CookieService.UserIdCookieName);
 
-            string currentRefreshToken = await _refreshTokenRepository
+            string currentRefreshToken = await _refreshTokenAccessor
                                                .GetByUserIdAsync(userId, cancellationToken);
 
             string userRefreshToken = _cookieService
@@ -41,11 +45,11 @@ namespace IdentityService.BusinessLogic.Services
                 throw new NotFoundException(nameof(userRefreshToken), typeof(User));
             }
 
-            string userName = _cookieService.GetCookieValue(CookieService.UserNameCookieName);
-            string userRoleName = _cookieService.GetCookieValue(CookieService.UserRoleNameCookieName);
+            User user = (await _userRepository
+                              .GetByIdAsync<User>(int.Parse(userId), cancellationToken))!;
 
             (AccessTokenDTO tokenDTO, string refreshToken) =
-                _tokenGenerator.GenerateTokens(userName, userRoleName, userId);
+                _tokenGenerator.GenerateTokens(user.Name, user.UserRole.Name, userId);
 
             await SetAsync(userId, refreshToken, ExpirationTime, cancellationToken);
 
@@ -62,8 +66,13 @@ namespace IdentityService.BusinessLogic.Services
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(time),
             };
 
-            await _refreshTokenRepository.SetAsync(userId, refreshToken,
+            await _refreshTokenAccessor.SetAsync(userId, refreshToken,
                 options, cancellationToken);
+        }
+
+        public async Task DeleteByIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            await _refreshTokenAccessor.DeleteByIdAsync(userId, cancellationToken);
         }
     }
 }

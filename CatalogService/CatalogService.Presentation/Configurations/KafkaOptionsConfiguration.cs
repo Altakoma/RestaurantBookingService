@@ -12,13 +12,7 @@ namespace CatalogService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString];
-
-            if (bootstrapServer is null)
-            {
-                throw new NotFoundException(nameof(bootstrapServer),
-                    BootstrapServerString, typeof(string));
-            }
+            string bootstrapServer = configuration[BootstrapServerString]!;
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {

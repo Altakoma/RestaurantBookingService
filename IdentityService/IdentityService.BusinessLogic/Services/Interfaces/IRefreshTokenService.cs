@@ -8,5 +8,6 @@ namespace IdentityService.BusinessLogic.Services.Interfaces
         Task<AccessTokenDTO> VerifyAndGenerateTokenAsync(CancellationToken cancellationToken);
         Task SetAsync(string userId, string refreshToken, int time,
             CancellationToken cancellationToken);
+        Task DeleteByIdAsync(string userId, CancellationToken cancellationToken);
     }
 }

@@ -12,21 +12,9 @@ namespace OrderService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString];
+            string bootstrapServer = configuration.GetConnectionString(BootstrapServerString)!;
 
-            if (bootstrapServer is null)
-            {
-                throw new NotFoundException(nameof(bootstrapServer),
-                    typeof(string));
-            }
-
-            string? groupName = configuration[GroupNameString];
-
-            if (groupName is null)
-            {
-                throw new NotFoundException(nameof(groupName),
-                    typeof(string));
-            }
+            string groupName = configuration[GroupNameString]!;
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {

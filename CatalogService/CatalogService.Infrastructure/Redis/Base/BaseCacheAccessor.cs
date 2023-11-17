@@ -89,5 +89,12 @@ namespace CatalogService.Infrastructure.Redis.Base
             await _distributedCache.SetStringAsync(key, resource,
                 options, cancellationToken);
         }
+
+        public async Task DeleteResourceByIdAsync(string resourceId, CancellationToken cancellationToken)
+        {
+            string key = _keyPreposition + resourceId;
+
+            await _distributedCache.RemoveAsync(key, cancellationToken);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 
 namespace IdentityService.DataAccess.CacheAccess
 {
@@ -39,6 +40,14 @@ namespace IdentityService.DataAccess.CacheAccess
 
             await _distributedCache.SetStringAsync(key, refreshToken, options,
                 cancellationToken);
+        }
+
+        public async Task DeleteByIdAsync(string userId,
+            CancellationToken cancellationToken)
+        {
+            string key = KeyPreposition + userId;
+
+            await _distributedCache.RemoveAsync(key, cancellationToken);
         }
     }
 }

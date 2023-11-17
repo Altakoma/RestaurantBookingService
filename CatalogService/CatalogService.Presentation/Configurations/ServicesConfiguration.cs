@@ -57,17 +57,21 @@ namespace CatalogService.Presentation.Configurations
             services.AddAuthorization();
 
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IRepository<Employee>, EmployeeRepository>();
 
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IRepository<Menu>, MenuRepository>();
 
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+            services.AddScoped<IRepository<Restaurant>, RestaurantRepository>();
 
             services.AddScoped<IFoodTypeRepository, FoodTypeRepository>();
             services.AddScoped<IRepository<FoodType>, FoodTypeRepository>();
 
             services.AddScoped<IMenuCacheAccessor, MenuCacheAccessor>();
             services.AddScoped<IFoodTypeCacheAccessor, FoodCacheTypeAccessor>();
+            services.AddScoped<IEmployeeCacheAccessor, EmployeeCacheAccessor>();
+            services.AddScoped<IRestaurantCacheAccessor, RestaurantCacheAccessor>();
 
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IMenuService, MenuService>();
