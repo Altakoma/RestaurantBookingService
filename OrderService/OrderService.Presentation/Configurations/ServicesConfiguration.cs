@@ -56,7 +56,7 @@ namespace OrderService.Presentation.Configurations
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 
-            services.AddSingleton<IGrpcClientBookingService, GrpcClientBookingService>();
+            services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<Seed>();
 
