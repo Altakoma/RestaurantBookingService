@@ -17,7 +17,7 @@ namespace CatalogService.Application.Services.Base
             _mapper = mapper;
         }
 
-        public async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
+        public virtual async Task<T> GetByIdAsync<T>(int id, CancellationToken cancellationToken)
         {
             T? readItemDTO = await _repository.GetByIdAsync<T>(id, cancellationToken);
 

@@ -43,19 +43,19 @@ namespace IdentityService.API.Controllers
             [FromBody] LoginDTO loginDTO,
             CancellationToken cancellationToken)
         {
-            TokenDTO tokensDTO = await _userService.GetUserAsync(
+            AccessTokenDTO tokensDTO = await _userService.GetUserAsync(
                     loginDTO.Login, loginDTO.Password, cancellationToken);
 
             return Ok(tokensDTO);
         }
 
         [HttpPost("refresh")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenDTO))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AccessTokenDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ExceptionDTO))]
         public async Task<IActionResult> RefreshTokenAsync(
             CancellationToken cancellationToken)
         {
-            TokenDTO generatedTokenDTO = await _refreshTokenService
+            AccessTokenDTO generatedTokenDTO = await _refreshTokenService
                 .VerifyAndGenerateTokenAsync(cancellationToken);
 
             return Ok(generatedTokenDTO);

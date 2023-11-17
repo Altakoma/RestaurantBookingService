@@ -70,6 +70,8 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 .ForMember(
                 readUserDTO => readUserDTO.UserRoleName,
                 configuration => configuration.MapFrom(user => user.UserRole.Name));
+
+            CreateMap<User, User>();
         }
     }
 }
