@@ -17,33 +17,29 @@ namespace BookingService.Application.TokenParsers
                     (ExceptionMessages.NullReferenceMessage, nameof(IHeaderDictionary)));
             }
 
-            bool headerExists = headers.TryGetValue("Authorization", out StringValues jwt);
+            bool isHeaderExists = headers.TryGetValue("Authorization", out StringValues jwt);
 
-            if (headerExists)
-            {
-                string token = jwt!;
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-
-                JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token.Replace("Bearer ", ""));
-
-                IEnumerable<Claim> claims = jwtToken.Claims;
-
-                Claim subjectClaim = claims.Where(c => c.Type == "sub").FirstOrDefault()!;
-
-                if (int.TryParse(subjectClaim.Value, out int id))
-                {
-                    return id;
-                }
-                else
-                {
-                    throw new NotFoundException("sub", typeof(Claim));
-                }
-            }
-            else
+            if (!isHeaderExists)
             {
                 throw new NotFoundException("Authorization", typeof(IHeaderDictionary));
             }
+
+            string token = jwt!;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token.Replace("Bearer ", ""));
+
+            IEnumerable<Claim> claims = jwtToken.Claims;
+
+            Claim subjectClaim = claims.Where(c => c.Type == "sub").FirstOrDefault()!;
+
+            if (!int.TryParse(subjectClaim.Value, out int id))
+            {
+                throw new NotFoundException("sub", typeof(Claim));
+            }
+
+            return id;
         }
     }
 }

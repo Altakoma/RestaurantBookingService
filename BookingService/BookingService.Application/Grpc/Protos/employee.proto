@@ -5,7 +5,7 @@ option csharp_namespace = "BookingService.Application";
 package employeeGrpcService;
 
 service EmployeeGrpcService {
-	rpc EmployeeWorksAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
+	rpc IsEmployeeWorkingAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
 }
 
 message IsWorkingAtRestaurantRequest{
