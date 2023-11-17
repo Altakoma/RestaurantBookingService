@@ -110,7 +110,7 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             bool isEmployeeExisting = await _employeeRepository
-                .ExistsAsync(subjectId, cancellationToken);
+                .IsExistingAsync(subjectId, cancellationToken);
 
             if (!isEmployeeExisting)
             {

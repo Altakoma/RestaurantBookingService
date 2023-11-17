@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿using BookingService.Application.Interfaces.GrpcServices;
 using BookingService.Application.Interfaces.Kafka.Consumers;
+=======
+﻿using BookingService.Application;
+using BookingService.Application.Interfaces.GrpcServices;
+>>>>>>> 848206fc5a502bd1d3275e0597b4e185800d0843
 using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Application.Interfaces.Services;
@@ -63,8 +68,6 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
-
-            services.AddSingleton<IGrpcClientEmployeeService, GrpcClientEmployeeService>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 

@@ -5,8 +5,8 @@ option csharp_namespace = "CatalogService.Application";
 package employeeGrpcService;
 
 service EmployeeGrpcService {
-	rpc EmployeeWorksAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
-	rpc UserExists (IsUserExistingRequest) returns (IsUserExistingReply);
+	rpc IsEmployeeWorkingAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
+	rpc IsUserExisting (IsUserExistingRequest) returns (IsUserExistingReply);
 }
 
 message IsWorkingAtRestaurantRequest{

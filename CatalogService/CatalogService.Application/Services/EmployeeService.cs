@@ -42,7 +42,7 @@ namespace CatalogService.Application.Services
             var employee = _mapper.Map<Employee>(insertEmployeeDTO);
 
             IsUserExistingReply reply = await _grpcEmployeeClientService
-                .UserExists(request, cancellationToken);
+                .IsUserExisting(request, cancellationToken);
 
             if (!reply.IsUserExisting)
             {

@@ -2,7 +2,7 @@
 {
     public interface IGrpcEmployeeClientService
     {
-        Task<IsUserExistingReply> UserExists(
+        Task<IsUserExistingReply> IsUserExisting(
             IsUserExistingRequest request, CancellationToken cancellationToken);
     }
 }

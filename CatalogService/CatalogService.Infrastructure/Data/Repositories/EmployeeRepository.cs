@@ -25,7 +25,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
             return readEmployeeDTOs;
         }
 
-        public async Task<bool> ExistsAsync(int id, CancellationToken cancellationToken)
+        public async Task<bool> IsExistingAsync(int id, CancellationToken cancellationToken)
         {
             bool isEmployeeExist = await _catalogServiceDbContext
                 .Employees.AnyAsync(employee => employee.Id == id, cancellationToken);
@@ -33,7 +33,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
             return isEmployeeExist;
         }
 
-        public async Task<bool> WorksAtRestaurantAsync(int employeeId, int restaurantId,
+        public async Task<bool> IsWorkingAtRestaurantAsync(int employeeId, int restaurantId,
             CancellationToken cancellationToken)
         {
             bool isEmployeeWorkingAtRestaurant = await _catalogServiceDbContext
