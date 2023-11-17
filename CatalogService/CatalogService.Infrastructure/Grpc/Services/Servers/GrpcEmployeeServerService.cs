@@ -13,11 +13,11 @@ namespace CatalogService.Infrastructure.Grpc.Services.Servers
             _employeeRepository = employeeRepository;
         }
 
-        public async override Task<IsWorkingAtRestaurantReply> EmployeeWorksAtRestaurant(
+        public async override Task<IsWorkingAtRestaurantReply> IsEmployeeWorkingAtRestaurant(
             IsWorkingAtRestaurantRequest request, ServerCallContext context)
         {
             bool isEmployeeWorkingAtRestaurant = await _employeeRepository
-                .WorksAtRestaurantAsync(request.EmployeeId, request.RestaurantId,
+                .IsWorkingAtRestaurantAsync(request.EmployeeId, request.RestaurantId,
                                         context.CancellationToken);
 
             var isWorkingAtRestaurantReply = new IsWorkingAtRestaurantReply

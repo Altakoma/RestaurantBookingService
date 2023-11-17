@@ -2,7 +2,7 @@
 {
     public interface IGrpcClientEmployeeService
     {
-        Task<IsWorkingAtRestaurantReply> EmployeeWorksAtRestaurant(
+        Task<IsWorkingAtRestaurantReply> IsEmployeeWorkingAtRestaurant(
             IsWorkingAtRestaurantRequest request, CancellationToken cancellationToken);
     }
 }

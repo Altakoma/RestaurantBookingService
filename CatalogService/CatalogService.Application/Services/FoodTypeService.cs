@@ -45,7 +45,7 @@ namespace CatalogService.Application.Services
             int subjectId = _tokenParser
                 .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
 
-            bool isExist = await _employeeRepository.ExistsAsync(subjectId, cancellationToken);
+            bool isExist = await _employeeRepository.IsExistingAsync(subjectId, cancellationToken);
 
             if (!isExist)
             {

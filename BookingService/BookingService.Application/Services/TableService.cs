@@ -32,7 +32,7 @@ namespace BookingService.Application.Services
 
         public override async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            await EmployeeWorksAtRestaurantByTableId(id, cancellationToken);
+            await EnsureEmployeeWorksAtRestaurantByTableIdOrThrowAsync(id, cancellationToken);
 
             await base.DeleteAsync(id, cancellationToken);
         }
@@ -40,7 +40,7 @@ namespace BookingService.Application.Services
         public async Task<T> InsertAsync<T>(InsertTableDTO insertItemDTO,
             CancellationToken cancellationToken)
         {
-            await EmployeeWorksAtRestaurant(insertItemDTO.RestaurantId, cancellationToken);
+            await EnsureEmployeeWorksAtRestaurantOrThrowAsync(insertItemDTO.RestaurantId, cancellationToken);
 
             return await base.InsertAsync<InsertTableDTO, T>(insertItemDTO, cancellationToken);
         }
@@ -48,21 +48,21 @@ namespace BookingService.Application.Services
         public async override Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            await EmployeeWorksAtRestaurantByTableId(id, cancellationToken);
+            await EnsureEmployeeWorksAtRestaurantByTableIdOrThrowAsync(id, cancellationToken);
 
             return await base.UpdateAsync<U, T>(id, updateItemDTO, cancellationToken);
         }
 
-        private async Task EmployeeWorksAtRestaurantByTableId(int tableId,
+        private async Task EnsureEmployeeWorksAtRestaurantByTableIdOrThrowAsync(int tableId,
             CancellationToken cancellationToken)
         {
             int restaurantId = await _tableRepository
                 .GetRestaurantIdByTableIdAsync(tableId, cancellationToken);
 
-            await EmployeeWorksAtRestaurant(restaurantId, cancellationToken);
+            await EnsureEmployeeWorksAtRestaurantOrThrowAsync(restaurantId, cancellationToken);
         }
 
-        private async Task EmployeeWorksAtRestaurant(int restaurantId,
+        private async Task EnsureEmployeeWorksAtRestaurantOrThrowAsync(int restaurantId,
             CancellationToken cancellationToken)
         {
             int subjectId = _tokenParser.ParseSubjectId(
@@ -75,7 +75,7 @@ namespace BookingService.Application.Services
             };
 
             IsWorkingAtRestaurantReply reply = await _grpcEmployeeClientService
-                .EmployeeWorksAtRestaurant(request, cancellationToken);
+                .IsEmployeeWorkingAtRestaurant(request, cancellationToken);
 
             if (!reply.IsEmployeeWorkingAtRestaurant)
             {

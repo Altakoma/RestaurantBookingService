@@ -1,4 +1,5 @@
-﻿using BookingService.Application.Interfaces.GrpcServices;
+﻿using BookingService.Application;
+using BookingService.Application.Interfaces.GrpcServices;
 using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Services;
 using BookingService.Application.ServicesConfigurations;
@@ -54,8 +55,6 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
-
-            services.AddSingleton<IGrpcClientEmployeeService, GrpcClientEmployeeService>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 
