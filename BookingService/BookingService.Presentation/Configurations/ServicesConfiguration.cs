@@ -69,6 +69,8 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
 
+            services.AddGrpcClients(builder.Configuration);
+
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 
             services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();

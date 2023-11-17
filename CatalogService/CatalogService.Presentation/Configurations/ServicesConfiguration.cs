@@ -60,7 +60,7 @@ namespace CatalogService.Presentation.Configurations
             services.AddScoped<IBaseRestaurantService, RestaurantService>();
             services.AddScoped<IBaseFoodTypeService, FoodTypeService>();
 
-            services.AddScoped<IGrpcEmployeeClientService, GrpcEmployeeClientService>();
+            services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
             services.AddSingleton<IMenuMessageProducer, MenuMessageProducer>();
