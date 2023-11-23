@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace CatalogService.Infrastructure.KafkaMessageBroker
+namespace BookingService.Infrastructure.KafkaMessageBroker
 {
     public class KafkaOptions
     {

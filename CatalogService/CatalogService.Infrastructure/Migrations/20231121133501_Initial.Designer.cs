@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogService.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogServiceDbContext))]
-    [Migration("20231011153955_Initial")]
+    [Migration("20231121133501_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -19,7 +19,7 @@ namespace CatalogService.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -34,7 +34,12 @@ namespace CatalogService.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Employee", (string)null);
                 });
@@ -76,9 +81,14 @@ namespace CatalogService.Infrastructure.Migrations
                     b.Property<int>("FoodTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FoodTypeId");
+
+                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Menu", (string)null);
                 });
@@ -116,34 +126,15 @@ namespace CatalogService.Infrastructure.Migrations
                     b.ToTable("Restaurant", (string)null);
                 });
 
-            modelBuilder.Entity("EmployeeRestaurant", b =>
+            modelBuilder.Entity("CatalogService.Domain.Entities.Employee", b =>
                 {
-                    b.Property<int>("EmployeesId")
-                        .HasColumnType("int");
+                    b.HasOne("CatalogService.Domain.Entities.Restaurant", "Restaurant")
+                        .WithMany("Employees")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("RestaurantsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmployeesId", "RestaurantsId");
-
-                    b.HasIndex("RestaurantsId");
-
-                    b.ToTable("EmployeeRestaurant");
-                });
-
-            modelBuilder.Entity("MenuRestaurant", b =>
-                {
-                    b.Property<int>("MenuId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestaurantsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MenuId", "RestaurantsId");
-
-                    b.HasIndex("RestaurantsId");
-
-                    b.ToTable("MenuRestaurant");
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("CatalogService.Domain.Entities.Menu", b =>
@@ -154,41 +145,26 @@ namespace CatalogService.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CatalogService.Domain.Entities.Restaurant", "Restaurant")
+                        .WithMany("Menu")
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("FoodType");
-                });
 
-            modelBuilder.Entity("EmployeeRestaurant", b =>
-                {
-                    b.HasOne("CatalogService.Domain.Entities.Employee", null)
-                        .WithMany()
-                        .HasForeignKey("EmployeesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CatalogService.Domain.Entities.Restaurant", null)
-                        .WithMany()
-                        .HasForeignKey("RestaurantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MenuRestaurant", b =>
-                {
-                    b.HasOne("CatalogService.Domain.Entities.Menu", null)
-                        .WithMany()
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CatalogService.Domain.Entities.Restaurant", null)
-                        .WithMany()
-                        .HasForeignKey("RestaurantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("CatalogService.Domain.Entities.FoodType", b =>
                 {
+                    b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("CatalogService.Domain.Entities.Restaurant", b =>
+                {
+                    b.Navigation("Employees");
+
                     b.Navigation("Menu");
                 });
 #pragma warning restore 612, 618

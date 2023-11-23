@@ -1,5 +1,6 @@
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Grpc.Services.Servers;
+using BookingService.Infrastructure.SignalR.Hubs;
 using BookingService.Presentation.Configurations;
 using BookingService.Presentation.Middlewares;
 
@@ -22,8 +23,12 @@ namespace BookingService.Presentation
             app.UseSwagger();
             app.UseSwaggerUI();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.MapHub<BookingHub>(BookingHub.HubPattern);
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
