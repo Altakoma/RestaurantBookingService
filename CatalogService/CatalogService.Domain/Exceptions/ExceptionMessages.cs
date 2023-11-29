@@ -11,6 +11,8 @@
         public const string EmployeeAuthorizationExceptionMessage = "Token provided {0} key of {1} and it doesn't give you" +
             "permission to do that action, because there is no such a {2}";
 
+        public const string BadConfigurationProvidedMessage = "Configuration string {0} was not defined or was uncorrect";
+
         public const string NotRestaurantEmployeeAuthorizationExceptionMessage = "Token provided {0} key of {1} and it doesn't give you" +
             "permission to do that action, because you aren't an employee of this restaurant";
 

@@ -22,6 +22,8 @@ namespace IdentityService.API.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.AddGrpc();
+
             services.AddDatabaseContext(builder);
 
             services.AddHttpContextAccessor();

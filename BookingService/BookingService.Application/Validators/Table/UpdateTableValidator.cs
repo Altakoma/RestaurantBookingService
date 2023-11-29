@@ -7,10 +7,6 @@ namespace BookingService.Application.Validators.Table
     {
         public UpdateTableValidator()
         {
-            RuleFor(insertTableDTO => insertTableDTO.RestaurantId).NotEqual(ValidationResources.ZeroId)
-                .WithMessage(
-                string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(UpdateTableDTO.RestaurantId)));
-
             RuleFor(insertTableDTO => insertTableDTO.SeatsCount).NotEqual(ValidationResources.ZeroId)
                 .WithMessage(
                 string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(UpdateTableDTO.SeatsCount)));

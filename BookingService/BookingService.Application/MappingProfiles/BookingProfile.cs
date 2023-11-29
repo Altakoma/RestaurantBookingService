@@ -9,16 +9,12 @@ namespace BookingService.Application.MappingProfiles
         public BookingProfile()
         {
             CreateMap<InsertBookingDTO, Booking>()
-                .ForMember(booking => booking.ClientId,
-                           options => options.MapFrom(insertBookingDTO => insertBookingDTO.ClientId))
                 .ForMember(booking => booking.TableId,
                            options => options.MapFrom(insertBookingDTO => insertBookingDTO.TableId))
                 .ForMember(booking => booking.BookingTime,
                            options => options.MapFrom(insertBookingDTO => insertBookingDTO.BookingTime));
 
             CreateMap<UpdateBookingDTO, Booking>()
-                .ForMember(booking => booking.ClientId,
-                           options => options.MapFrom(updateBookingDTO => updateBookingDTO.ClientId))
                 .ForMember(booking => booking.TableId,
                            options => options.MapFrom(updateBookingDTO => updateBookingDTO.TableId))
                 .ForMember(booking => booking.BookingTime,

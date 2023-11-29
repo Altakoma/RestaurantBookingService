@@ -5,5 +5,6 @@ namespace BookingService.Application.Interfaces.Repositories
 {
     public interface ITableRepository : IRepository<Table>
     {
+        Task<int> GetRestaurantIdByTableIdAsync(int id, CancellationToken cancellationToken);
     }
 }

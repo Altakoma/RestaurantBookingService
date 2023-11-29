@@ -1,5 +1,6 @@
 using IdentityService.API.Configurations;
 using IdentityService.API.Middlewares;
+using IdentityService.BusinessLogic.Grpc.Servers;
 using IdentityService.DataAccess;
 
 namespace IdentityService.API
@@ -29,6 +30,8 @@ namespace IdentityService.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.MapGrpcService<GrpcServerEmployeeService>();
 
             app.Run();
         }

@@ -1,4 +1,5 @@
 using BookingService.Infrastructure.Data;
+using BookingService.Infrastructure.Grpc.Services.Servers;
 using BookingService.Presentation.Configurations;
 using BookingService.Presentation.Middlewares;
 
@@ -27,6 +28,8 @@ namespace BookingService.Presentation
             app.UseAuthorization();
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
+
+            app.MapGrpcService<GrpcServerBookingService>();
 
             app.MapControllers();
 

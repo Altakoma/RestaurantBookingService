@@ -11,14 +11,7 @@ namespace BookingService.Presentation.Configurations
         {
             byte[] key;
 
-            if (builder.Environment.IsDevelopment())
-            {
-                key = Encoding.UTF8.GetBytes(builder.Configuration["JWTSecret"]!);
-            }
-            else
-            {
-                key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWTSecret")!);
-            }
+            key = Encoding.UTF8.GetBytes(builder.Configuration["JWTSecret"]!);
 
             var tokenValidationParams = new TokenValidationParameters
             {
