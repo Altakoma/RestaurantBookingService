@@ -1,9 +1,14 @@
-﻿using BookingService.Application.Interfaces.Repositories;
+﻿using BookingService.Application;
+using BookingService.Application.Interfaces.GrpcServices;
+using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Services;
 using BookingService.Application.ServicesConfigurations;
+using BookingService.Application.TokenParsers;
+using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Interfaces.Services;
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
+using BookingService.Infrastructure.Grpc.Services.Clients;
 
 namespace BookingService.Presentation.Configurations
 {
@@ -13,6 +18,10 @@ namespace BookingService.Presentation.Configurations
             WebApplicationBuilder builder)
         {
             services.AddControllers();
+
+            builder.Services.AddGrpc();
+
+            services.AddHttpContextAccessor();
 
             services.AddMvc(options =>
             {
@@ -46,6 +55,10 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
+
+            services.AddGrpcClients(builder.Configuration);
+
+            services.AddSingleton<ITokenParser, JwtTokenParser>();
 
             return services;
         }

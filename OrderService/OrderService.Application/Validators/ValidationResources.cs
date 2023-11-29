@@ -1,4 +1,4 @@
-﻿namespace BookingService.Application.Validators
+﻿namespace OrderService.Application.Validators
 {
     public static class ValidationResources
     {

@@ -1,0 +1,28 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "CatalogService.Application";
+
+package employeeGrpcService;
+
+service EmployeeGrpcService {
+	rpc IsEmployeeWorkingAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
+	rpc IsUserExisting (IsUserExistingRequest) returns (IsUserExistingReply);
+}
+
+message IsWorkingAtRestaurantRequest{
+	int32 employee_id = 1;
+	int32 restaurant_id = 2;
+}
+
+message IsWorkingAtRestaurantReply{
+	bool is_employee_working_at_restaurant = 1;
+}
+
+message IsUserExistingRequest{
+	int32 user_id = 1;
+}
+
+message IsUserExistingReply{
+	bool is_user_existing = 1;
+	string user_name = 2;
+}

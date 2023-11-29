@@ -71,31 +71,13 @@ namespace OrderService.Infrastructure.Migrations
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TableId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
                     b.HasIndex("MenuId");
 
-                    b.HasIndex("TableId");
-
                     b.ToTable("Order", (string)null);
-                });
-
-            modelBuilder.Entity("OrderService.Domain.Entities.Table", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Table", (string)null);
                 });
 
             modelBuilder.Entity("OrderService.Domain.Entities.Order", b =>
@@ -112,17 +94,9 @@ namespace OrderService.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OrderService.Domain.Entities.Table", "Table")
-                        .WithMany("Orders")
-                        .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Client");
 
                     b.Navigation("Menu");
-
-                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("OrderService.Domain.Entities.Client", b =>
@@ -131,11 +105,6 @@ namespace OrderService.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("OrderService.Domain.Entities.Menu", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("OrderService.Domain.Entities.Table", b =>
                 {
                     b.Navigation("Orders");
                 });

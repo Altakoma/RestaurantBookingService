@@ -15,8 +15,6 @@ namespace BookingService.Application.MappingProfiles
                            options => options.MapFrom(insertTableDTO => insertTableDTO.SeatsCount));
 
             CreateMap<UpdateTableDTO, Table>()
-                .ForMember(table => table.RestaurantId,
-                           options => options.MapFrom(updateTableDTO => updateTableDTO.RestaurantId))
                 .ForMember(table => table.SeatsCount,
                            options => options.MapFrom(updateTableDTO => updateTableDTO.SeatsCount));
 

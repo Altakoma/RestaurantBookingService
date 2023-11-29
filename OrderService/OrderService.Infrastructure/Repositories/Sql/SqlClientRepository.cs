@@ -4,7 +4,7 @@ using OrderService.Domain.Entities;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using OrderService.Infrastructure.Repositories.Base;
 
-namespace OrderService.Infrastructure.Repositories.Write
+namespace OrderService.Infrastructure.Repositories.Sql
 {
     public class SqlClientRepository : BaseSqlRepository<Client>, ISqlClientRepository
     {

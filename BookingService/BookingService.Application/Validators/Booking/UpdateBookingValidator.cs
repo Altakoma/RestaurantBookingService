@@ -7,10 +7,6 @@ namespace BookingService.Application.Validators.Booking
     {
         public UpdateBookingValidator()
         {
-            RuleFor(updateBookingDTO => updateBookingDTO.ClientId).NotEqual(ValidationResources.ZeroId)
-                .WithMessage(
-                string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(InsertBookingDTO.ClientId)));
-
             RuleFor(updateBookingDTO => updateBookingDTO.TableId).NotEqual(ValidationResources.ZeroId)
                 .WithMessage(
                 string.Format(ValidationResources.DetectionZeroPropertyMessage, nameof(InsertBookingDTO.TableId)));

@@ -16,10 +16,10 @@ namespace CatalogService.Presentation.Controllers
     {
         private readonly IBaseRestaurantService _restaurantService;
         private readonly IMenuService _menuService;
-        private readonly IBaseEmployeeService _employeeService;
+        private readonly IEmployeeService _employeeService;
 
         public RestaurantController(IBaseRestaurantService restaurantService,
-            IMenuService menuService, IBaseEmployeeService employeeService)
+            IMenuService menuService, IEmployeeService employeeService)
         {
             _restaurantService = restaurantService;
             _menuService = menuService;

@@ -25,7 +25,8 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(readClientDTO => readClientDTO.Id,
                 options => options.MapFrom(client => client.Id))
                 .ForMember(readClientDTO => readClientDTO.Name,
-                options => options.MapFrom(client => client.Name));
+                options => options.MapFrom(client => client.Name))
+                .ReverseMap();
         }
     }
 }

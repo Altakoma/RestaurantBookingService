@@ -1,10 +1,14 @@
 ﻿using MediatR;
+using OrderService.Application.Interfaces.GrpcServices;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.ServicesConfigurations;
+using OrderService.Application.TokenParsers;
+using OrderService.Application.TokenParsers.Interfaces;
 using OrderService.Infrastructure.Data;
-using OrderService.Infrastructure.Repositories.Read;
-using OrderService.Infrastructure.Repositories.Write;
+using OrderService.Infrastructure.Grpc.Services.Clients;
+using OrderService.Infrastructure.Repositories.NoSql;
+using OrderService.Infrastructure.Repositories.Sql;
 using OrderService.Presentation.Behaviors;
 
 namespace OrderService.Presentation.Configurations
@@ -20,6 +24,8 @@ namespace OrderService.Presentation.Configurations
             {
                 options.SuppressAsyncSuffixInActionNames = false;
             });
+
+            services.AddHttpContextAccessor();
 
             services.AddDatabaseContext(builder);
 
@@ -47,7 +53,10 @@ namespace OrderService.Presentation.Configurations
             services.AddScoped<ISqlClientRepository, SqlClientRepository>();
             services.AddScoped<ISqlMenuRepository, SqlMenuRepository>();
             services.AddScoped<ISqlOrderRepository, SqlOrderRepository>();
-            services.AddScoped<ISqlTableRepository, SqlTableRepository>();
+
+            services.AddSingleton<ITokenParser, JwtTokenParser>();
+
+            services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<Seed>();
 

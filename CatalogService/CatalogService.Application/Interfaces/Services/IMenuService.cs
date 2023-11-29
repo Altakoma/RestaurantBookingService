@@ -7,7 +7,5 @@ namespace CatalogService.Application.Interfaces.Services
     {
         Task<T> InsertAsync<T>(MenuDTO menuDTO, CancellationToken cancellationToken);
         Task<T> UpdateAsync<T>(int id, MenuDTO menuDTO, CancellationToken cancellationToken);
-        Task<T> ExecuteAndCheckEmployeeAsync<T>(Func<Task<T>> function,
-                    MenuDTO menuDTO, CancellationToken cancellationToken);
     }
 }

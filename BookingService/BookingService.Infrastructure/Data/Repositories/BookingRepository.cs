@@ -14,5 +14,14 @@ namespace BookingService.Infrastructure.Data.Repositories
             IMapper mapper) : base(bookingServiceDbContext, mapper)
         {
         }
+
+        public async Task<bool> IsClientBookedTableAsync(int clientId, int bookingId,
+            CancellationToken cancellationToken)
+        {
+            bool isClientBookedTable = await _bookingServiceDbContext.Bookings.AnyAsync(booking =>
+            booking.ClientId == clientId && booking.Id == bookingId, cancellationToken);
+
+            return isClientBookedTable;
+        }
     }
 }

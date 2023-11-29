@@ -6,7 +6,7 @@ using BookingService.Domain.Interfaces.Services.Base;
 
 namespace BookingService.Application.Services.Base
 {
-    public class BaseService<K> : IBaseService where K : BaseEntity
+    public abstract class BaseService<K> : IBaseService where K : BaseEntity
     {
         private readonly IRepository<K> _repository;
         protected readonly IMapper _mapper;
@@ -31,7 +31,7 @@ namespace BookingService.Application.Services.Base
             return items;
         }
 
-        public async Task<T> InsertAsync<U, T>(U insertItemDTO,
+        public virtual async Task<T> InsertAsync<U, T>(U insertItemDTO,
             CancellationToken cancellationToken)
         {
             var item = _mapper.Map<K>(insertItemDTO);
@@ -41,7 +41,7 @@ namespace BookingService.Application.Services.Base
             return readItemDTO;
         }
 
-        public async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
+        public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
             K item = await _repository.GetByIdAsync<K>(id, cancellationToken);
@@ -54,7 +54,7 @@ namespace BookingService.Application.Services.Base
             return itemDTO;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
+        public virtual async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
             await _repository.DeleteAsync(id, cancellationToken);
 

@@ -12,9 +12,6 @@ namespace OrderService.Infrastructure.Data.ApplicationSqlDbContext.Configuration
 
             builder.HasKey(order => order.Id);
 
-            builder.HasOne(order => order.Table)
-                   .WithMany(table => table.Orders);
-
             builder.HasOne(order => order.Menu)
                    .WithMany(menu => menu.Orders);
 
