@@ -7,17 +7,15 @@ namespace CatalogService.Presentation.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
-        private const string BootstrapServerString = "BootstrapServer";
-
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString];
+            var bootstrapServer = configuration["BootstrapServer"];
 
             if (bootstrapServer is null)
             {
                 throw new NotFoundException(nameof(bootstrapServer),
-                    BootstrapServerString, typeof(string));
+                    "BootstrapServer", typeof(string));
             }
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions

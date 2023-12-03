@@ -30,7 +30,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             _services = services;
         }
 
-        public async Task ConsumeMessage(CancellationToken cancellationToken,
+        public async Task ConsumeMessageAsync(CancellationToken cancellationToken,
             string topicName)
         {
             var config = new ConsumerConfig
@@ -44,8 +44,6 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
             var consumerBuilder = new ConsumerBuilder<Null, string>(config);
 
-            string message;
-
             using (var consumer = consumerBuilder.Build())
             {
                 consumer.Subscribe(topicName);
@@ -57,14 +55,13 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
                         ConsumeResult<Null, string> result =
                         await Task.Run(() => consumer.Consume(cancellationToken));
 
-                        message = result.Message.Value;
+                        var message = result.Message.Value;
 
-                        MessageDTO? messageDTO = JsonSerializer
-                                                 .Deserialize<MessageDTO>(message);
+                        var messageDTO = JsonSerializer.Deserialize<MessageDTO>(message);
 
                         if (messageDTO is not null)
                         {
-                            await HandleMessage(messageDTO.Type, message,
+                            await HandleMessageAsync(messageDTO.Type, message,
                                                 cancellationToken);
                         }
 
@@ -78,7 +75,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
             }
         }
 
-        public async Task HandleMessage(MessageType type, string message,
+        public async Task HandleMessageAsync(MessageType type, string message,
             CancellationToken cancellationToken)
         {
             using (var scope = _services.CreateScope())
@@ -149,7 +146,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
         public string GetTopicNameOrThrow(string configurationName)
         {
-            string? topicName = _configuration[configurationName];
+            var topicName = _configuration[configurationName];
 
             if (topicName is null)
             {

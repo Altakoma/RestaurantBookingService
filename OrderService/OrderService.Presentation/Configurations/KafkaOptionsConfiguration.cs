@@ -6,13 +6,10 @@ namespace OrderService.Presentation.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
-        private const string BootstrapServerString = "BootstrapServer";
-        private const string GroupNameString = "GroupName";
-
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = configuration[BootstrapServerString];
+            var bootstrapServer = configuration["BootstrapServer"];
 
             if (bootstrapServer is null)
             {
@@ -20,7 +17,7 @@ namespace OrderService.Presentation.Configurations
                     typeof(string));
             }
 
-            string? groupName = configuration[GroupNameString];
+            var groupName = configuration["GroupName"];
 
             if (groupName is null)
             {

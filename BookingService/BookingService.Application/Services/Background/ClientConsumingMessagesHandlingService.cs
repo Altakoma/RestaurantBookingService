@@ -15,7 +15,7 @@ namespace BookingService.Application.Services.Background
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _clientMessageConsumer.HandleConsumingMessages(stoppingToken);
+            await _clientMessageConsumer.HandleConsumingMessagesAsync(stoppingToken);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace CatalogService.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ReadEmployeeDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ExceptionDTO))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ExceptionDTO))]
-        public async Task<IActionResult> InsertEmployee([FromBody] InsertEmployeeDTO employeeDTO,
+        public async Task<IActionResult> InsertEmployeeAsync([FromBody] InsertEmployeeDTO employeeDTO,
             CancellationToken cancellationToken)
         {
             ReadEmployeeDTO readEmployeeDTO = await _employeeService

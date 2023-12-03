@@ -2,6 +2,6 @@
 {
     public interface IBaseMessageConsumer
     {
-        Task ConsumeMessage(CancellationToken cancellationToken, string topicName);
+        Task ConsumeMessageAsync(CancellationToken cancellationToken, string topicName);
     }
 }

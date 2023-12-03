@@ -6,8 +6,6 @@ namespace CatalogService.Presentation.Configurations
 {
     public static class GrpcClientsConfiguration
     {
-        private const string ConfigurationServerAddressString = "IdentityService";
-
         public static IServiceCollection AddGrpcClients(this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -19,7 +17,7 @@ namespace CatalogService.Presentation.Configurations
 
             services.AddGrpcClient<EmployeeGrpcService.EmployeeGrpcServiceClient>(options =>
             {
-                options.Address = new Uri(configuration[ConfigurationServerAddressString]!);
+                options.Address = new Uri(configuration["IdentityService"]!);
             })
             .ConfigurePrimaryHttpMessageHandler(() => httpHandler);
 

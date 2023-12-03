@@ -31,7 +31,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
             _services = services;
         }
 
-        public async Task ConsumeMessage(CancellationToken cancellationToken,
+        public async Task ConsumeMessageAsync(CancellationToken cancellationToken,
             string topicName)
         {
             var config = new ConsumerConfig
@@ -65,7 +65,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
 
                         if (messageDTO is not null)
                         {
-                            await HandleMessage(messageDTO.Type, message,
+                            await HandleMessageAsync(messageDTO.Type, message,
                                                 cancellationToken);
                         }
 
@@ -79,7 +79,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
             }
         }
 
-        public async Task HandleMessage(MessageType type, string message,
+        public async Task HandleMessageAsync(MessageType type, string message,
             CancellationToken cancellationToken)
         {
             using (var scope = _services.CreateScope())
@@ -150,7 +150,7 @@ namespace BookingService.Infrastructure.KafkaMessageBroker.Consumers
 
         public string GetTopicNameOrThrow(string configurationName)
         {
-            string? topicName = _configuration[configurationName];
+            var topicName = _configuration[configurationName];
 
             if (topicName is null)
             {

@@ -7,13 +7,10 @@ namespace IdentityService.API.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
-        private const string BootstrapServerString = "BootstrapServer";
-
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string? bootstrapServer = Environment.GetEnvironmentVariable(BootstrapServerString) ??
-                configuration[BootstrapServerString];
+            var bootstrapServer = configuration["BootstrapServer"];
 
             if (bootstrapServer is null)
             {

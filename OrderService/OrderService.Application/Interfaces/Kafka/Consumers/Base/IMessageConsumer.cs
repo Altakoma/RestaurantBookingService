@@ -2,6 +2,6 @@
 {
     public interface IMessageConsumer : IBaseMessageConsumer
     {
-        Task HandleConsumingMessages(CancellationToken cancellationToken);
+        Task HandleConsumingMessagesAsync(CancellationToken cancellationToken);
     }
 }

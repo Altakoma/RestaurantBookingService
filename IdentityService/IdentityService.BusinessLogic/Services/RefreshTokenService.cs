@@ -24,7 +24,7 @@ namespace IdentityService.BusinessLogic.Services
         {
             get
             {
-                string? refreshTokenString = _httpContextAccessor.HttpContext?.Request
+                var refreshTokenString = _httpContextAccessor.HttpContext?.Request
                 .Cookies.FirstOrDefault(c => c.Key == RefreshTokenCookieName).Value;
 
                 if (refreshTokenString is null)
