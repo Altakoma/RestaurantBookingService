@@ -14,16 +14,5 @@ namespace IdentityService.DataAccess.Repositories
             IMapper mapper) : base(identityDbContext, mapper)
         {
         }
-
-        public async Task<UserRole?> GetByIdAsync(int id,
-            CancellationToken cancellationToken)
-        {
-            UserRole? role = await _identityDbContext.UserRoles
-                .AsNoTracking()
-                .FirstOrDefaultAsync(
-                    userRole => userRole.Id == id, cancellationToken);
-
-            return role;
-        }
     }
 }

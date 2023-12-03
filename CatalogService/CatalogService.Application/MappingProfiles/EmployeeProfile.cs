@@ -25,7 +25,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(insertEmployeeDTO => insertEmployeeDTO.RestaurantId))
                 .ForMember(
                 employee => employee.Id,
-                configuration => configuration.MapFrom(insertEmployeeDTO => insertEmployeeDTO.Id));
+                configuration => configuration.MapFrom(insertEmployeeDTO => insertEmployeeDTO.Id))
+            .ReverseMap();
 
             CreateMap<Employee, Employee>();
         }

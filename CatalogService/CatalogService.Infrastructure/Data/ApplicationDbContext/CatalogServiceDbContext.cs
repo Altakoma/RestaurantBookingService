@@ -15,6 +15,10 @@ namespace CatalogService.Infrastructure.Data.ApplicationDbContext
         {
         }
 
+        public CatalogServiceDbContext() : base()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

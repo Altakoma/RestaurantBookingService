@@ -1,7 +1,6 @@
 ﻿using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Exceptions;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
 
 namespace IdentityService.DataAccess.CacheAccess
 {

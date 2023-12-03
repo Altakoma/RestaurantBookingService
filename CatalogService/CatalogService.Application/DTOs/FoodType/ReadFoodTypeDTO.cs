@@ -1,8 +1,9 @@
-﻿namespace CatalogService.Application.DTOs.FoodType
+﻿using CatalogService.Domain.Entities;
+
+namespace CatalogService.Application.DTOs.FoodType
 {
-    public class ReadFoodTypeDTO
+    public class ReadFoodTypeDTO : BaseEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; } = null!;
     }
 }

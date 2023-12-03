@@ -54,7 +54,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.House))
                 .ForMember(
                 restaurant => restaurant.City,
-                configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.City));
+                configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.City))
+            .ReverseMap();
 
             CreateMap<InsertRestaurantDTO, Restaurant>()
                 .ForMember(
@@ -68,7 +69,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.House))
                 .ForMember(
                 readRestaurantDTO => readRestaurantDTO.City,
-                configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.City));
+                configuration => configuration.MapFrom(updateRestaurantDTO => updateRestaurantDTO.City))
+            .ReverseMap();
 
             CreateMap<Restaurant, Restaurant>();
         }

@@ -46,7 +46,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(menu => menu.Id))
                 .ForMember(
                 updateMenuDTO => updateMenuDTO.FoodName,
-                configuration => configuration.MapFrom(menu => menu.FoodName));
+                configuration => configuration.MapFrom(menu => menu.FoodName))
+            .ReverseMap();
 
             CreateMap<UpdateMenuDTO, Menu>()
                 .ForMember(
@@ -60,7 +61,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.Cost))
                 .ForMember(
                 menu => menu.FoodTypeId,
-                configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.FoodTypeId));
+                configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.FoodTypeId))
+            .ReverseMap();
 
             CreateMap<InsertMenuDTO, Menu>()
                 .ForMember(
@@ -74,7 +76,8 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.Cost))
                 .ForMember(
                 menu => menu.FoodTypeId,
-                configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.FoodTypeId));
+                configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.FoodTypeId))
+            .ReverseMap();
 
             CreateMap<Menu, Menu>();
 

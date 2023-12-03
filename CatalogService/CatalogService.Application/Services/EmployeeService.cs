@@ -54,8 +54,6 @@ namespace CatalogService.Application.Services
                 UserId = insertEmployeeDTO.Id,
             };
 
-            var employee = _mapper.Map<Employee>(insertEmployeeDTO);
-
             IsUserExistingReply reply = await _grpcEmployeeClientService
                 .IsUserExisting(request, cancellationToken);
 
@@ -64,6 +62,8 @@ namespace CatalogService.Application.Services
                 throw new NotFoundException(nameof(Employee),
                     insertEmployeeDTO.Id.ToString(), typeof(Employee));
             }
+
+            var employee = _mapper.Map<Employee>(insertEmployeeDTO);
 
             employee.Name = reply.UserName;
 
@@ -79,7 +79,7 @@ namespace CatalogService.Application.Services
             await _employeeCacheAccessor.DeleteResourceByIdAsync(id.ToString(),
                                                                  cancellationToken);
 
-            return  await base.DeleteAsync(id, cancellationToken);
+            return await base.DeleteAsync(id, cancellationToken);
         }
 
         public override async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,

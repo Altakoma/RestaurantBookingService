@@ -146,7 +146,7 @@ namespace CatalogService.Application.Services
             int restaurantId, CancellationToken cancellationToken)
         {
             bool isEmployeeWorkAtRestaurant = await _restaurantRepository
-                .WorksAtRestaurant(subjectId, restaurantId, cancellationToken);
+                .IsWorkingAtRestaurant(subjectId, restaurantId, cancellationToken);
 
             if (!isEmployeeWorkAtRestaurant)
             {

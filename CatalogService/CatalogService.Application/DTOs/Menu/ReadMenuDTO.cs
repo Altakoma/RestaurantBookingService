@@ -1,10 +1,10 @@
 ﻿using CatalogService.Application.DTOs.FoodType;
+using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.DTOs.Menu
 {
-    public class ReadMenuDTO
+    public class ReadMenuDTO : BaseEntity
     {
-        public int Id { get; set; }
         public string FoodName { get; set; } = null!;
         public string RestaurantName { get; set; } = null!;
         public double Cost { get; set; }
