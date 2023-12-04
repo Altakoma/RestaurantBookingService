@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-﻿using BookingService.Application.Interfaces.GrpcServices;
+using BookingService.Application.Interfaces.HubServices;
 using BookingService.Application.Interfaces.Kafka.Consumers;
-=======
-﻿using BookingService.Application;
-using BookingService.Application.Interfaces.GrpcServices;
->>>>>>> 848206fc5a502bd1d3275e0597b4e185800d0843
 using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Application.Interfaces.Services;
@@ -16,8 +11,8 @@ using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Entities;
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
-using BookingService.Infrastructure.Grpc.Services.Clients;
 using BookingService.Infrastructure.KafkaMessageBroker.Consumers;
+using BookingService.Infrastructure.SignalR.Services;
 
 namespace BookingService.Presentation.Configurations
 {
@@ -49,7 +44,19 @@ namespace BookingService.Presentation.Configurations
 
             services.AddSingleton<Seed>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", corsPolicyBuilder =>
+                corsPolicyBuilder.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host == (builder.Configuration["CorsPolicyHost"]))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+
             services.AddMapper();
+
+            services.AddSignalR();
 
             services.AddFluentValidation();
 
@@ -68,6 +75,8 @@ namespace BookingService.Presentation.Configurations
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddScoped<IBookService, BookService>();
+
+            services.AddScoped<IBookingHubService, BookingHubService>();
 
             services.AddGrpcClients(builder.Configuration);
 

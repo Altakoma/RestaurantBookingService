@@ -2,7 +2,6 @@
 using BookingService.Application.DTOs.Client.Messages;
 using BookingService.Application.Interfaces.Kafka.Consumers;
 using BookingService.Domain.Entities;
-using CatalogService.Infrastructure.KafkaMessageBroker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 

@@ -1,0 +1,47 @@
+.lobby-item{
+    display: block;
+    border: 1px solid rgb(15, 52, 216);
+    padding: 0 1%;
+    margin: 1% 1%;
+}
+
+.lobby-item *{
+    white-space: nowrap;
+    text-align: center;
+    color:deeppink;
+}
+
+.lobby-item input{
+    display: block;
+    background-color: aliceblue;
+    color: black;
+    height: 3%;
+    min-height: 20px;
+    min-width: 45px;
+    width: 60%;
+    max-width: 150px;
+    margin: 8% 8% 4%;
+}
+
+.lobby-item [type="button"]:hover{
+    background-color: greenyellow;
+}
+
+.lobby-item table *{
+    color: black;
+    padding-right: 10px;
+    text-align: start;
+}
+
+.lobby-item table{
+    border-collapse:collapse;
+    border: none rgb(199, 230, 234);
+}
+
+input[type="button"]:disabled{
+    background-color: rgb(221, 211, 211);
+}
+
+input[type="button"]:disabled:hover{
+    background-color: rgb(196, 190, 190);
+}

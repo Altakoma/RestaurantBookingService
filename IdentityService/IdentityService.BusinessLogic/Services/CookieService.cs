@@ -34,8 +34,10 @@ namespace IdentityService.BusinessLogic.Services
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
+                HttpOnly = false,
                 Expires = DateTime.Now.AddMinutes(20),
+                SameSite = SameSiteMode.Strict,
+                Secure = false,
             };
 
             _httpContextAccessor.HttpContext?.Response

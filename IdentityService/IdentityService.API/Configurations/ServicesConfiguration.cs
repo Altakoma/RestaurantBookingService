@@ -46,6 +46,16 @@ namespace IdentityService.API.Configurations
 
             services.AddAuthorization();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", corsPolicyBuilder =>
+                corsPolicyBuilder.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host == (builder.Configuration["CorsPolicyHost"]))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+
             services.AddSingleton<Seed>();
 
             services.AddMapper();
