@@ -45,7 +45,7 @@ namespace IdentityService.BusinessLogic.KafkaMessageBroker.Producers
 
         public string GetTopicNameOrThrow(string configurationName)
         {
-            string? topicName = _configuration[configurationName];
+            var topicName = _configuration[configurationName];
 
             if (topicName is null)
             {

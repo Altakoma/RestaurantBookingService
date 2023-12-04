@@ -7,8 +7,6 @@ namespace IdentityService.API.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
-        private const string BootstrapServerString = "BootstrapServer";
-
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {

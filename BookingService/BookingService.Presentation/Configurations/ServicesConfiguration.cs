@@ -46,8 +46,9 @@ namespace BookingService.Presentation.Configurations
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
-                builder.SetIsOriginAllowed(origin => new Uri(origin).Host == ("localhost"))
+                options.AddPolicy("CorsPolicy", corsPolicyBuilder =>
+                corsPolicyBuilder.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host == (builder.Configuration["CorsPolicyHost"]))
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());

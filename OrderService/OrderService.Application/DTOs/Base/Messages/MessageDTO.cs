@@ -4,11 +4,4 @@
     {
         public MessageType Type { get; set; }
     }
-
-    public enum MessageType
-    {
-        Delete,
-        Update,
-        Insert
-    }
 }

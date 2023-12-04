@@ -15,7 +15,7 @@ namespace OrderService.Application.BackgroundServices
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _clientMessageConsumer.HandleConsumingMessages(stoppingToken);
+            await _clientMessageConsumer.HandleConsumingMessagesAsync(stoppingToken);
         }
     }
 }
