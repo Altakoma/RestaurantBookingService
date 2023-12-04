@@ -1,5 +1,5 @@
 ﻿using BookingService.Domain.Exceptions;
-using CatalogService.Infrastructure.KafkaMessageBroker;
+using BookingService.Infrastructure.KafkaMessageBroker;
 using Microsoft.Extensions.Options;
 
 namespace BookingService.Presentation.Configurations

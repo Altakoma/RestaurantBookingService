@@ -3,7 +3,6 @@ using BookingService.Application.DTOs.Base.Messages;
 using BookingService.Application.Interfaces.Kafka.Consumers.Base;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Domain.Exceptions;
-using CatalogService.Infrastructure.KafkaMessageBroker;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -22,6 +22,8 @@ namespace IdentityService.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
+            app.UseCors("CorsPolicy");
+
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
             app.UseAuthentication();
