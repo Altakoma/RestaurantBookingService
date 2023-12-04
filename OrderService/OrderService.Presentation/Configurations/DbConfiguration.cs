@@ -7,20 +7,17 @@ namespace OrderService.Presentation.Configurations
 {
     public static class DbConfiguration
     {
-        public const string MongoDbConnectionString = "MongoDbConnection";
-        public const string SqlDbConnectionString = "SqlConnection";
-
         public static IServiceCollection AddDatabaseContext(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
             services.AddDbContext<OrderServiceSqlDbContext>(options =>
             {
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString(SqlDbConnectionString));
+                    builder.Configuration.GetConnectionString("SqlConnection"));
             });
 
             services.Configure<MongoDbSettings>(
-                builder.Configuration.GetSection(MongoDbConnectionString));
+                builder.Configuration.GetSection("MongoDbConnection"));
 
             services.AddSingleton<IMongoDbSettings>(serviceProvider =>
                 serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);

@@ -5,8 +5,6 @@ namespace OrderService.Presentation.Configurations
 {
     public static class HangfireConfiguration
     {
-        public const string DbConnectionString = "SqlConnection";
-
         public static IServiceCollection AddHangfire(this IServiceCollection services,
             WebApplicationBuilder builder)
         {

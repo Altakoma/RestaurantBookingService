@@ -9,11 +9,4 @@
             Type = messageType;
         }
     }
-
-    public enum MessageType
-    {
-        Delete,
-        Update,
-        Insert
-    }
 }

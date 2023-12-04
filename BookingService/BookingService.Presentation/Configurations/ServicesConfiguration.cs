@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-﻿using BookingService.Application.Interfaces.GrpcServices;
 using BookingService.Application.Interfaces.Kafka.Consumers;
-=======
-﻿using BookingService.Application;
-using BookingService.Application.Interfaces.GrpcServices;
->>>>>>> 848206fc5a502bd1d3275e0597b4e185800d0843
 using BookingService.Application.Interfaces.Repositories;
 using BookingService.Application.Interfaces.Repositories.Base;
 using BookingService.Application.Interfaces.Services;
@@ -16,7 +10,6 @@ using BookingService.Application.TokenParsers.Interfaces;
 using BookingService.Domain.Entities;
 using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
-using BookingService.Infrastructure.Grpc.Services.Clients;
 using BookingService.Infrastructure.KafkaMessageBroker.Consumers;
 
 namespace BookingService.Presentation.Configurations

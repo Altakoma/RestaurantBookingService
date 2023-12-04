@@ -51,7 +51,7 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
 
         public async Task DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            T item = await ItemExistsAsync(id, cancellationToken);
+            T item = await IsItemExistingAsync(id, cancellationToken);
 
             Delete(item);
         }
@@ -88,7 +88,7 @@ namespace BookingService.Infrastructure.Data.Repositories.Base
             return saved > 0;
         }
 
-        private async Task<T> ItemExistsAsync(int id, CancellationToken cancellationToken)
+        private async Task<T> IsItemExistingAsync(int id, CancellationToken cancellationToken)
         {
             T? item = await _bookingServiceDbContext.Set<T>()
                 .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);

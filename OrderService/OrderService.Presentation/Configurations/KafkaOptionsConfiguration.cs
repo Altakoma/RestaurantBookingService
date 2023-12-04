@@ -6,9 +6,6 @@ namespace OrderService.Presentation.Configurations
 {
     public static class KafkaOptionsConfiguration
     {
-        private const string BootstrapServerString = "BootstrapServer";
-        private const string GroupNameString = "GroupName";
-
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {

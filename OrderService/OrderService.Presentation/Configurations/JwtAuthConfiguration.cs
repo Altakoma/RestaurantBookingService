@@ -6,15 +6,13 @@ namespace OrderService.Presentation.Configurations
 {
     public static class JwtTokenAuthConfiguration
     {
-        public const string JWTSecretConfigurationName = "JWTSecret";
-
         public static IServiceCollection AddJwtTokenAuthConfiguration(
             this IServiceCollection services, WebApplicationBuilder builder)
         {
             byte[] key;
 
             key = Encoding.UTF8.GetBytes(
-                builder.Configuration[JWTSecretConfigurationName]!);
+                builder.Configuration["JWTSecret"]!);
 
             var tokenValidationParams = new TokenValidationParameters
             {

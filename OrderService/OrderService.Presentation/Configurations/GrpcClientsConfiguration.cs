@@ -6,8 +6,6 @@ namespace OrderService.Presentation.Configurations
 {
     public static class GrpcClientsConfiguration
     {
-        private const string ConfigurationServerAddressString = "BookingService";
-
         public static IServiceCollection AddGrpcClients(this IServiceCollection services,
             IConfiguration configuration)
         {
@@ -19,7 +17,7 @@ namespace OrderService.Presentation.Configurations
 
             services.AddGrpcClient<BookingGrpcService.BookingGrpcServiceClient>(options =>
             {
-                options.Address = new Uri(configuration[ConfigurationServerAddressString]!);
+                options.Address = new Uri(configuration["BookingService"]!);
             })
             .ConfigurePrimaryHttpMessageHandler(() => httpHandler);
 

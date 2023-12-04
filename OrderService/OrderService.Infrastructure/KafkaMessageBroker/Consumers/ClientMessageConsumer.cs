@@ -27,11 +27,11 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
         {
         }
 
-        public async Task HandleConsumingMessages(CancellationToken cancellationToken)
+        public async Task HandleConsumingMessagesAsync(CancellationToken cancellationToken)
         {
             string topicName = GetTopicNameOrThrow(TopicNameString);
 
-            await ConsumeMessage(cancellationToken, topicName);
+            await ConsumeMessageAsync(cancellationToken, topicName);
         }
 
         protected override async Task DeleteAsync(string message,
@@ -57,7 +57,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
             using (var scope = _services.CreateScope())
             {
-                var SqlRepository = scope.ServiceProvider
+                var sqlRepository = scope.ServiceProvider
                                            .GetRequiredService<ISqlOrderRepository>();
 
                 var noSqlRepository = scope.ServiceProvider
@@ -65,7 +65,7 @@ namespace OrderService.Infrastructure.KafkaMessageBroker.Consumers
 
                 foreach (var order in client.Orders)
                 {
-                    var readOrderDTO = await SqlRepository
+                    var readOrderDTO = await sqlRepository
                     .GetByIdAsync<ReadOrderDTO>(order.Id, cancellationToken);
 
                     await noSqlRepository.UpdateAsync(readOrderDTO, cancellationToken);
