@@ -4,7 +4,7 @@ using OrderService.Application.Interfaces.Command;
 
 namespace OrderService.Application.MediatR.Client.Commands
 {
-    public class UpdateClientCommand : IRequest<ReadClientDTO>, ITransactional
+    public class UpdateClientCommand : Transactional, IRequest<ReadClientDTO>
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;

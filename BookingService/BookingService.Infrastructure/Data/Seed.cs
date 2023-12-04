@@ -120,17 +120,17 @@ namespace BookingService.Infrastructure.Data
                     new Client
                     {
                         Id = 1,
-                        Name = "client1",
+                        Name = "maksim",
                     },
                     new Client
                     {
                         Id = 2,
-                        Name = "client2",
+                        Name = "andrei",
                     },
                     new Client
                     {
                         Id = 3,
-                        Name = "client3",
+                        Name = "artur",
                     }
                 };
 

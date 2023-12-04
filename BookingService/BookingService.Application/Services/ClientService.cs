@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BookingService.Application.Interfaces.Repositories;
+using BookingService.Application.Interfaces.Services;
 using BookingService.Application.Services.Base;
 using BookingService.Domain.Entities;
-using BookingService.Domain.Interfaces.Services;
 
 namespace BookingService.Application.Services
 {

@@ -1,7 +1,7 @@
 ﻿using BookingService.Application.DTOs.Table;
 using BookingService.Domain.Interfaces.Services.Base;
 
-namespace BookingService.Domain.Interfaces.Services
+namespace BookingService.Application.Interfaces.Services
 {
     public interface ITableService : IBaseService
     {

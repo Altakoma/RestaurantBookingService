@@ -43,8 +43,7 @@ namespace BookingService.Infrastructure.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("TableId")
-                        .IsUnique();
+                    b.HasIndex("TableId");
 
                     b.ToTable("Booking", (string)null);
                 });
@@ -109,8 +108,8 @@ namespace BookingService.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("BookingService.Domain.Entities.Table", "Table")
-                        .WithOne("Booking")
-                        .HasForeignKey("BookingService.Domain.Entities.Booking", "TableId")
+                        .WithMany("Bookings")
+                        .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -142,8 +141,7 @@ namespace BookingService.Infrastructure.Migrations
 
             modelBuilder.Entity("BookingService.Domain.Entities.Table", b =>
                 {
-                    b.Navigation("Booking")
-                        .IsRequired();
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }

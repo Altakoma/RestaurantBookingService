@@ -77,17 +77,17 @@ namespace OrderService.Infrastructure.Data
                 new Client
                 {
                     Id = 1,
-                    Name = "andrei",
+                    Name = "maksim",
                 },
                 new Client
                 {
                     Id = 2,
-                    Name = "arthur",
+                    Name = "andrei",
                 },
                 new Client
                 {
                     Id = 3,
-                    Name = "maksim",
+                    Name = "artur",
                 }
             };
 

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.Menu;
+using CatalogService.Application.DTOs.Menu.Messages;
+using CatalogService.Application.Interfaces.Kafka.Producers;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Interfaces.Services;
+using CatalogService.Application.Redis.Interfaces;
 using CatalogService.Application.Services.Base;
 using CatalogService.Application.TokenParsers.Interfaces;
 using CatalogService.Domain.Entities;
@@ -13,21 +16,42 @@ namespace CatalogService.Application.Services
     public class MenuService : BaseService<Menu>, IMenuService
     {
         private readonly IMenuRepository _menuRepository;
-        private readonly ITokenParser _tokenParser;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IRestaurantRepository _restaurantRepository;
+
+        private readonly ITokenParser _tokenParser;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IMenuMessageProducer _menuMessageProducer;
+
+        private readonly IMenuCacheAccessor _menuCacheAccessor;
 
         public MenuService(IMenuRepository menuRepository,
             IMapper mapper, IHttpContextAccessor httpContextAccessor,
             ITokenParser tokenParser, IEmployeeRepository employeeRepository,
-            IRestaurantRepository restaurantRepository) : base(menuRepository, mapper)
+            IRestaurantRepository restaurantRepository,
+            IMenuMessageProducer menuMessageProducer,
+            IMenuCacheAccessor menuCacheAccessor)
+            : base(menuRepository, mapper)
         {
             _menuRepository = menuRepository;
-            _httpContextAccessor = httpContextAccessor;
-            _tokenParser = tokenParser;
             _employeeRepository = employeeRepository;
             _restaurantRepository = restaurantRepository;
+
+            _httpContextAccessor = httpContextAccessor;
+            _tokenParser = tokenParser;
+
+            _menuMessageProducer = menuMessageProducer;
+            _menuCacheAccessor = menuCacheAccessor;
+        }
+
+        public override async Task<T> GetByIdAsync<T>(int id,
+            CancellationToken cancellationToken)
+        {
+            T itemDTO = await _menuCacheAccessor
+                .GetByResourceIdAsync<T>(id.ToString(), cancellationToken);
+
+            return itemDTO;
         }
 
         public async Task<ICollection<T>> GetAllByRestaurantIdAsync<T>(int id,
@@ -39,7 +63,7 @@ namespace CatalogService.Application.Services
             return readMenuDTOs;
         }
 
-        public new async Task<int> DeleteAsync(int id,
+        public override async Task<int> DeleteAsync(int id,
             CancellationToken cancellationToken)
         {
             MenuDTO? menuDTO = await _menuRepository
@@ -52,7 +76,15 @@ namespace CatalogService.Application.Services
 
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
 
-            return await base.DeleteAsync(id, cancellationToken);
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
+
+            id = await base.DeleteAsync(id, cancellationToken);
+
+            var message = new DeleteMenuMessageDTO { Id = id };
+
+            await _menuMessageProducer.ProduceMessageAsync(message, cancellationToken);
+
+            return id;
         }
 
         public async Task<T> InsertAsync<T>(MenuDTO menuDTO,
@@ -60,9 +92,13 @@ namespace CatalogService.Application.Services
         {
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
 
-            T readFoodTypeDTO =  await InsertAsync<MenuDTO, T>(menuDTO, cancellationToken);
+            T readMenuDTO = await InsertAsync<MenuDTO, T>(menuDTO, cancellationToken);
 
-            return readFoodTypeDTO;
+            var message = _mapper.Map<InsertMenuMessageDTO>(readMenuDTO);
+
+            await _menuMessageProducer.ProduceMessageAsync(message, cancellationToken);
+
+            return readMenuDTO;
         }
 
         public async Task<T> UpdateAsync<T>(int id, MenuDTO menuDTO,
@@ -70,9 +106,15 @@ namespace CatalogService.Application.Services
         {
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
 
-            T readFoodTypeDTO = await UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
 
-            return readFoodTypeDTO;
+            T readMenuDTO = await UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
+
+            var message = _mapper.Map<UpdateMenuMessageDTO>(readMenuDTO);
+
+            await _menuMessageProducer.ProduceMessageAsync(message, cancellationToken);
+
+            return readMenuDTO;
         }
 
         private async Task EnsureEmployeeValidOrThrowAsync(MenuDTO menuDTO,
@@ -104,7 +146,7 @@ namespace CatalogService.Application.Services
             int restaurantId, CancellationToken cancellationToken)
         {
             bool isEmployeeWorkAtRestaurant = await _restaurantRepository
-                .WorksAtRestaurant(subjectId, restaurantId, cancellationToken);
+                .IsWorksAtRestaurantAsync(subjectId, restaurantId, cancellationToken);
 
             if (!isEmployeeWorkAtRestaurant)
             {

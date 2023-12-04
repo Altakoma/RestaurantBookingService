@@ -1,10 +1,12 @@
-﻿using FluentValidation;
-using IdentityService.BusinessLogic.DTOs.User;
+﻿using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
+using IdentityService.BusinessLogic.KafkaMessageBroker.Producers;
 using IdentityService.BusinessLogic.Services;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.ServicesConfigurations;
 using IdentityService.BusinessLogic.TokenGenerators;
 using IdentityService.DataAccess;
+using IdentityService.DataAccess.CacheAccess;
+using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Repositories;
 using IdentityService.DataAccess.Repositories.Interfaces;
 
@@ -22,6 +24,10 @@ namespace IdentityService.API.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.ConfigureRedis(builder.Configuration);
+
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddGrpc();
 
             services.AddDatabaseContext(builder);
@@ -32,11 +38,23 @@ namespace IdentityService.API.Configurations
 
             services.AddSwagger();
 
+            services.ConfigureKafkaOptions(builder.Configuration);
+
             services.AddFluentValidation();
 
             services.AddJwtTokenAuthConfiguration(builder);
 
             services.AddAuthorization();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", corsPolicyBuilder =>
+                corsPolicyBuilder.SetIsOriginAllowed(origin =>
+                    new Uri(origin).Host == (builder.Configuration["CorsPolicyHost"]))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
 
             services.AddSingleton<Seed>();
 
@@ -44,13 +62,16 @@ namespace IdentityService.API.Configurations
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
+            services.AddScoped<IRefreshTokenCacheAccessor, RefreshTokenCacheAccessor>();
+
+            services.AddScoped<ICookieService, CookieService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             services.AddSingleton<ITokenGenerator, JwtGenerator>();
+            services.AddSingleton<IUserMessageProducer, UserMessageProducer>();
 
             return services;
         }

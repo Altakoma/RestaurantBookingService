@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CatalogService.Application.DTOs.Restaurant;
+using CatalogService.Application.DTOs.Restaurant.Messages;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Application.MappingProfiles
@@ -24,6 +25,22 @@ namespace CatalogService.Application.MappingProfiles
                 .ForMember(
                 readRestaurantDTO => readRestaurantDTO.City,
                 configuration => configuration.MapFrom(restaurant => restaurant.City));
+
+            CreateMap<ReadRestaurantDTO, InsertRestaurantMessageDTO>()
+                .ForMember(
+                readRestaurantDTO => readRestaurantDTO.Id,
+                configuration => configuration.MapFrom(restaurant => restaurant.Id))
+                .ForMember(
+                readRestaurantDTO => readRestaurantDTO.Name,
+                configuration => configuration.MapFrom(restaurant => restaurant.Name));
+
+            CreateMap<ReadRestaurantDTO, UpdateRestaurantMessageDTO>()
+                .ForMember(
+                readRestaurantDTO => readRestaurantDTO.Id,
+                configuration => configuration.MapFrom(restaurant => restaurant.Id))
+                .ForMember(
+                readRestaurantDTO => readRestaurantDTO.Name,
+                configuration => configuration.MapFrom(restaurant => restaurant.Name));
 
             CreateMap<UpdateRestaurantDTO, Restaurant>()
                 .ForMember(

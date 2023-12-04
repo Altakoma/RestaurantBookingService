@@ -55,7 +55,7 @@ namespace OrderService.Application.MediatR.Order.Handlers
 
             IsClientBookedTableReply reply =
                 await _grpcClientBookingService.IsClientBookedTable(
-                      isClientBookedTableRequest, cancellationToken);
+                        isClientBookedTableRequest, cancellationToken);
 
             if (!reply.IsClientBookedTable)
             {

@@ -1,6 +1,6 @@
 ﻿using BookingService.Domain.Interfaces.Services.Base;
 
-namespace BookingService.Domain.Interfaces.Services
+namespace BookingService.Application.Interfaces.Services
 {
     public interface IRestaurantService : IBaseService
     {

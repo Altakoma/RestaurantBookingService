@@ -1,4 +1,4 @@
-﻿using BookingService.Application;
+using BookingService.Application;
 using BookingService.Application.Interfaces.GrpcServices;
 
 namespace BookingService.Infrastructure.Grpc.Services.Clients

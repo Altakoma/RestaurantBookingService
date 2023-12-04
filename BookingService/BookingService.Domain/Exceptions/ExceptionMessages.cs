@@ -6,7 +6,7 @@
 
         public const string NotFoundExceptionMessage = "Object of type {0} hasn't been found by {1} key";
 
-        public const string EmployeeAuthorizationExceptionMessage = "Token provided {0} key and it doesn't give you" +
+        public const string AuthorizationExceptionMessage = "Token provided {0} key and it doesn't give you" +
             "permission to do that action";
 
         public const string NullReferenceMessage = "Object of type {0} has been null";

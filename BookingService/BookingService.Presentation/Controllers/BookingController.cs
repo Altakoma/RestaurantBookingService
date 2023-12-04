@@ -1,6 +1,6 @@
 ﻿using BookingService.Application.DTOs.Booking;
 using BookingService.Application.DTOs.Exception;
-using BookingService.Domain.Interfaces.Services;
+using BookingService.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +49,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadBookingDTO readBookingDTO = await _bookingService
-                .InsertAsync<InsertBookingDTO, ReadBookingDTO>(bookingDTO, cancellationToken);
+                .InsertAsync<ReadBookingDTO>(bookingDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetBookingAsync),
                                    new { id = readBookingDTO }, bookingDTO);
@@ -65,7 +65,7 @@ namespace BookingService.Presentation.Controllers
             CancellationToken cancellationToken)
         {
             ReadBookingDTO bookingDTO = await _bookingService
-                .UpdateAsync<UpdateBookingDTO, ReadBookingDTO>(id, updateBookingDTO, cancellationToken);
+                .UpdateAsync<ReadBookingDTO>(id, updateBookingDTO, cancellationToken);
 
             return Ok(bookingDTO);
         }

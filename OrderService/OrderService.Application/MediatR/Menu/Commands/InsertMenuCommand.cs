@@ -4,9 +4,10 @@ using OrderService.Application.Interfaces.Command;
 
 namespace OrderService.Application.MediatR.Menu.Commands
 {
-    public class InsertMenuCommand : IRequest<ReadMenuDTO>, ITransactional
+    public class InsertMenuCommand : Transactional, IRequest<ReadMenuDTO>
     {
         public int Id { get; set; }
         public string FoodName { get; set; } = null!;
+        public double Cost { get; set; }
     }
 }

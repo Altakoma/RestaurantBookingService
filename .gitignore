@@ -35,3 +35,18 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+### react ###
+.DS_*
+*.log
+logs
+**/*.backup.*
+**/*.back.*
+
+node_modules
+bower_components
+
+*.sublime*
+
+psd
+thumb
+sketch

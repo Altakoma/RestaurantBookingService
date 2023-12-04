@@ -1,137 +1,78 @@
 ﻿using IdentityService.BusinessLogic.DTOs.Token;
-using IdentityService.BusinessLogic.Exceptions;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.BusinessLogic.TokenGenerators;
+using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using System.Net;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace IdentityService.BusinessLogic.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        public const string RefreshTokenCookieName = "RefreshToken";
+        public const int ExpirationTime = 25;
 
-        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly IRefreshTokenCacheAccessor _refreshTokenAccessor;
         private readonly ITokenGenerator _tokenGenerator;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly ICookieService _cookieService;
+        private readonly IUserRepository _userRepository;
 
-        public string RefreshTokenCookie
-        {
-            get
-            {
-                string? refreshTokenString = _httpContextAccessor.HttpContext?.Request
-                .Cookies.FirstOrDefault(c => c.Key == RefreshTokenCookieName).Value;
-
-                if (refreshTokenString is null)
-                {
-                    throw new NotFoundException(RefreshTokenCookieName, typeof(Cookie));
-                }
-
-                return refreshTokenString;
-            }
-            set
-            {
-                var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Expires = DateTime.Now.AddMinutes(20),
-                };
-
-                _httpContextAccessor.HttpContext?.Response
-                    .Cookies.Append(RefreshTokenCookieName, value, cookieOptions);
-            }
-        }
-
-        public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository,
-            TokenValidationParameters tokenValidationParams,
+        public RefreshTokenService(IRefreshTokenCacheAccessor refreshTokenAccessor,
             ITokenGenerator tokenGenerator,
-            IHttpContextAccessor httpContextAccessor)
+            ICookieService cookieService,
+            IUserRepository userRepository)
         {
-            _refreshTokenRepository = refreshTokenRepository;
-            _tokenValidationParameters = tokenValidationParams;
+            _refreshTokenAccessor = refreshTokenAccessor;
             _tokenGenerator = tokenGenerator;
-            _httpContextAccessor = httpContextAccessor;
+            _cookieService = cookieService;
+            _userRepository = userRepository;
         }
 
-        public async Task DeleteAsync(int id, CancellationToken cancellationToken)
-        {
-            RefreshToken? refreshToken = await _refreshTokenRepository
-                                     .GetByUserIdAsync(id, cancellationToken);
-
-            if (refreshToken is null)
-            {
-                throw new NotFoundException(id.ToString(), typeof(RefreshToken));
-            }
-
-            _refreshTokenRepository.Delete(refreshToken);
-
-            bool isDeleted = await _refreshTokenRepository
-                                   .SaveChangesToDbAsync(cancellationToken);
-
-            if (!isDeleted)
-            {
-                throw new DbOperationException(
-                    nameof(DeleteAsync), id.ToString(), typeof(RefreshToken));
-            }
-        }
-
-        public async Task<RefreshToken?> GetByUserIdAsync(int id,
+        public async Task<AccessTokenDTO> VerifyAndGenerateTokenAsync(
             CancellationToken cancellationToken)
         {
-            RefreshToken? token = await _refreshTokenRepository
-                              .GetByUserIdAsync(id, cancellationToken);
+            string userId = _cookieService.GetCookieValue(CookieService.UserIdCookieName);
 
-            return token;
-        }
+            string currentRefreshToken = await _refreshTokenAccessor
+                                               .GetByUserIdAsync(userId, cancellationToken);
 
-        public async Task SaveTokenAsync(RefreshToken token,
-            CancellationToken cancellationToken)
-        {
-            RefreshToken? refreshToken = await GetByUserIdAsync(
-                                         token.Id, cancellationToken);
+            string userRefreshToken = _cookieService
+                                      .GetCookieValue(CookieService.RefreshTokenCookieName);
 
-            if (refreshToken is null)
+            if (currentRefreshToken != userRefreshToken)
             {
-                await _refreshTokenRepository
-                      .InsertAsync(token, cancellationToken);
-            }
-            else
-            {
-                _refreshTokenRepository.Update(token);
+                throw new NotFoundException(nameof(userRefreshToken), typeof(User));
             }
 
-            await _refreshTokenRepository.SaveChangesToDbAsync(cancellationToken);
-        }
+            User user = (await _userRepository
+                              .GetByIdAsync<User>(int.Parse(userId), cancellationToken))!;
 
-        public async Task<TokenDTO> VerifyAndGenerateTokenAsync(
-            CancellationToken cancellationToken)
-        {
-            string refreshTokenString = RefreshTokenCookie;
+            (AccessTokenDTO tokenDTO, string refreshToken) =
+                _tokenGenerator.GenerateTokens(user.Name, user.UserRole.Name, userId);
 
-            CreationRefreshTokenDTO? creationRefreshTokenDTO = await _refreshTokenRepository
-                .GetCreationRefreshTokenDTOAsync<CreationRefreshTokenDTO>(refreshTokenString, cancellationToken);
+            await SetAsync(userId, refreshToken, ExpirationTime, cancellationToken);
 
-            if (creationRefreshTokenDTO is null)
-            {
-                throw new NotFoundException(nameof(refreshTokenString), typeof(User));
-            }
-
-            (TokenDTO tokenDTO, RefreshToken refreshToken) = _tokenGenerator
-                .GenerateToken(creationRefreshTokenDTO.Name,
-                creationRefreshTokenDTO.UserRoleName, creationRefreshTokenDTO.Id);
-
-            await SaveTokenAsync(refreshToken, cancellationToken);
-
-            await _refreshTokenRepository.SaveChangesToDbAsync(cancellationToken);
-
-            RefreshTokenCookie = refreshToken.Token;
+            _cookieService.SetCookieValue(CookieService.RefreshTokenCookieName, refreshToken);
 
             return tokenDTO;
+        }
+
+        public async Task SetAsync(string userId, string refreshToken, int time,
+            CancellationToken cancellationToken)
+        {
+            var options = new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(time),
+            };
+
+            await _refreshTokenAccessor.SetAsync(userId, refreshToken,
+                options, cancellationToken);
+        }
+
+        public async Task DeleteByIdAsync(string userId, CancellationToken cancellationToken)
+        {
+            await _refreshTokenAccessor.DeleteByIdAsync(userId, cancellationToken);
         }
     }
 }

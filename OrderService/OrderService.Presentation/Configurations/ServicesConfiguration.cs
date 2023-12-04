@@ -1,12 +1,15 @@
 ﻿using MediatR;
-using OrderService.Application.Interfaces.GrpcServices;
+using OrderService.Application.BackgroundServices;
+using OrderService.Application.Interfaces.Kafka.Consumers;
+using OrderService.Application.Interfaces.Repositories.Base;
 using OrderService.Application.Interfaces.Repositories.NoSql;
 using OrderService.Application.Interfaces.Repositories.Sql;
 using OrderService.Application.ServicesConfigurations;
 using OrderService.Application.TokenParsers;
 using OrderService.Application.TokenParsers.Interfaces;
+using OrderService.Domain.Entities;
 using OrderService.Infrastructure.Data;
-using OrderService.Infrastructure.Grpc.Services.Clients;
+using OrderService.Infrastructure.KafkaMessageBroker.Consumers;
 using OrderService.Infrastructure.Repositories.NoSql;
 using OrderService.Infrastructure.Repositories.Sql;
 using OrderService.Presentation.Behaviors;
@@ -25,9 +28,13 @@ namespace OrderService.Presentation.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddHttpContextAccessor();
 
             services.AddDatabaseContext(builder);
+
+            services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddHangfire(builder);
 
@@ -51,7 +58,9 @@ namespace OrderService.Presentation.Configurations
             services.AddScoped<INoSqlOrderRepository, NoSqlOrderRepository>();
 
             services.AddScoped<ISqlClientRepository, SqlClientRepository>();
+            services.AddScoped<ISqlRepository<Client>, SqlClientRepository>();
             services.AddScoped<ISqlMenuRepository, SqlMenuRepository>();
+            services.AddScoped<ISqlRepository<Menu>, SqlMenuRepository>();
             services.AddScoped<ISqlOrderRepository, SqlOrderRepository>();
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
@@ -59,6 +68,12 @@ namespace OrderService.Presentation.Configurations
             services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<Seed>();
+
+            services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
+            services.AddSingleton<IMenuMessageConsumer, MenuMessageConsumer>();
+
+            services.AddHostedService<ClientConsumingMessagesHandlingService>();
+            services.AddHostedService<MenuConsumingMessagesHandlingService>();
 
             return services;
         }

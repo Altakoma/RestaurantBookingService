@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Storage;
 using OrderService.Application.Interfaces.Command;
-using OrderService.Domain.Exceptions;
 using OrderService.Infrastructure.Data.ApplicationSQLDbContext;
 using System.Data.Common;
 
 namespace OrderService.Presentation.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse>
-        : IPipelineBehavior<TRequest, TResponse> where TRequest : ITransactional
+        : IPipelineBehavior<TRequest, TResponse> where TRequest : Transactional
     {
         private readonly OrderServiceSqlDbContext _dbContext;
 

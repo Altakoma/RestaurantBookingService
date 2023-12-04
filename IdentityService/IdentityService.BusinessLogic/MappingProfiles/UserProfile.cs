@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IdentityService.BusinessLogic.DTOs.User;
+using IdentityService.BusinessLogic.DTOs.User.Messages;
 using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.BusinessLogic.MappingProfiles
@@ -22,6 +23,22 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 updateUserDTO => updateUserDTO.Password,
                 configuration => configuration.MapFrom(user => user.Password))
                 .ReverseMap();
+
+            CreateMap<User, UpdateUserMessageDTO>()
+                .ForMember(
+                updateUserDTO => updateUserDTO.Id,
+                configuration => configuration.MapFrom(user => user.Id))
+                .ForMember(
+                updateUserDTO => updateUserDTO.Name,
+                configuration => configuration.MapFrom(user => user.Name));
+
+            CreateMap<User, InsertUserMessageDTO>()
+                .ForMember(
+                updateUserDTO => updateUserDTO.Id,
+                configuration => configuration.MapFrom(user => user.Id))
+                .ForMember(
+                updateUserDTO => updateUserDTO.Name,
+                configuration => configuration.MapFrom(user => user.Name));
 
             CreateMap<InsertUserDTO, User>()
                 .ForMember(
@@ -53,6 +70,8 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 .ForMember(
                 readUserDTO => readUserDTO.UserRoleName,
                 configuration => configuration.MapFrom(user => user.UserRole.Name));
+
+            CreateMap<User, User>();
         }
     }
 }

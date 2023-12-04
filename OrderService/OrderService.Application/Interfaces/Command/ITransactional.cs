@@ -1,6 +1,7 @@
 ﻿namespace OrderService.Application.Interfaces.Command
 {
-    public interface ITransactional
+    public class Transactional
     {
+        public bool IsTransactionSkipped { get; set; } = false;
     }
 }

@@ -38,13 +38,8 @@ namespace OrderService.Application.MediatR.Order.Handlers
         public async Task<ReadOrderDTO> Handle(UpdateOrderCommand request,
             CancellationToken cancellationToken)
         {
-            int subjectId = _tokenParser
-                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
-
-            request.ClientId = subjectId;
-
             ReadOrderDTO? readOrderDTO = await _noSqlOrderRepository
-                .GetByIdAsync(request.Id, cancellationToken);
+                    .GetByIdAsync(request.Id, cancellationToken);
 
             if (readOrderDTO is null)
             {
@@ -52,13 +47,16 @@ namespace OrderService.Application.MediatR.Order.Handlers
                     typeof(Domain.Entities.Order));
             }
 
+            int subjectId = _tokenParser
+            .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
+
+            request.ClientId = subjectId;
+
             if (readOrderDTO.ReadClientDTO.Id != subjectId)
             {
                 throw new AuthorizationException(readOrderDTO.BookingId.ToString(),
                     ExceptionMessages.NotClientBookingMessage);
             }
-
-            readOrderDTO.ReadMenuDTO = default!;
 
             var order = _mapper.Map<Domain.Entities.Order>(readOrderDTO);
 
