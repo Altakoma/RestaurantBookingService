@@ -4,6 +4,7 @@ using CatalogService.Application.DTOs.Menu.Messages;
 using CatalogService.Application.Interfaces.Kafka.Producers;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Interfaces.Services;
+using CatalogService.Application.Redis.Interfaces;
 using CatalogService.Application.Services.Base;
 using CatalogService.Application.TokenParsers.Interfaces;
 using CatalogService.Domain.Entities;
@@ -15,24 +16,42 @@ namespace CatalogService.Application.Services
     public class MenuService : BaseService<Menu>, IMenuService
     {
         private readonly IMenuRepository _menuRepository;
-        private readonly ITokenParser _tokenParser;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IRestaurantRepository _restaurantRepository;
+
+        private readonly ITokenParser _tokenParser;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         private readonly IMenuMessageProducer _menuMessageProducer;
+
+        private readonly IMenuCacheAccessor _menuCacheAccessor;
 
         public MenuService(IMenuRepository menuRepository,
             IMapper mapper, IHttpContextAccessor httpContextAccessor,
             ITokenParser tokenParser, IEmployeeRepository employeeRepository,
             IRestaurantRepository restaurantRepository,
-            IMenuMessageProducer menuMessageProducer) : base(menuRepository, mapper)
+            IMenuMessageProducer menuMessageProducer,
+            IMenuCacheAccessor menuCacheAccessor)
+            : base(menuRepository, mapper)
         {
             _menuRepository = menuRepository;
-            _httpContextAccessor = httpContextAccessor;
-            _tokenParser = tokenParser;
             _employeeRepository = employeeRepository;
             _restaurantRepository = restaurantRepository;
+
+            _httpContextAccessor = httpContextAccessor;
+            _tokenParser = tokenParser;
+
             _menuMessageProducer = menuMessageProducer;
+            _menuCacheAccessor = menuCacheAccessor;
+        }
+
+        public override async Task<T> GetByIdAsync<T>(int id,
+            CancellationToken cancellationToken)
+        {
+            T itemDTO = await _menuCacheAccessor
+                .GetByResourceIdAsync<T>(id.ToString(), cancellationToken);
+
+            return itemDTO;
         }
 
         public async Task<ICollection<T>> GetAllByRestaurantIdAsync<T>(int id,
@@ -56,6 +75,8 @@ namespace CatalogService.Application.Services
             }
 
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
+
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
 
             id = await base.DeleteAsync(id, cancellationToken);
 
@@ -84,6 +105,8 @@ namespace CatalogService.Application.Services
             CancellationToken cancellationToken)
         {
             await EnsureEmployeeValidOrThrowAsync(menuDTO, cancellationToken);
+
+            await _menuCacheAccessor.DeleteResourceByIdAsync(id.ToString(), cancellationToken);
 
             T readMenuDTO = await UpdateAsync<MenuDTO, T>(id, menuDTO, cancellationToken);
 

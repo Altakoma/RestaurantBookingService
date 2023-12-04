@@ -28,6 +28,8 @@ namespace OrderService.Presentation.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
             services.AddHttpContextAccessor();
 
             services.AddDatabaseContext(builder);

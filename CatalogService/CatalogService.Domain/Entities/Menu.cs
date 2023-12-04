@@ -9,6 +9,5 @@
 
         public FoodType FoodType { get; set; } = null!;
         public Restaurant Restaurant { get; set; } = null!;
-        public ICollection<Employee> Employees { get; set; } = null!;
     }
 }

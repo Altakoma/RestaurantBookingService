@@ -6,16 +6,18 @@ networks:
   mongo-nosql-services-network:
   kafka-network:
   services-network:
+  redis-network:
 
 services:
   identity-service-api:
     container_name: identity-service-api
     environment:
-      - BootstrapServer=kafka:9092
+      - BootstrapServer=kafka
       - UserTopic=users
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - DefaultConnection=Data Source=restaurant-booking-service-mssql-db;Initial Catalog=RestaurantIdentityService;User ID=sa;Password=1q2w3e4r5t6yY7u8i9o;TrustServerCertificate=True
+      - DefaultConnection=Data Source=mssql-db;Initial Catalog=RestaurantIdentityService;User ID=sa;Password=1q2w3e4r5t6yY7u8i9o;TrustServerCertificate=True
+      - Redis=redis,password=redispwd
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - JWTExpirationTime=00:09:59
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
@@ -28,23 +30,27 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
+      - redis
       - mssql-db
       - kafka
     networks:
       - ms-sql-services-network
       - kafka-network
       - services-network
+      - redis-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   catalog-service-api:
     container_name: catalog-service-api
     environment:
       - MenuTopic=menu
       - RestaurantTopic=restaurants
-      - BootstrapServer=kafka:9092
+      - BootstrapServer=kafka
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - DefaultConnection=Data Source=restaurant-booking-service-mssql-db;Initial Catalog=RestaurantCatalogService;User ID=sa;Password=1q2w3e4r5t6yY7u8i9o;TrustServerCertificate=True
+      - DefaultConnection=Data Source=mssql-db;Initial Catalog=RestaurantCatalogService;User ID=sa;Password=1q2w3e4r5t6yY7u8i9o;TrustServerCertificate=True
+      - Redis=redis,password=redispwd
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
@@ -58,24 +64,24 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - identity-service-api
-      - mssql-db
-      - kafka
     networks:
       - ms-sql-services-network
       - kafka-network
       - services-network
+      - redis-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   booking-service-api:
     container_name: booking-service-api
     environment:
       - RestaurantTopic=restaurants
       - UserTopic=users
-      - BootstrapServer=kafka:9092
+      - BootstrapServer=kafka
       - GroupName=booking
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - DefaultConnection=Host=restaurant-booking-service-postgre-sql;Port=5432;Database=RestaurantBookingServiceDb;Username=altakomauser;Password=mypwd
+      - DefaultConnection=Host=postgre-sql;Database=RestaurantBookingServiceDb;Username=altakomauser;Password=mypwd
       - JWTSecret=7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
@@ -90,19 +96,19 @@ services:
     depends_on:
       - catalog-service-api
       - postgre-sql
-      - kafka
     networks:
       - postgre-sql-services-network
       - kafka-network
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
   order-service-api:
     container_name: order-service-api
     environment:
       - MenuTopic=menu
       - UserTopic=users
-      - BootstrapServer=kafka:9092
+      - BootstrapServer=kafka
       - GroupName=ordering
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:443;http://+:80
@@ -121,15 +127,35 @@ services:
       context: .
       dockerfile: ./Dockerfile
     depends_on:
-      - identity-service-api
       - catalog-service-api
-      - mssql-db
       - mongo-db
-      - kafka
     networks:
       - ms-sql-services-network
       - mongo-nosql-services-network
       - kafka-network
+      - services-network
+    volumes:
+      - ./sertificate.pfx:/var/sertificate.pfx
+    restart: on-failure:2
+  ocelot-gateway:
+    container_name: ocelot-gateway
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/var/sertificate.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=123456789
+    image: ${DOCKER_REGISTRY-}ocelot-gateway
+    ports:
+      - 8084:443
+      - 8074:80
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - order-service-api
+      - booking-service-api
+      - catalog-service-api
+      - identity-service-api
+    networks:
       - services-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
@@ -174,11 +200,23 @@ services:
     image: confluentinc/cp-zookeeper:7.4.3
     container_name: zookeeper
     ports:
-      - "2181:2181"
+      - 2181:2181
     environment:
       ZOOKEEPER_CLIENT_PORT: "2181"
     networks:
       - kafka-network
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+  redis:
+    image: redis:7.2.3
+    container_name: redis
+    ports:
+      - 8090:6379
+    environment:
+      - Redis=redis:8090,password=redispwd
+      - REDIS_PASSWORD=redispwd
+    networks:
+      - redis-network
   kafka:
     image: confluentinc/cp-kafka:7.4.3
     depends_on:
@@ -188,12 +226,15 @@ services:
       - "29092:29092"
     expose:
       - '9092'
+    restart: on-failure:2
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper
       ZOOKEEPER_SASL_ENABLED: 'false'
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_HOST://localhost:29092, PLAINTEXT://kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PlAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes: 
+      - kafka-data:/var/lib/kafka/data
     networks:
       - kafka-network
   kafka-setup:
@@ -203,15 +244,15 @@ services:
       - kafka
     entrypoint: [ '/bin/sh', '-c' ]
     command: |
-      "kafka-topics --bootstrap-server kafka:9092 --list
-
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic users --replication-factor 1 --partitions 1
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic restaurants --replication-factor 1 --partitions 1
-      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic menu --replication-factor 1 --partitions 1
-      "
+      "kafka-topics --bootstrap-server kafka --list
+      kafka-topics --bootstrap-server kafka --create --if-not-exists --topic users --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka --create --if-not-exists --topic restaurants --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka --create --if-not-exists --topic menu --replication-factor 1 --partitions 1"
     networks:
       - kafka-network
 volumes:
   mssql-data:
   mongodb-data:
   pgdata:
+  kafka-data:
+  zookeeper-data:
