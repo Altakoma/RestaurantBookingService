@@ -12,11 +12,27 @@ namespace BookingService.Application.MappingProfiles
                 .ForMember(table => table.RestaurantId,
                            options => options.MapFrom(insertTableDTO => insertTableDTO.RestaurantId))
                 .ForMember(table => table.SeatsCount,
-                           options => options.MapFrom(insertTableDTO => insertTableDTO.SeatsCount));
+                           options => options.MapFrom(insertTableDTO => insertTableDTO.SeatsCount))
+                .ForMember(table => table.Restaurant,
+                           options => options.Ignore())
+                .ForMember(table => table.Bookings,
+                           options => options.Ignore())
+                .ForMember(table => table.Id,
+                           options => options.Ignore())
+            .ReverseMap();
 
             CreateMap<UpdateTableDTO, Table>()
                 .ForMember(table => table.SeatsCount,
-                           options => options.MapFrom(updateTableDTO => updateTableDTO.SeatsCount));
+                           options => options.MapFrom(updateTableDTO => updateTableDTO.SeatsCount))
+                .ForMember(table => table.RestaurantId,
+                           options => options.Ignore())
+                .ForMember(table => table.Restaurant,
+                           options => options.Ignore())
+                .ForMember(table => table.Bookings,
+                           options => options.Ignore())
+                .ForMember(table => table.Id,
+                           options => options.Ignore())
+            .ReverseMap();
 
             CreateMap<Table, ReadTableDTO>()
                 .ForMember(readTableDTO => readTableDTO.Id,

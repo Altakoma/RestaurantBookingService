@@ -16,13 +16,15 @@ namespace CatalogService.Tests.RepositoriesTests
         private readonly IFoodTypeRepository _foodTypeRepository;
         private readonly IMapper _mapper;
 
-        public FoodTypeRepositoryTests() : base(typeof(FoodTypeRepository))
+        public FoodTypeRepositoryTests() : base()
         {
             _foodTypeRepository = new FoodTypeRepository(_catalogServiceDbContextMock.Object,
                 _mapperMock.Object);
 
             _mapper = new Mapper(new MapperConfiguration(
                 configure => configure.AddProfile(new FoodTypeProfile())));
+
+            _repository = _foodTypeRepository;
         }
 
         [Fact]

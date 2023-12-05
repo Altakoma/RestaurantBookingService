@@ -1,8 +1,9 @@
-﻿namespace BookingService.Application.DTOs.Booking
+﻿using BookingService.Domain.Entities;
+
+namespace BookingService.Application.DTOs.Booking
 {
-    public class ReadBookingDTO
+    public class ReadBookingDTO : BaseEntity
     {
-        public int Id { get; set; }
         public int ClientId { get; set; }
         public string ClientName { get; set; } = null!;
         public int TableId { get; set; }

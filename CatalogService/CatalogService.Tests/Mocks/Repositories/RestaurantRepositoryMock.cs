@@ -10,7 +10,7 @@ namespace CatalogService.Tests.Mocks.Repositories
         public RestaurantRepositoryMock MockIsWorkingAtRestaurant(int subjectId,
             int restaurantId, bool isWorkingAtRestaurant)
         {
-            Setup(restaurantRepository => restaurantRepository.IsWorkingAtRestaurant(
+            Setup(restaurantRepository => restaurantRepository.IsWorkingAtRestaurantAsync(
                 subjectId, restaurantId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(isWorkingAtRestaurant)
             .Verifiable();

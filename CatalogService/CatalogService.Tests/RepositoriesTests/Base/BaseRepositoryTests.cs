@@ -13,16 +13,15 @@ namespace CatalogService.Tests.RepositoriesTests.Base
         protected readonly CatalogServiceDbContextMock _catalogServiceDbContextMock;
         protected readonly MapperMock _mapperMock;
 
-        private readonly IRepository<T> _repository;
+        protected IRepository<T> _repository;
 
-        public BaseRepositoryTests(Type repository)
+        public BaseRepositoryTests()
         {
             _catalogServiceDbContextMock = new();
 
             _mapperMock = new();
 
-            _repository = (IRepository<T>)Activator.CreateInstance(repository,
-                _catalogServiceDbContextMock.Object, _mapperMock.Object)!;
+            _repository = default!;
         }
 
         public async Task GetAllAsync_ReturnsEntities<U>(IQueryable<T> query,

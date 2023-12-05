@@ -12,13 +12,31 @@ namespace BookingService.Application.MappingProfiles
                 .ForMember(booking => booking.TableId,
                            options => options.MapFrom(insertBookingDTO => insertBookingDTO.TableId))
                 .ForMember(booking => booking.BookingTime,
-                           options => options.MapFrom(insertBookingDTO => insertBookingDTO.BookingTime));
+                           options => options.MapFrom(insertBookingDTO => insertBookingDTO.BookingTime))
+                .ForMember(booking => booking.ClientId,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Id,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Table,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Client,
+                           options => options.Ignore())
+            .ReverseMap();
 
             CreateMap<UpdateBookingDTO, Booking>()
                 .ForMember(booking => booking.TableId,
                            options => options.MapFrom(updateBookingDTO => updateBookingDTO.TableId))
                 .ForMember(booking => booking.BookingTime,
-                           options => options.MapFrom(updateBookingDTO => updateBookingDTO.BookingTime));
+                           options => options.MapFrom(updateBookingDTO => updateBookingDTO.BookingTime))
+                .ForMember(booking => booking.ClientId,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Id,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Table,
+                           options => options.Ignore())
+                .ForMember(booking => booking.Client,
+                           options => options.Ignore())
+            .ReverseMap();
 
             CreateMap<Booking, ReadBookingDTO>()
                 .ForMember(readBookingDTO => readBookingDTO.ClientId,

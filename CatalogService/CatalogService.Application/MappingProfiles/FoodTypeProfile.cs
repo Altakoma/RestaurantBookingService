@@ -17,9 +17,12 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(foodType => foodType.Name));
 
             CreateMap<FoodTypeDTO, FoodType>()
-                .ForMember(
-                foodType => foodType.Name,
+                .ForMember(foodType => foodType.Name,
                 configuration => configuration.MapFrom(foodTypeDTO => foodTypeDTO.Name))
+                .ForMember(foodType => foodType.Menu,
+                configuration => configuration.Ignore())
+                .ForMember(foodType => foodType.Id,
+                configuration => configuration.Ignore())
             .ReverseMap();
 
             CreateMap<FoodType, FoodType>();

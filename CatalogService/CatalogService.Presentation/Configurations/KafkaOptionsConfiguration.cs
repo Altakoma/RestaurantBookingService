@@ -10,7 +10,7 @@ namespace CatalogService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string bootstrapServer = configuration[BootstrapServerString]!;
+            string bootstrapServer = configuration["BootstrapServer"]!;
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {

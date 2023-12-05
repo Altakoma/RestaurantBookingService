@@ -21,7 +21,7 @@ namespace CatalogService.Tests.ServicesTests
     public class FoodTypeServiceTests : BaseServiceTests<IFoodTypeRepository, FoodType>
     {
         private readonly HttpContextAccessorMock _httpContextAccessorMock;
-        private readonly JwtTokenParserMock _tokenParserMock;
+        private readonly TokenParserMock _tokenParserMock;
 
         private readonly EmployeeRepositoryMock _employeeRepositoryMock;
         private readonly FoodTypeRepositoryMock _foodTypeRepositoryMock;

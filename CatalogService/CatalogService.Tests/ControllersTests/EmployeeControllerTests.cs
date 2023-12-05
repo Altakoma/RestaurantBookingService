@@ -82,7 +82,7 @@ namespace CatalogService.Tests.ControllersTests
                 readEmployeeDTO);
 
             //Act
-            var result = await _employeeController.InsertEmployee(insertEmployeeDTO,
+            var result = await _employeeController.InsertEmployeeAsync(insertEmployeeDTO,
                 It.IsAny<CancellationToken>());
             var createdAtActionResult = result as CreatedAtActionResult;
 

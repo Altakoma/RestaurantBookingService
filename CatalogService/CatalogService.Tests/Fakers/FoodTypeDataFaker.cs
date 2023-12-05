@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using CatalogService.Application.DTOs.FoodType;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Tests.Fakers
@@ -25,6 +26,15 @@ namespace CatalogService.Tests.Fakers
                 .RuleFor(foodType => foodType.Id,
                 faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
                 .RuleFor(foodType => foodType.Name,
+                faker => faker.Random.Word());
+
+            return faker.Generate();
+        }
+
+        internal static FoodTypeDTO GetFakedFoodTypeDTO()
+        {
+            var faker = new Faker<FoodTypeDTO>()
+                .RuleFor(foodTypeDTO => foodTypeDTO.Name,
                 faker => faker.Random.Word());
 
             return faker.Generate();

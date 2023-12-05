@@ -16,113 +16,115 @@ namespace CatalogService.Tests.RepositoriesTests
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
 
-        public EmployeeRepositoryTests() : base(typeof(EmployeeRepository))
+        public EmployeeRepositoryTests() : base()
         {
             _employeeRepository = new EmployeeRepository(_catalogServiceDbContextMock.Object,
                 _mapperMock.Object);
 
             _mapper = new Mapper(new MapperConfiguration(
                 configure => configure.AddProfile(new EmployeeProfile())));
+
+            _repository = _employeeRepository;
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsReadEmployeeDTOs()
         {
             //Arrange
-            var employess = new List<Employee> { EmployeeDataFaker.GetFakedEmployee() };
-            IQueryable<Employee> menuQuery = employess.AsQueryable();
+            var employees = new List<Employee> { EmployeeDataFaker.GetFakedEmployee() };
+            IQueryable<Employee> employeeQuery = employees.AsQueryable();
 
-            var menuReadDTOs = _mapper.Map<List<ReadEmployeeDTO>>(employess);
+            var employeeReadDTOs = _mapper.Map<List<ReadEmployeeDTO>>(employees);
 
             //Act
             //Assert
-            await base.GetAllAsync_ReturnsEntities(menuQuery, menuReadDTOs);
+            await base.GetAllAsync_ReturnsEntities(employeeQuery, employeeReadDTOs);
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsEmployees()
         {
             //Arrange
-            var employess = new List<Employee> { EmployeeDataFaker.GetFakedEmployee() };
-            IQueryable<Employee> menuQuery = employess.AsQueryable();
+            var employees = new List<Employee> { EmployeeDataFaker.GetFakedEmployee() };
+            IQueryable<Employee> employeeQuery = employees.AsQueryable();
 
             //Act
             //Assert
-            await base.GetAllAsync_ReturnsEntities(menuQuery, employess);
+            await base.GetAllAsync_ReturnsEntities(employeeQuery, employees);
         }
 
         [Fact]
         public async Task GetByIdAsync_ReturnsEmployee()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
-            IQueryable<Employee> menuQuery = new List<Employee> { menu }.AsQueryable();
+            var employee = EmployeeDataFaker.GetFakedEmployee();
+            IQueryable<Employee> employeeQuery = new List<Employee> { employee }.AsQueryable();
 
             //Act
             //Assert
-            await base.GetByIdAsync_ReturnsEntity(menu.Id, menuQuery, menu);
+            await base.GetByIdAsync_ReturnsEntity(employee.Id, employeeQuery, employee);
         }
 
         [Fact]
         public async Task GetByIdAsync_ReturnsReadEmployeeDTO()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
-            IQueryable<Employee> menuQuery = new List<Employee> { menu }.AsQueryable();
+            var employee = EmployeeDataFaker.GetFakedEmployee();
+            IQueryable<Employee> employeeQuery = new List<Employee> { employee }.AsQueryable();
 
-            var readEmployeeDTO = _mapper.Map<ReadEmployeeDTO>(menu);
+            var readEmployeeDTO = _mapper.Map<ReadEmployeeDTO>(employee);
 
             //Act
             //Assert
-            await base.GetByIdAsync_ReturnsEntity(menu.Id, menuQuery, readEmployeeDTO);
+            await base.GetByIdAsync_ReturnsEntity(employee.Id, employeeQuery, readEmployeeDTO);
         }
 
         [Fact]
         public async Task InsertEmployeeAsync_SuccessfullyExecuted()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
+            var employee = EmployeeDataFaker.GetFakedEmployee();
 
             //Act
             //Assert
-            await base.InsertAsync_SuccessfullyExecuted(menu);
+            await base.InsertAsync_SuccessfullyExecuted(employee);
         }
 
         [Fact]
         public void UpdateEmployee_SuccessfullyExecuted()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
+            var employee = EmployeeDataFaker.GetFakedEmployee();
 
             //Act
             //Assert
-            base.UpdateEntity_SuccessfullyExecuted(menu);
+            base.UpdateEntity_SuccessfullyExecuted(employee);
         }
 
         [Fact]
         public void DeleteEmployee_SuccessfullyExecuted()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
+            var employee = EmployeeDataFaker.GetFakedEmployee();
 
             //Act
             //Assert
-            base.DeleteEntity_SuccessfullyExecuted(menu);
+            base.DeleteEntity_SuccessfullyExecuted(employee);
         }
 
         [Fact]
         public async Task DeleteEmployeeAsync_WhenEmployeeIsExisting_SuccessfullyExecuted()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
-            ICollection<Employee> employess = new List<Employee> { menu };
+            var employee = EmployeeDataFaker.GetFakedEmployee();
+            ICollection<Employee> employees = new List<Employee> { employee };
 
-            IQueryable<Employee> query = employess.AsQueryable();
+            IQueryable<Employee> query = employees.AsQueryable();
 
             _catalogServiceDbContextMock.MockDataSet(query);
 
             //Act
-            await _employeeRepository.DeleteAsync(menu.Id, It.IsAny<CancellationToken>());
+            await _employeeRepository.DeleteAsync(employee.Id, It.IsAny<CancellationToken>());
 
             //Assert
             _catalogServiceDbContextMock.Verify();
@@ -132,11 +134,11 @@ namespace CatalogService.Tests.RepositoriesTests
         public async Task DeleteEmployeeAsync_WhenEmployeeIsNotExisting_ThrowsNotFoundException()
         {
             //Arrange
-            var menu = EmployeeDataFaker.GetFakedEmployee();
-            int id = menu.Id;
-            menu.Id = 0;
+            var employee = EmployeeDataFaker.GetFakedEmployee();
+            int id = employee.Id;
+            employee.Id = 0;
 
-            IQueryable<Employee> query = new List<Employee> { menu }.AsQueryable();
+            IQueryable<Employee> query = new List<Employee> { employee }.AsQueryable();
 
             _catalogServiceDbContextMock.MockDataSet(query);
 

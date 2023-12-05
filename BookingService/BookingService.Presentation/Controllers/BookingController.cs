@@ -11,9 +11,9 @@ namespace BookingService.Presentation.Controllers
     [Authorize]
     public class BookingController : ControllerBase
     {
-        private readonly IBookService _bookingService;
+        private readonly IBookingService _bookingService;
 
-        public BookingController(IBookService bookingService)
+        public BookingController(IBookingService bookingService)
         {
             _bookingService = bookingService;
         }
@@ -52,7 +52,7 @@ namespace BookingService.Presentation.Controllers
                 .InsertAsync<ReadBookingDTO>(bookingDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetBookingAsync),
-                                   new { id = readBookingDTO }, bookingDTO);
+                                   new { id = readBookingDTO }, readBookingDTO);
         }
 
         [HttpPut("{id}")]

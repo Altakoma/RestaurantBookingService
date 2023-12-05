@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using CatalogService.Application.DTOs.Menu;
 using CatalogService.Domain.Entities;
 
 namespace CatalogService.Tests.Fakers
@@ -29,6 +30,36 @@ namespace CatalogService.Tests.Fakers
             menu.Restaurant = RestaurantDataFaker.GetFakedRestaurant(menu.RestaurantId);
 
             return menu;
+        }
+
+        internal static InsertMenuDTO GetFakedInsertMenuDTO()
+        {
+            var faker = new Faker<InsertMenuDTO>()
+                .RuleFor(menu => menu.FoodName,
+                faker => faker.Random.Word())
+                .RuleFor(menu => menu.FoodTypeId,
+                faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
+                .RuleFor(menu => menu.RestaurantId,
+                faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
+                .RuleFor(menu => menu.Cost,
+                faker => faker.Random.Double() + faker.Random.UInt(max: StandartMaximumCost));
+
+            return faker.Generate();
+        }
+
+        internal static UpdateMenuDTO GetFakedUpdateMenuDTO()
+        {
+            var faker = new Faker<UpdateMenuDTO>()
+                .RuleFor(menu => menu.FoodName,
+                faker => faker.Random.Word())
+                .RuleFor(menu => menu.FoodTypeId,
+                faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
+                .RuleFor(menu => menu.RestaurantId,
+                faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
+                .RuleFor(menu => menu.Cost,
+                faker => faker.Random.Double() + faker.Random.UInt(max: StandartMaximumCost));
+
+            return faker.Generate();
         }
     }
 }

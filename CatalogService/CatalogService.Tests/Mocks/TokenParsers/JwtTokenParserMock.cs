@@ -4,9 +4,9 @@ using Moq;
 
 namespace CatalogService.Tests.Mocks.TokenParsers
 {
-    public class JwtTokenParserMock : Mock<ITokenParser>
+    public class TokenParserMock : Mock<ITokenParser>
     {
-        public JwtTokenParserMock MockParseSubjectId(int subjectId)
+        public TokenParserMock MockParseSubjectId(int subjectId)
         {
             Setup(tokenParser => tokenParser.ParseSubjectId(It.IsAny<IHeaderDictionary>()))
             .Returns(subjectId)

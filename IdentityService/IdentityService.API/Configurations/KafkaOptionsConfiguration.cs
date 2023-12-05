@@ -1,6 +1,5 @@
 ﻿using Confluent.Kafka;
 using IdentityService.BusinessLogic.KafkaMessageBroker;
-using IdentityService.DataAccess.Exceptions;
 using Microsoft.Extensions.Options;
 
 namespace IdentityService.API.Configurations
@@ -10,7 +9,7 @@ namespace IdentityService.API.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string bootstrapServer = configuration[BootstrapServerString]!;
+            string bootstrapServer = configuration["BootstrapServer"]!;
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {

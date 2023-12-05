@@ -65,16 +65,13 @@ namespace BookingService.Presentation.Configurations
             services.AddAuthorization();
 
             services.AddScoped<ITableRepository, TableRepository>();
-            services.AddScoped<IClientRepository, ClientRepository>();
-            services.AddScoped<IRepository<Client>, ClientRepository>();
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             services.AddScoped<IRepository<Restaurant>, RestaurantRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
 
             services.AddScoped<ITableService, TableService>();
-            services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
-            services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IBookingService, Application.Services.BookingService>();
 
             services.AddScoped<IBookingHubService, BookingHubService>();
 

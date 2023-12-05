@@ -3,7 +3,7 @@ using BookingService.Domain.Interfaces.Services.Base;
 
 namespace BookingService.Application.Interfaces.Services
 {
-    public interface IBookService : IBaseService
+    public interface IBookingService : IBaseService
     {
         Task<T> UpdateAsync<T>(int id, UpdateBookingDTO updateItemDTO,
             CancellationToken cancellationToken);

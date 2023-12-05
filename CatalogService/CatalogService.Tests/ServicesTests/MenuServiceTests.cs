@@ -26,7 +26,7 @@ namespace CatalogService.Tests.ServicesTests
         private readonly EmployeeRepositoryMock _employeeRepositoryMock;
         private readonly RestaurantRepositoryMock _restaurantRepositoryMock;
 
-        private readonly JwtTokenParserMock _tokenParserMock;
+        private readonly TokenParserMock _tokenParserMock;
         private readonly HttpContextAccessorMock _httpContextAccessorMock;
 
         private readonly MenuMessageProducerMock _menuMessageProducerMock;

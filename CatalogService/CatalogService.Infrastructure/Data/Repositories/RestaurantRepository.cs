@@ -14,7 +14,7 @@ namespace CatalogService.Infrastructure.Data.Repositories
         {
         }
 
-        public async Task<bool> IsWorksAtRestaurantAsync(int employeeId, int restaurantId,
+        public async Task<bool> IsWorkingAtRestaurantAsync(int employeeId, int restaurantId,
             CancellationToken cancellationToken)
         {
             bool isWorkAtRestaurant = await _catalogServiceDbContext.Restaurants

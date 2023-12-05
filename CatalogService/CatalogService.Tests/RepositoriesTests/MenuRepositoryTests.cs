@@ -17,7 +17,7 @@ namespace CatalogService.Tests.RepositoriesTests
         private readonly IMenuRepository _menuRepository;
         private readonly IMapper _mapper;
 
-        public MenuRepositoryTests() : base(typeof(MenuRepository))
+        public MenuRepositoryTests() : base()
         {
             _menuRepository = new MenuRepository(_catalogServiceDbContextMock.Object,
                 _mapperMock.Object);
@@ -30,6 +30,8 @@ namespace CatalogService.Tests.RepositoriesTests
 
             _mapper = new Mapper(new MapperConfiguration(
                 configure => configure.AddProfiles(profiles)));
+
+            _repository = _menuRepository;
         }
 
         [Fact]

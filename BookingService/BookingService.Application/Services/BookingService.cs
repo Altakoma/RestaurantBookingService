@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace BookingService.Application.Services
 {
-    public class BookService : BaseService<Booking>, IBookService
+    public class BookingService : BaseService<Booking>, IBookingService
     {
         private readonly ITokenParser _tokenParser;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IBookingHubService _bookingHubService;
 
-        public BookService(IBookingRepository bookingRepository,
+        public BookingService(IBookingRepository bookingRepository,
             ITokenParser tokenParser,
             IHttpContextAccessor httpContextAccessor,
             IBookingHubService bookingHubService,
@@ -35,8 +35,15 @@ namespace BookingService.Application.Services
             int subjectId = _tokenParser.ParseSubjectId(_httpContextAccessor?
                                                         .HttpContext?.Request.Headers);
 
-            Booking booking = _mapper.Map<Booking>(updateItemDTO);
-            booking.ClientId = subjectId;
+            var booking = await GetByIdAsync<Booking>(id, cancellationToken);
+
+            if (booking.ClientId != subjectId)
+            {
+                throw new AuthorizationException(subjectId.ToString(),
+                    ExceptionMessages.AuthorizationExceptionMessage);
+            }
+
+            booking = _mapper.Map<Booking>(updateItemDTO);
 
             T itemDTO = await base.UpdateAsync<Booking, T>(id, booking, cancellationToken);
 
