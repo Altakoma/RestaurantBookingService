@@ -145,8 +145,9 @@ namespace BookingService.Tests.ServiceTests
         {
             //Arrange
             Booking booking = BookingDataFaker.GetFakedBooking();
+            int subjectId = -1;
 
-            _tokenParserMock.MockParseSubjectId(It.Is<int>(number => number != booking.ClientId));
+            _tokenParserMock.MockParseSubjectId(subjectId);
 
             _bookingRepositoryMock.MockGetByIdAsync(booking.Id, booking);
 
@@ -199,8 +200,9 @@ namespace BookingService.Tests.ServiceTests
             Booking booking = BookingDataFaker.GetFakedBooking();
             var updateBookingDTO = _mapper.Map<UpdateBookingDTO>(booking);
             var readBookingDTO = _mapper.Map<ReadBookingDTO>(booking);
+            int subjectId = -1;
 
-            _tokenParserMock.MockParseSubjectId(It.Is<int>(number => number != booking.ClientId));
+            _tokenParserMock.MockParseSubjectId(subjectId);
 
             _bookingRepositoryMock.MockGetByIdAsync(booking.Id, booking);
 

@@ -15,6 +15,10 @@ namespace OrderService.Infrastructure.Data.ApplicationSQLDbContext
         {
         }
 
+        public OrderServiceSqlDbContext() : base()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

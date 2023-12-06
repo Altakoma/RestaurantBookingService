@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using OrderService.Application.DTOs.Base.Messages;
 using OrderService.Application.DTOs.Client;
 using OrderService.Application.DTOs.Client.Messages;
-using OrderService.Application.MediatR.Client.Commands;
 using OrderService.Domain.Entities;
 
 namespace OrderService.Application.MappingProfiles
@@ -11,18 +9,6 @@ namespace OrderService.Application.MappingProfiles
     {
         public ClientProfile()
         {
-            CreateMap<InsertClientCommand, Client>()
-                .ForMember(client => client.Id,
-                options => options.MapFrom(insertClientCommand => insertClientCommand.Id))
-                .ForMember(client => client.Name,
-                options => options.MapFrom(insertClientCommand => insertClientCommand.Name));
-
-            CreateMap<UpdateClientCommand, Client>()
-                .ForMember(client => client.Id,
-                options => options.MapFrom(updateClientCommand => updateClientCommand.Id))
-                .ForMember(client => client.Name,
-                options => options.MapFrom(updateClientCommand => updateClientCommand.Name));
-
             CreateMap<Client, ReadClientDTO>()
                 .ForMember(readClientDTO => readClientDTO.Id,
                 options => options.MapFrom(client => client.Id))
@@ -41,10 +27,6 @@ namespace OrderService.Application.MappingProfiles
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Id))
                 .ForMember(client => client.Name,
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Name));
-
-            CreateMap<Client, DeleteClientCommand>()
-                .ForMember(deleteClientCommand => deleteClientCommand.Id,
-                options => options.MapFrom(client => client.Id));
 
             CreateMap<Client, Client>();
         }

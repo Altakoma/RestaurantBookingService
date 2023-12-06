@@ -7,7 +7,7 @@ using System.Data.Common;
 namespace OrderService.Presentation.Behaviors
 {
     public class TransactionBehavior<TRequest, TResponse>
-        : IPipelineBehavior<TRequest, TResponse> where TRequest : Transactional
+        : IPipelineBehavior<TRequest, TResponse> where TRequest : ITransactional
     {
         private readonly OrderServiceSqlDbContext _dbContext;
 

@@ -43,16 +43,13 @@ namespace OrderService.Application.MediatR.Order.Handlers
                     typeof(Domain.Entities.Order));
             }
 
-            if (!request.IsRequestedBySystem)
-            {
-                int subjectId = _tokenParser
-                    .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
+            int subjectId = _tokenParser
+                .ParseSubjectId(_httpContextAccessor?.HttpContext?.Request.Headers);
 
-                if (orderDTO.ReadClientDTO.Id != subjectId)
-                {
-                    throw new AuthorizationException(orderDTO.BookingId.ToString(),
-                        ExceptionMessages.NotClientBookingMessage);
-                }
+            if (orderDTO.ReadClientDTO.Id != subjectId)
+            {
+                throw new AuthorizationException(orderDTO.BookingId.ToString(),
+                    ExceptionMessages.NotClientBookingMessage);
             }
 
             await _sqlOrderRepository.DeleteAsync(request.Id, cancellationToken);

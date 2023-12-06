@@ -12,6 +12,10 @@ namespace OrderService.Infrastructure.Repositories.NoSql
         {
         }
 
+        public NoSqlOrderRepository(IMongoCollection<ReadOrderDTO> collection) : base(collection)
+        {
+        }
+
         public async Task DeleteOrderByMenuIdAsync(int menuId, CancellationToken cancellationToken)
         {
             var filterDefinition = Builders<ReadOrderDTO>.Filter
