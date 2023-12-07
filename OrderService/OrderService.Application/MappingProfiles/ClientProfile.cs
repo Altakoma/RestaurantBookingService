@@ -20,13 +20,17 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(client => client.Id,
                 options => options.MapFrom(updateClientDTO => updateClientDTO.Id))
                 .ForMember(client => client.Name,
-                options => options.MapFrom(updateClientDTO => updateClientDTO.Name));
+                options => options.MapFrom(updateClientDTO => updateClientDTO.Name))
+                .ForMember(client => client.Orders,
+                options => options.Ignore());
 
             CreateMap<InsertClientMessageDTO, Client>()
                 .ForMember(client => client.Id,
                 options => options.MapFrom(insertClientDTO => insertClientDTO.Id))
                 .ForMember(client => client.Name,
-                options => options.MapFrom(insertClientDTO => insertClientDTO.Name));
+                options => options.MapFrom(insertClientDTO => insertClientDTO.Name))
+                .ForMember(client => client.Orders,
+                options => options.Ignore());
 
             CreateMap<Client, Client>();
         }

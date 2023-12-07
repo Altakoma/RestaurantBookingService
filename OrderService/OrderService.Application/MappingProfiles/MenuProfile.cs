@@ -22,7 +22,9 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(menu => menu.FoodName,
                 options => options.MapFrom(updateMenuDTO => updateMenuDTO.FoodName))
                 .ForMember(menu => menu.Cost,
-                options => options.MapFrom(updateMenuDTO => updateMenuDTO.Cost));
+                options => options.MapFrom(updateMenuDTO => updateMenuDTO.Cost))
+                .ForMember(menu => menu.Orders,
+                options => options.Ignore());
 
             CreateMap<InsertMenuMessageDTO, Menu>()
                 .ForMember(menu => menu.Id,
@@ -30,7 +32,9 @@ namespace OrderService.Application.MappingProfiles
                 .ForMember(menu => menu.FoodName,
                 options => options.MapFrom(insertClientDTO => insertClientDTO.FoodName))
                 .ForMember(menu => menu.Cost,
-                options => options.MapFrom(insertClientDTO => insertClientDTO.Cost));
+                options => options.MapFrom(insertClientDTO => insertClientDTO.Cost))
+                .ForMember(menu => menu.Orders,
+                options => options.Ignore());
 
             CreateMap<Menu, Menu>();
         }
