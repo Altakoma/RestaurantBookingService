@@ -1,5 +1,4 @@
-﻿using CatalogService.Application.Interfaces.GrpcServices;
-using CatalogService.Application.Interfaces.Kafka.Producers;
+﻿using CatalogService.Application.Interfaces.Kafka.Producers;
 using CatalogService.Application.Interfaces.Repositories;
 using CatalogService.Application.Interfaces.Repositories.Base;
 using CatalogService.Application.Interfaces.Services;
@@ -12,9 +11,9 @@ using CatalogService.Domain.Entities;
 using CatalogService.Domain.Interfaces.Services;
 using CatalogService.Infrastructure.Data;
 using CatalogService.Infrastructure.Data.Repositories;
-using CatalogService.Infrastructure.Grpc.Services.Clients;
 using CatalogService.Infrastructure.KafkaMessageBroker.Producers;
 using CatalogService.Infrastructure.Redis.CacheAccessors;
+using Serilog;
 
 namespace CatalogService.Presentation.Configurations
 {
@@ -23,6 +22,10 @@ namespace CatalogService.Presentation.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
+            LoggingConfiguration.ConfigureLogging();
+
+            builder.Host.UseSerilog();
+
             services.AddHttpContextAccessor();
 
             services.AddControllers();

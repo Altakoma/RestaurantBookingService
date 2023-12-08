@@ -24,6 +24,7 @@ namespace BookingService.Tests.ServiceTests.Base
             _baseRepositoryMock = default!;
             _baseService = default!;
         }
+
         public async Task GetByIdAsync_ReturnsEntity<T>(
             int id, T entity)
         {

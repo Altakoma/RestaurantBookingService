@@ -13,6 +13,7 @@ using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
 using BookingService.Infrastructure.KafkaMessageBroker.Consumers;
 using BookingService.Infrastructure.SignalR.Services;
+using Serilog;
 
 namespace BookingService.Presentation.Configurations
 {
@@ -21,6 +22,10 @@ namespace BookingService.Presentation.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
+            LoggingConfiguration.ConfigureLogging();
+
+            builder.Host.UseSerilog();
+
             services.AddControllers();
 
             builder.Services.AddGrpc();

@@ -7,6 +7,7 @@ networks:
   kafka-network:
   services-network:
   redis-network:
+  elk-network:
 
 services:
   identity-service-api:
@@ -33,14 +34,16 @@ services:
       - redis
       - mssql-db
       - kafka
+      - elasticsearch
     networks:
       - ms-sql-services-network
       - kafka-network
       - services-network
       - redis-network
+      - elk-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
-    restart: on-failure:2
+    restart: on-failure:3
   catalog-service-api:
     container_name: catalog-service-api
     environment:
@@ -69,6 +72,7 @@ services:
       - kafka-network
       - services-network
       - redis-network
+      - elk-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
     restart: on-failure:2
@@ -100,6 +104,7 @@ services:
       - postgre-sql-services-network
       - kafka-network
       - services-network
+      - elk-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
     restart: on-failure:2
@@ -134,6 +139,7 @@ services:
       - mongo-nosql-services-network
       - kafka-network
       - services-network
+      - elk-network
     volumes:
       - ./sertificate.pfx:/var/sertificate.pfx
     restart: on-failure:2
@@ -250,9 +256,33 @@ services:
       kafka-topics --bootstrap-server kafka --create --if-not-exists --topic menu --replication-factor 1 --partitions 1"
     networks:
       - kafka-network
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:8.11.1
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    networks:
+      - elk-network
+  kibana:
+    container_name: kibana
+    image: kibana:8.11.1
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    networks:
+      - elk-network
 volumes:
   mssql-data:
   mongodb-data:
   pgdata:
   kafka-data:
   zookeeper-data:
+  elasticsearch-data:
