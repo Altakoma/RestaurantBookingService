@@ -14,5 +14,14 @@ namespace CatalogService.Tests.Mocks.MessageProducers
 
             return this;
         }
+
+        public BaseMessageProducerMock<TMessageProducer> MockProduceMessageAsync<T>()
+        {
+            Setup(menuMessageProducer => menuMessageProducer.ProduceMessageAsync(
+                It.IsAny<T>(), It.IsAny<CancellationToken>()))
+            .Verifiable();
+
+            return this;
+        }
     }
 }

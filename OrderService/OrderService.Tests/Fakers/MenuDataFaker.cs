@@ -4,9 +4,9 @@ using OrderService.Domain.Entities;
 
 namespace OrderService.Tests.Fakers
 {
-    internal static class MenuDataFaker
+    public static class MenuDataFaker
     {
-        internal static Menu GetFakedMenu()
+        public static Menu GetFakedMenu()
         {
             var faker = new Faker<Menu>()
             .RuleFor(readMenuDTO => readMenuDTO.Id,
@@ -19,7 +19,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadMenuDTO GetFakedReadMenuDTO()
+        public static ReadMenuDTO GetFakedReadMenuDTO()
         {
             var faker = new Faker<ReadMenuDTO>()
             .RuleFor(readMenuDTO => readMenuDTO.Id,
@@ -32,7 +32,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadMenuDTO GetFakedReadMenuDTO(int id)
+        public static ReadMenuDTO GetFakedReadMenuDTO(int id)
         {
             var faker = new Faker<ReadMenuDTO>()
             .RuleFor(readMenuDTO => readMenuDTO.Id,

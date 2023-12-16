@@ -4,9 +4,9 @@ using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.API.Tests.Fakers
 {
-    internal static class UserRoleDataFaker
+    public static class UserRoleDataFaker
     {
-        internal static ReadUserRoleDTO GetFakedReadUserRoleDTO()
+        public static ReadUserRoleDTO GetFakedReadUserRoleDTO()
         {
             var faker = new Faker<ReadUserRoleDTO>()
                 .RuleFor(readUserRoleDTO => readUserRoleDTO.Id,
@@ -17,7 +17,7 @@ namespace IdentityService.API.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static UserRole GetFakedUserRole()
+        public static UserRole GetFakedUserRole()
         {
             var faker = new Faker<UserRole>()
                 .RuleFor(userRole => userRole.Id,

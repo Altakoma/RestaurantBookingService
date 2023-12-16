@@ -15,7 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4AEEE7BF-6A6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F82DB78A-6BE2-40F5-9EF1-53189B96BDF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.Tests", "CatalogService.Tests\CatalogService.Tests.csproj", "{2352AABA-AABC-4A6D-A245-37382114A672}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogService.Tests", "CatalogService.Tests\CatalogService.Tests.csproj", "{2352AABA-AABC-4A6D-A245-37382114A672}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogService.IntegrationTests", "CatalogService.IntegrationTests\CatalogService.IntegrationTests.csproj", "{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,10 @@ Global
 		{2352AABA-AABC-4A6D-A245-37382114A672}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2352AABA-AABC-4A6D-A245-37382114A672}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2352AABA-AABC-4A6D-A245-37382114A672}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{39958B9A-71DB-479E-A6CD-5518BB5C20D1} = {4AEEE7BF-6A66-4BF7-8650-687A9355E50A}
 		{40CE15DE-6BD2-41C3-BA18-5B363E79F75B} = {4AEEE7BF-6A66-4BF7-8650-687A9355E50A}
 		{2352AABA-AABC-4A6D-A245-37382114A672} = {F82DB78A-6BE2-40F5-9EF1-53189B96BDF4}
+		{E2F89CD1-7C81-4C93-A7A5-B517AF2339C2} = {F82DB78A-6BE2-40F5-9EF1-53189B96BDF4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {51D77F8A-3706-4F7A-935E-E2802CC243D8}

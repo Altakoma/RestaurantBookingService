@@ -31,4 +31,10 @@
     <ProjectReference Include="..\IdentityService.BusinessLogic\IdentityService.BusinessLogic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

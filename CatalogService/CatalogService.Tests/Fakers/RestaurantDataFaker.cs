@@ -4,12 +4,12 @@ using CatalogService.Domain.Entities;
 
 namespace CatalogService.Tests.Fakers
 {
-    internal class RestaurantDataFaker
+    public class RestaurantDataFaker
     {
         public const int StandartMaximumId = 15;
         public const int StandartMinimumId = 1;
 
-        internal static Restaurant GetFakedRestaurant(int id)
+        public static Restaurant GetFakedRestaurant(int id)
         {
             var faker = new Faker<Restaurant>()
                 .RuleFor(restaurant => restaurant.Id,
@@ -26,7 +26,7 @@ namespace CatalogService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static Restaurant GetFakedRestaurant()
+        public static Restaurant GetFakedRestaurant()
         {
             var faker = new Faker<Restaurant>()
                 .RuleFor(restaurant => restaurant.Id,
@@ -43,7 +43,22 @@ namespace CatalogService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static InsertRestaurantDTO GetFakedInsertRestaurantDTO()
+        public static Restaurant GetFakedRestaurantForInsert()
+        {
+            var faker = new Faker<Restaurant>()
+                .RuleFor(restaurant => restaurant.Name,
+                faker => faker.Random.Word())
+                .RuleFor(restaurant => restaurant.City,
+                faker => faker.Address.City())
+                .RuleFor(restaurant => restaurant.Street,
+                faker => faker.Address.StreetName())
+                .RuleFor(restaurant => restaurant.House,
+                faker => faker.Address.BuildingNumber());
+
+            return faker.Generate();
+        }
+
+        public static InsertRestaurantDTO GetFakedInsertRestaurantDTO()
         {
             var faker = new Faker<InsertRestaurantDTO>()
                 .RuleFor(restaurant => restaurant.Name,
@@ -58,7 +73,7 @@ namespace CatalogService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static UpdateRestaurantDTO GetFakedUpdateRestaurantDTO()
+        public static UpdateRestaurantDTO GetFakedUpdateRestaurantDTO()
         {
             var faker = new Faker<UpdateRestaurantDTO>()
                 .RuleFor(restaurant => restaurant.Name,

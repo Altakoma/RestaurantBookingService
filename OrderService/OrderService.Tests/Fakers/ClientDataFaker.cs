@@ -4,9 +4,9 @@ using OrderService.Domain.Entities;
 
 namespace OrderService.Tests.Fakers
 {
-    internal static class ClientDataFaker
+    public static class ClientDataFaker
     {
-        internal static Client GetFakedClient()
+        public static Client GetFakedClient()
         {
             var faker = new Faker<Client>()
             .RuleFor(readClientDTO => readClientDTO.Id,
@@ -17,7 +17,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadClientDTO GetFakedReadClientDTO()
+        public static ReadClientDTO GetFakedReadClientDTO()
         {
             var faker = new Faker<ReadClientDTO>()
             .RuleFor(readClientDTO => readClientDTO.Id,
