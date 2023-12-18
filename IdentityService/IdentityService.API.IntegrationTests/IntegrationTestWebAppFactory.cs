@@ -1,4 +1,6 @@
 ﻿using IdentityService.API.Controllers;
+using IdentityService.API.Tests.Mocks.Producers;
+using IdentityService.API.Tests.Mocks.Services;
 using IdentityService.BusinessLogic.DTOs.Base.Messages;
 using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
 using IdentityService.BusinessLogic.Services.Interfaces;
@@ -18,8 +20,8 @@ namespace IdentityService.API.IntegrationTests
     public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>,
         IAsyncLifetime
     {
-        public Mock<ICookieService> CookieServiceMock { get; private set; }
-        public Mock<IUserMessageProducer> UserMessageProducerMock{ get; private set; }
+        public CookieServiceMock CookieServiceMock { get; private set; }
+        public UserMessageProducerMock UserMessageProducerMock{ get; private set; }
 
         private readonly MsSqlContainer _dbContainer;
         private readonly RedisContainer _redisContainer;
@@ -84,15 +86,12 @@ namespace IdentityService.API.IntegrationTests
                     services.Remove(cookieServiceDescriptor);
                 }
 
-                CookieServiceMock = new Mock<ICookieService>();
+                CookieServiceMock = new CookieServiceMock();
 
-                UserMessageProducerMock = new Mock<IUserMessageProducer>();
+                UserMessageProducerMock = new UserMessageProducerMock();
 
-                UserMessageProducerMock.Setup(producer => producer.ProduceMessageAsync(
-                    It.IsAny<MessageDTO>(), It.IsAny<CancellationToken>()));
-
-                services.AddSingleton(UserMessageProducerMock.Object)
-                             .AddSingleton(CookieServiceMock.Object);
+                services.AddScoped(serviceProvider => UserMessageProducerMock.Object)
+                        .AddSingleton(CookieServiceMock.Object);
 
                 services.AddDbContext<IdentityDbContext>(options =>
                 {
@@ -100,8 +99,8 @@ namespace IdentityService.API.IntegrationTests
                 });
 
                 services.AddScoped<AuthController>()
-                             .AddScoped<UserController>()
-                             .AddScoped<UserRoleController>();
+                        .AddScoped<UserController>()
+                        .AddScoped<UserRoleController>();
             });
         }
 

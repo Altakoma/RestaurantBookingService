@@ -4,6 +4,7 @@ using CatalogService.Application.TokenParsers.Interfaces;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Presentation;
 using CatalogService.Presentation.Controllers;
+using CatalogService.Tests.Mocks.GrpcClients;
 using CatalogService.Tests.Mocks.MessageProducers;
 using CatalogService.Tests.Mocks.TokenParsers;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +22,7 @@ namespace CatalogService.IntegrationTests
     public class IntegrationTestWebAppFactory : WebApplicationFactory<Program>,
         IAsyncLifetime
     {
-        public Mock<IGrpcEmployeeClientService> GrpcEmployeeClientServiceMock { get; private set; }
+        public GrpcEmployeeClientServiceMock GrpcEmployeeClientServiceMock { get; private set; }
         public MenuMessageProducerMock MenuMessageProducerMock { get; private set; }
         public RestaurantMessageProducerMock RestaurantMessageProducerMock { get; private set; }
         public TokenParserMock TokenParserMock { get; private set; }
@@ -82,7 +83,7 @@ namespace CatalogService.IntegrationTests
                     services.Remove(grpcEmployeeClientServiceDescriptor);
                 }
 
-                GrpcEmployeeClientServiceMock = new Mock<IGrpcEmployeeClientService>();
+                GrpcEmployeeClientServiceMock = new GrpcEmployeeClientServiceMock();
 
                 services.AddScoped(serviceProvider => GrpcEmployeeClientServiceMock.Object);
 
@@ -128,9 +129,9 @@ namespace CatalogService.IntegrationTests
                 });
 
                 services.AddScoped<EmployeeController>()
-                             .AddScoped<FoodTypeController>()
-                             .AddScoped<MenuController>()
-                             .AddScoped<RestaurantController>();
+                        .AddScoped<FoodTypeController>()
+                        .AddScoped<MenuController>()
+                        .AddScoped<RestaurantController>();
             });
         }
 

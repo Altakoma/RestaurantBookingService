@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CatalogService.Application.DTOs.Menu;
+﻿using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Menu.Messages;
 using CatalogService.Domain.Entities;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;

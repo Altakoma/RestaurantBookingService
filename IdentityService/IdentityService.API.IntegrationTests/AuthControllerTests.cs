@@ -1,18 +1,16 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using IdentityService.API.Controllers;
 using IdentityService.API.Tests.Fakers;
 using IdentityService.API.Tests.Mocks.Producers;
+using IdentityService.API.Tests.Mocks.Services;
 using IdentityService.BusinessLogic.DTOs.Token;
 using IdentityService.BusinessLogic.DTOs.User;
-using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
-using IdentityService.BusinessLogic.MappingProfiles;
+using IdentityService.BusinessLogic.DTOs.User.Messages;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.DataAccess.DatabaseContext;
 using IdentityService.DataAccess.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 
 namespace IdentityService.API.IntegrationTests
 {
@@ -26,9 +24,9 @@ namespace IdentityService.API.IntegrationTests
 
         private readonly IdentityDbContext _identityDbContext;
 
-        private readonly Mock<ICookieService> _cookieServiceMock;
+        private readonly CookieServiceMock _cookieServiceMock;
 
-        private readonly Mock<IUserMessageProducer> _userMessageProducerMock;
+        private readonly UserMessageProducerMock _userMessageProducerMock;
 
         public AuthControllerTests(IntegrationTestWebAppFactory factory)
         {
@@ -66,8 +64,6 @@ namespace IdentityService.API.IntegrationTests
 
             createdAtActionResult!.Value.Should().BeEquivalentTo(insertUserDTO, options =>
                 options.ExcludingNestedObjects().ExcludingMissingMembers());
-
-            _userMessageProducerMock.Verify();
         }
 
         [Fact]
@@ -122,15 +118,9 @@ namespace IdentityService.API.IntegrationTests
 
             var cancellationToken = _cancellationTokenSource.Token;
 
-            _cookieServiceMock.Setup(cookieService =>
-                cookieService.GetCookieValue("UserId"))
-                .Returns(user.Id.ToString())
-                .Verifiable();
+            _cookieServiceMock.MockGetCookieValue("UserId", user.Id.ToString());
 
-            _cookieServiceMock.Setup(cookieService =>
-                cookieService.GetCookieValue("RefreshToken"))
-                .Returns(refreshToken)
-                .Verifiable();
+            _cookieServiceMock.MockGetCookieValue("RefreshToken", refreshToken);
 
             var refreshTokenService = _serviceScope.ServiceProvider
                 .GetRequiredService<IRefreshTokenService>();
@@ -138,9 +128,7 @@ namespace IdentityService.API.IntegrationTests
             await refreshTokenService.SetAsync(user.Id.ToString(), refreshToken,
                 time, cancellationToken);
 
-            _cookieServiceMock.Setup(cookieService =>
-                cookieService.SetCookieValue("RefreshToken", It.IsAny<string>()))
-                .Verifiable();
+            _cookieServiceMock.MockSetCookieValue("RefreshToken");
 
             Environment.SetEnvironmentVariable("JWTExpirationTime", "00:09:59");
             Environment.SetEnvironmentVariable("JWTSecret", "secretsfmnoiagdhvsfd");

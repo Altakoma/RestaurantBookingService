@@ -23,7 +23,7 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(userRole => userRole.Id,
                 faker => faker.Random.Number(min: 0, max: UserDataFaker.StandartMaximumId))
                 .RuleFor(userRole => userRole.Name,
-                faker => faker.Random.Word());
+                faker => faker.Random.Words(1));
 
             return faker.Generate();
         }

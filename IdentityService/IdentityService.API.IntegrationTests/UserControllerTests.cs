@@ -2,15 +2,15 @@
 using FluentAssertions;
 using IdentityService.API.Controllers;
 using IdentityService.API.Tests.Fakers;
+using IdentityService.API.Tests.Mocks.Producers;
 using IdentityService.BusinessLogic.DTOs.User;
-using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
+using IdentityService.BusinessLogic.DTOs.User.Messages;
 using IdentityService.DataAccess.DatabaseContext;
 using IdentityService.DataAccess.Entities;
 using IdentityService.DataAccess.Exceptions;
 using IdentityService.DataAccess.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 
 namespace IdentityService.API.IntegrationTests
 {
@@ -26,13 +26,13 @@ namespace IdentityService.API.IntegrationTests
 
         private readonly IMapper _mapper;
 
-        private readonly Mock<IUserMessageProducer> _userMessageProducerMock;
+        private readonly UserMessageProducerMock _userMessageProducerMock;
 
         public UserControllerTests(IntegrationTestWebAppFactory factory)
         {
-            _userMessageProducerMock = factory.UserMessageProducerMock;
-
             _serviceScope = factory.Services.CreateScope();
+
+            _userMessageProducerMock = factory.UserMessageProducerMock;
 
             _mapper = _serviceScope.ServiceProvider
                 .GetRequiredService<IMapper>();
@@ -101,6 +101,8 @@ namespace IdentityService.API.IntegrationTests
 
             //Assert
             await Assert.ThrowsAsync<NotFoundException>(() => result);
+
+            _userMessageProducerMock.Verify();
         }
 
         [Theory]
@@ -112,6 +114,13 @@ namespace IdentityService.API.IntegrationTests
 
             var userRepository = _serviceScope.ServiceProvider
                 .GetRequiredService<IUserRepository>();
+
+            var deleteUserMessageDTO = new DeleteUserMessageDTO
+            {
+                Id = id,
+            };
+
+            _userMessageProducerMock.MockProduceMessageAsync(deleteUserMessageDTO);
 
             //Act
             var result = await _userController.DeleteUserAsync(id, cancellationToken);
@@ -160,6 +169,14 @@ namespace IdentityService.API.IntegrationTests
             UpdateUserDTO updateUserDTO = UserDataFaker.GetFakedUpdateUserDTO();
             user = _mapper.Map<User>(updateUserDTO);
             user.Id = userId;
+
+            var updateUserMessageDTO = new UpdateUserMessageDTO
+            {
+                Id = user.Id,
+                Name = user.Name,
+            };
+
+            _userMessageProducerMock.MockProduceMessageAsync(updateUserMessageDTO);
 
             var cancellationToken = _cancellationTokenSource.Token;
 

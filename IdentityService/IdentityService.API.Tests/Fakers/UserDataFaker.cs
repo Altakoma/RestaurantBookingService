@@ -19,11 +19,11 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(user => user.UserRoleId,
                         faker => 2)
                 .RuleFor(user => user.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(user => user.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(user => user.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             var user = faker.Generate();
 
@@ -42,7 +42,7 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(user => user.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(user => user.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             return faker.Generate();
         }
@@ -53,11 +53,11 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(insertUserDTO => insertUserDTO.UserRoleId,
                         faker => 2)
                 .RuleFor(insertUserDTO => insertUserDTO.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(insertUserDTO => insertUserDTO.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(insertUserDTO => insertUserDTO.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             return faker.Generate();
         }
@@ -68,11 +68,11 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(updateUserDTO => updateUserDTO.UserRoleId,
                         faker => 2)
                 .RuleFor(updateUserDTO => updateUserDTO.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(updateUserDTO => updateUserDTO.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(updateUserDTO => updateUserDTO.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             return faker.Generate();
         }

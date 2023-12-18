@@ -15,7 +15,6 @@ namespace BookingService.IntegrationTests
 {
     public class BookingControllerTests : IClassFixture<IntegrationTestWebAppFactory>
     {
-        private readonly IntegrationTestWebAppFactory _factory;
         private readonly IServiceScope _serviceScope;
 
         private readonly TokenParserMock _tokenParserMock;
@@ -29,8 +28,6 @@ namespace BookingService.IntegrationTests
 
         public BookingControllerTests(IntegrationTestWebAppFactory factory)
         {
-            _factory = factory;
-
             _serviceScope = factory.Services.CreateScope();
 
             _tokenParserMock = factory.TokenParserMock;

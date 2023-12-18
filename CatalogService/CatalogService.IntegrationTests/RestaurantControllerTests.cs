@@ -1,16 +1,13 @@
-﻿using CatalogService.Application.DTOs.Menu.Messages;
-using CatalogService.Application.DTOs.Menu;
-using CatalogService.Application.DTOs.Restaurant;
+﻿using CatalogService.Application.DTOs.Restaurant;
+using CatalogService.Application.DTOs.Restaurant.Messages;
 using CatalogService.Domain.Entities;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Presentation.Controllers;
 using CatalogService.Tests.Fakers;
 using CatalogService.Tests.Mocks.MessageProducers;
-using CatalogService.Tests.Mocks.TokenParsers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using CatalogService.Application.DTOs.Restaurant.Messages;
 
 namespace CatalogService.IntegrationTests
 {
@@ -24,7 +21,6 @@ namespace CatalogService.IntegrationTests
         private readonly CatalogServiceDbContext _catalogDbContext;
 
         private readonly RestaurantMessageProducerMock _restaurantMessageProducerMock;
-        private readonly TokenParserMock _tokenParserMock;
 
         public RestaurantControllerTests(IntegrationTestWebAppFactory factory)
         {
@@ -36,7 +32,6 @@ namespace CatalogService.IntegrationTests
                 .GetRequiredService<CatalogServiceDbContext>();
 
             _restaurantMessageProducerMock = factory.RestaurantMessageProducerMock;
-            _tokenParserMock = factory.TokenParserMock;
 
             _cancellationTokenSource = new CancellationTokenSource();
         }

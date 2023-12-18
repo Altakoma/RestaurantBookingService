@@ -6,6 +6,7 @@ using CatalogService.Domain.Entities;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Presentation.Controllers;
 using CatalogService.Tests.Fakers;
+using CatalogService.Tests.Mocks.GrpcClients;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,7 @@ namespace CatalogService.IntegrationTests
 
         private readonly CatalogServiceDbContext _catalogDbContext;
 
-        private readonly Mock<IGrpcEmployeeClientService> _grpcEmployeeClientServiceMock;
+        private readonly GrpcEmployeeClientServiceMock _grpcEmployeeClientServiceMock;
 
         private readonly IMapper _mapper;
 
