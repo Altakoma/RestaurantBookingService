@@ -27,9 +27,7 @@ namespace CatalogService.Tests.Fakers
                 .RuleFor(employee => employee.Id,
                 faker => faker.Random.Number(StandartMinimumId, StandartMaximumId))
                 .RuleFor(employee => employee.Name,
-                faker => faker.Random.Word())
-                .RuleFor(employee => employee.Restaurant,
-                faker => RestaurantDataFaker.GetFakedRestaurantForInsert());
+                faker => faker.Random.Word());
 
             return faker.Generate();
         }

@@ -1,7 +1,6 @@
 ﻿using IdentityService.API.Controllers;
 using IdentityService.API.Tests.Mocks.Producers;
 using IdentityService.API.Tests.Mocks.Services;
-using IdentityService.BusinessLogic.DTOs.Base.Messages;
 using IdentityService.BusinessLogic.KafkaMessageBroker.Interfaces.Producers;
 using IdentityService.BusinessLogic.Services.Interfaces;
 using IdentityService.DataAccess.DatabaseContext;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Testcontainers.MsSql;
 using Testcontainers.Redis;
 
@@ -21,7 +19,7 @@ namespace IdentityService.API.IntegrationTests
         IAsyncLifetime
     {
         public CookieServiceMock CookieServiceMock { get; private set; }
-        public UserMessageProducerMock UserMessageProducerMock{ get; private set; }
+        public UserMessageProducerMock UserMessageProducerMock { get; private set; }
 
         private readonly MsSqlContainer _dbContainer;
         private readonly RedisContainer _redisContainer;

@@ -21,7 +21,6 @@ namespace BookingService.IntegrationTests
     {
         public TokenParserMock TokenParserMock { get; private set; }
         public BookingHubServiceMock BookingHubServiceMock { get; private set; }
-
         public GrpcClientEmployeeServiceMock GrpcClientEmployeeServiceMock { get; private set; }
 
         private readonly PostgreSqlContainer _dbContainer;

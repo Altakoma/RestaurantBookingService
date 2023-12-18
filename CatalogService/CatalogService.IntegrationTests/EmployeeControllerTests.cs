@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CatalogService.Application;
 using CatalogService.Application.DTOs.Employee;
-using CatalogService.Application.Interfaces.GrpcServices;
 using CatalogService.Domain.Entities;
 using CatalogService.Infrastructure.Data.ApplicationDbContext;
 using CatalogService.Presentation.Controllers;
@@ -66,7 +65,12 @@ namespace CatalogService.IntegrationTests
         public async Task GetEmployeesAsync_ReturnsReadEmployeeDTOs()
         {
             //Arrange
-            Employee employee = EmployeeDataFaker.GetFakedEmployeeForInsert();
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
+
+            _catalogDbContext.Restaurants.Add(restaurant);
+            _catalogDbContext.SaveChanges();
+
+            Employee employee = EmployeeDataFaker.GetFakedEmployeeForInsert(restaurant.Id);
 
             _catalogDbContext.Employees.Add(employee);
             _catalogDbContext.SaveChanges();
@@ -135,10 +139,22 @@ namespace CatalogService.IntegrationTests
         public async Task DeleteEmployeeAsync_ReturnsNoContent()
         {
             //Arrange
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
+
+            _catalogDbContext.Restaurants.Add(restaurant);
+            _catalogDbContext.SaveChanges();
+
             Employee employee = EmployeeDataFaker.GetFakedEmployeeForInsert();
 
-            _catalogDbContext.Employees.Add(employee);
-            _catalogDbContext.SaveChanges();
+            var isExisting = _catalogDbContext.Employees.Any(currentEmployee =>
+                currentEmployee.Id == employee.Id);
+
+            if (!isExisting)
+            {
+                employee.RestaurantId = restaurant.Id;
+                _catalogDbContext.Employees.Add(employee);
+                _catalogDbContext.SaveChanges();
+            }
 
             var cancellationToken = _cancellationTokenSource.Token;
 

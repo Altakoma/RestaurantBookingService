@@ -26,16 +26,15 @@ namespace BookingService.Tests.Fakers
             return booking;
         }
 
-        public static Booking GetFakedBookingForInsert()
+        public static Booking GetFakedBookingForInsert(int restaurantId, int clientId)
         {
-            Table table = TableDataFaker.GetFakedTableForInsert();
-            Client client = ClientDataFaker.GetFakedClient();
+            Table table = TableDataFaker.GetFakedTableForInsert(restaurantId);
 
             var faker = new Faker<Booking>()
                 .RuleFor(booking => booking.Table,
                 faker => table)
-                .RuleFor(booking => booking.Client,
-                faker => client)
+                .RuleFor(booking => booking.ClientId,
+                faker => clientId)
                 .RuleFor(booking => booking.BookingTime,
                 faker => faker.Date.Recent().AsUtc());
 

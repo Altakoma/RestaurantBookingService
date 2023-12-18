@@ -87,9 +87,13 @@ namespace CatalogService.IntegrationTests
         public async Task InsertFoodTypeAsync_ReturnsReadFoodTypeDTO()
         {
             //Arrange
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
             FoodTypeDTO foodTypeDTO = FoodTypeDataFaker.GetFakedFoodTypeDTO();
 
-            int employeeId = GetFakeEmployeeId();
+            _catalogDbContext.Restaurants.Add(restaurant);
+            _catalogDbContext.SaveChanges();
+
+            int employeeId = GetFakeEmployeeId(restaurant.Id);
 
             _tokenParserMock.MockParseSubjectId(employeeId);
 
@@ -115,7 +119,12 @@ namespace CatalogService.IntegrationTests
         public async Task UpdateFoodTypeAsync_ReturnsReadFoodTypeDTO()
         {
             //Arrange
-            int employeeId = GetFakeEmployeeId();
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
+
+            _catalogDbContext.Restaurants.Add(restaurant);
+            _catalogDbContext.SaveChanges();
+
+            int employeeId = GetFakeEmployeeId(restaurant.Id);
 
             _tokenParserMock.MockParseSubjectId(employeeId);
 
@@ -153,12 +162,14 @@ namespace CatalogService.IntegrationTests
         public async Task DeleteFoodTypeAsync_ReturnsNoContentResult()
         {
             //Arrange
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
             FoodType foodType = FoodTypeDataFaker.GetFakedFoodTypeForInsert();
 
+            _catalogDbContext.Restaurants.Add(restaurant);
             _catalogDbContext.FoodTypes.Add(foodType);
             _catalogDbContext.SaveChanges();
 
-            int employeeId = GetFakeEmployeeId();
+            int employeeId = GetFakeEmployeeId(restaurant.Id);
 
             _catalogDbContext.ChangeTracker.Clear();
 
@@ -181,9 +192,11 @@ namespace CatalogService.IntegrationTests
             resultFoodType.Should().BeNull();
         }
 
-        private int GetFakeEmployeeId()
+        private int GetFakeEmployeeId(int restaurantId)
         {
             Employee employee = EmployeeDataFaker.GetFakedEmployeeForInsert();
+
+            employee.RestaurantId = restaurantId;
 
             bool isExisting = _catalogDbContext.Employees.Any(currentEmployee =>
                                     currentEmployee.Id == employee.Id);
@@ -191,8 +204,13 @@ namespace CatalogService.IntegrationTests
             if (!isExisting)
             {
                 _catalogDbContext.Employees.Add(employee);
-                _catalogDbContext.SaveChanges();
             }
+            else
+            {
+                _catalogDbContext.Employees.Update(employee);
+            }
+
+            _catalogDbContext.SaveChanges();
 
             return employee.Id;
         }

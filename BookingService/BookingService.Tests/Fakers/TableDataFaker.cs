@@ -33,18 +33,5 @@ namespace BookingService.Tests.Fakers
 
             return faker.Generate();
         }
-
-        public static Table GetFakedTableForInsert()
-        {
-            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurantForInsert();
-
-            var faker = new Faker<Table>()
-                .RuleFor(table => table.Restaurant,
-                faker => restaurant)
-                .RuleFor(table => table.SeatsCount,
-                faker => faker.Random.Number(min: 1, max: 20));
-
-            return faker.Generate();
-        }
     }
 }

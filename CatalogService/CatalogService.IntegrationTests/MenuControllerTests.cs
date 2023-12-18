@@ -94,7 +94,7 @@ namespace CatalogService.IntegrationTests
             _catalogDbContext.FoodTypes.Add(foodType);
             _catalogDbContext.SaveChanges();
 
-            int employeeId = GetFakeEmployeeId();
+            int employeeId = GetFakeEmployeeId(restaurant.Id);
 
             InsertMenuDTO insertMenuDTO = MenuDataFaker
                 .GetFakedInsertMenuDTO(restaurant.Id, foodType.Id);
@@ -129,7 +129,7 @@ namespace CatalogService.IntegrationTests
             _catalogDbContext.Menu.Add(menu);
             _catalogDbContext.SaveChanges();
 
-            int employeeId = GetFakeEmployeeId();
+            int employeeId = GetFakeEmployeeId(menu.RestaurantId);
 
             _catalogDbContext.ChangeTracker.Clear();
 
@@ -154,9 +154,11 @@ namespace CatalogService.IntegrationTests
             _tokenParserMock.Verify();
         }
 
-        private int GetFakeEmployeeId()
+        private int GetFakeEmployeeId(int restaurantId)
         {
             Employee employee = EmployeeDataFaker.GetFakedEmployeeForInsert();
+
+            employee.RestaurantId = restaurantId;
 
             bool isExisting = _catalogDbContext.Employees.Any(currentEmployee =>
                                     currentEmployee.Id == employee.Id);
@@ -164,8 +166,13 @@ namespace CatalogService.IntegrationTests
             if (!isExisting)
             {
                 _catalogDbContext.Employees.Add(employee);
-                _catalogDbContext.SaveChanges();
             }
+            else
+            {
+                _catalogDbContext.Employees.Update(employee);
+            }
+
+            _catalogDbContext.SaveChanges();
 
             return employee.Id;
         }

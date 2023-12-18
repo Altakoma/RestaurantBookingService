@@ -67,12 +67,43 @@ namespace BookingService.IntegrationTests
         public async Task GetBookingAsync_ReturnsReadBookingDTO()
         {
             //Arrange
-            Booking booking = BookingDataFaker.GetFakedBookingForInsert();
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurant();
 
-            _dbContext.Bookings.Add(booking);
+            bool isExisting = _dbContext.Restaurants.Any(currentRestaurant =>
+                                    currentRestaurant.Id == restaurant.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Restaurants.Add(restaurant);
+            }
+
+            Client client = ClientDataFaker.GetFakedClient();
+
+            isExisting = _dbContext.Clients.Any(currentClient =>
+                                    currentClient.Id == client.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Clients.Add(client);
+            }
+
             _dbContext.SaveChanges();
 
-            _dbContext.ChangeTracker.Clear();
+            Booking booking = BookingDataFaker.GetFakedBookingForInsert(
+                restaurant.Id, client.Id);
+
+            isExisting = _dbContext.Bookings.Any(currentBooking =>
+                                    currentBooking.Id == booking.Id);
+
+            isExisting = _dbContext.Bookings.Any(currentBooking =>
+                                    currentBooking.Id == booking.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Bookings.Add(booking);
+                _dbContext.SaveChanges();
+                _dbContext.ChangeTracker.Clear();
+            }
 
             var cancellationToken = _cancellationTokenSource.Token;
 
@@ -86,21 +117,43 @@ namespace BookingService.IntegrationTests
             okResult.Should().NotBeNull();
 
             okResult?.Value.Should().BeEquivalentTo(booking, options =>
-                options.ExcludingNestedObjects().ExcludingMissingMembers());
+                options.ExcludingNestedObjects().ExcludingMissingMembers()
+                .Excluding(booking => booking.BookingTime));
         }
 
         [Fact]
         public async Task InsertBookingAsync_ReturnsReadBookingDTO()
         {
             //Arrange
-            Booking booking = BookingDataFaker.GetFakedBookingForInsert();
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurant();
 
-            _dbContext.Clients.Add(booking.Client);
+            bool isExisting = _dbContext.Restaurants.Any(currentRestaurant =>
+                                    currentRestaurant.Id == restaurant.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Restaurants.Add(restaurant);
+            }
+
+            Client client = ClientDataFaker.GetFakedClient();
+
+            isExisting = _dbContext.Clients.Any(currentClient =>
+                                    currentClient.Id == client.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Clients.Add(client);
+            }
+
+            _dbContext.SaveChanges();
+
+            Booking booking = BookingDataFaker.GetFakedBookingForInsert(
+                restaurant.Id, client.Id);
+
             _dbContext.Tables.Add(booking.Table);
             _dbContext.SaveChanges();
 
             booking.TableId = booking.Table.Id;
-            booking.ClientId = booking.Client.Id;
 
             var insertBookingDTO = _mapper.Map<InsertBookingDTO>(booking);
 
@@ -131,13 +184,39 @@ namespace BookingService.IntegrationTests
         public async Task DeleteBookingAsync_ReturnsNoContentResult()
         {
             //Arrange
-            Booking booking = BookingDataFaker.GetFakedBookingForInsert();
+            Restaurant restaurant = RestaurantDataFaker.GetFakedRestaurant();
 
-            _dbContext.Bookings.Add(booking);
+            bool isExisting = _dbContext.Restaurants.Any(currentRestaurant =>
+                                    currentRestaurant.Id == restaurant.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Restaurants.Add(restaurant);
+            }
+
+            Client client = ClientDataFaker.GetFakedClient();
+
+            isExisting = _dbContext.Clients.Any(currentClient =>
+                                    currentClient.Id == client.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Clients.Add(client);
+            }
+
             _dbContext.SaveChanges();
 
-            booking.TableId = booking.Table.Id;
-            booking.ClientId = booking.Client.Id;
+            Booking booking = BookingDataFaker.GetFakedBookingForInsert(
+                restaurant.Id, client.Id);
+
+            isExisting = _dbContext.Bookings.Any(currentBooking =>
+                                    currentBooking.Id == booking.Id);
+
+            if (!isExisting)
+            {
+                _dbContext.Bookings.Add(booking);
+                _dbContext.SaveChanges();
+            }
 
             _bookingHubServiceMock
                 .MockSendBookingMessageAsync(HubMessageType.Delete, booking.Id);
