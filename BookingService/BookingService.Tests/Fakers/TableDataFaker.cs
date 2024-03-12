@@ -22,5 +22,16 @@ namespace BookingService.Tests.Fakers
 
             return table;
         }
+
+        public static Table GetFakedTableForInsert(int restaurantId)
+        {
+            var faker = new Faker<Table>()
+                .RuleFor(table => table.RestaurantId,
+                faker => restaurantId)
+                .RuleFor(table => table.SeatsCount,
+                faker => faker.Random.Number(min: 1, max: 20));
+
+            return faker.Generate();
+        }
     }
 }

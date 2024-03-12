@@ -5,9 +5,9 @@ using OrderService.Domain.Entities;
 
 namespace OrderService.Tests.Fakers
 {
-    internal static class OrderDataFaker
+    public static class OrderDataFaker
     {
-        internal static Order GetFakedOrder()
+        public static Order GetFakedOrder()
         {
             var faker = new Faker<Order>()
                 .RuleFor(query => query.Id,
@@ -25,7 +25,7 @@ namespace OrderService.Tests.Fakers
             return order;
         }
 
-        internal static GetAllOrdersQuery GetAllOrdersFakedQuery()
+        public static GetAllOrdersQuery GetAllOrdersFakedQuery()
         {
             var faker = new Faker<GetAllOrdersQuery>()
                 .RuleFor(query => query.SkipCount,
@@ -36,7 +36,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static GetOrderByIdQuery GetOrderByIdFakedQuery()
+        public static GetOrderByIdQuery GetOrderByIdFakedQuery()
         {
             var faker = new Faker<GetOrderByIdQuery>()
                 .RuleFor(query => query.Id,
@@ -45,7 +45,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadOrderDTO GetFakedReadOrderDTO()
+        public static ReadOrderDTO GetFakedReadOrderDTO()
         {
             var faker = new Faker<ReadOrderDTO>()
                 .RuleFor(query => query.Id,
@@ -61,7 +61,7 @@ namespace OrderService.Tests.Fakers
             return readOrderDTO;
         }
 
-        internal static ReadOrderDTO GetFakedReadOrderDTO(int bookingId, int menuId)
+        public static ReadOrderDTO GetFakedReadOrderDTO(int bookingId, int menuId)
         {
             var faker = new Faker<ReadOrderDTO>()
                 .RuleFor(query => query.Id,
@@ -77,7 +77,7 @@ namespace OrderService.Tests.Fakers
             return readOrderDTO;
         }
 
-        internal static ReadOrderDTO GetFakedReadOrderDTO(int menuId)
+        public static ReadOrderDTO GetFakedReadOrderDTO(int menuId)
         {
             var faker = new Faker<ReadOrderDTO>()
                 .RuleFor(query => query.Id,
@@ -93,7 +93,7 @@ namespace OrderService.Tests.Fakers
             return readOrderDTO;
         }
 
-        internal static InsertOrderDTO GetFakedInsertOrderDTO()
+        public static InsertOrderDTO GetFakedInsertOrderDTO()
         {
             var faker = new Faker<InsertOrderDTO>()
                 .RuleFor(query => query.BookingId,
@@ -104,7 +104,7 @@ namespace OrderService.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static UpdateOrderDTO GetFakedUpdateOrderDTO()
+        public static UpdateOrderDTO GetFakedUpdateOrderDTO()
         {
             var faker = new Faker<UpdateOrderDTO>()
                 .RuleFor(query => query.MenuId,

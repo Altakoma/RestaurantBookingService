@@ -14,9 +14,18 @@ namespace IdentityService.API.Tests.Mocks.Services
 
             return this;
         }
+
         public CookieServiceMock MockSetCookieValue(string key, string value)
         {
             Setup(cookieService => cookieService.SetCookieValue(key, value))
+            .Verifiable();
+
+            return this;
+        }
+
+        public CookieServiceMock MockSetCookieValue(string key)
+        {
+            Setup(cookieService => cookieService.SetCookieValue(key, It.IsAny<string>()))
             .Verifiable();
 
             return this;
