@@ -9,6 +9,7 @@ using IdentityService.DataAccess.CacheAccess;
 using IdentityService.DataAccess.CacheAccess.Interfaces;
 using IdentityService.DataAccess.Repositories;
 using IdentityService.DataAccess.Repositories.Interfaces;
+using Serilog;
 
 namespace IdentityService.API.Configurations
 {
@@ -17,6 +18,10 @@ namespace IdentityService.API.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
+            LoggingConfiguration.ConfigureLogging();
+
+            builder.Host.UseSerilog();
+
             services.AddControllers();
 
             services.AddMvc(options =>
