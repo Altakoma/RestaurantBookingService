@@ -125,13 +125,8 @@ namespace IdentityService.BusinessLogic.Services
             await _userMessageProducer.ProduceMessageAsync(message,
                 cancellationToken);
 
-            ReadUserDTO? readUserDTO = await _userRepository
-                .GetByIdAsync<ReadUserDTO>(user.Id, cancellationToken);
-
-            if (readUserDTO is null)
-            {
-                throw new NotFoundException(user.Id.ToString(), typeof(User));
-            }
+            ReadUserDTO readUserDTO = (await _userRepository
+                .GetByIdAsync<ReadUserDTO>(user.Id, cancellationToken))!;
 
             return readUserDTO;
         }
@@ -162,13 +157,8 @@ namespace IdentityService.BusinessLogic.Services
             await _userMessageProducer.ProduceMessageAsync(message,
                 cancellationToken);
 
-            ReadUserDTO? readUserDTO = await _userRepository
-                .GetByIdAsync<ReadUserDTO>(id, cancellationToken);
-
-            if (readUserDTO is null)
-            {
-                throw new NotFoundException(id.ToString(), typeof(User));
-            }
+            ReadUserDTO readUserDTO = (await _userRepository
+                .GetByIdAsync<ReadUserDTO>(id, cancellationToken))!;
 
             return readUserDTO;
         }

@@ -60,8 +60,7 @@ namespace CatalogService.Application.Services.Base
         public virtual async Task<T> UpdateAsync<U, T>(int id, U updateItemDTO,
             CancellationToken cancellationToken)
         {
-            T? readItemDTO = await _repository
-                                   .GetByIdAsync<T>(id, cancellationToken);
+            T? readItemDTO = await _repository.GetByIdAsync<T>(id, cancellationToken);
 
             if (readItemDTO is null)
             {
@@ -83,14 +82,8 @@ namespace CatalogService.Application.Services.Base
                     id.ToString(), typeof(K));
             }
 
-            readItemDTO = await _repository
-                                .GetByIdAsync<T>(id, cancellationToken);
-
-            if (readItemDTO is null)
-            {
-                throw new NotFoundException(nameof(K),
-                    id.ToString(), typeof(K));
-            }
+            readItemDTO = (await _repository
+                                .GetByIdAsync<T>(id, cancellationToken))!;
 
             return readItemDTO;
         }

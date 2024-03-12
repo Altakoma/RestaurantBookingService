@@ -9,7 +9,7 @@ namespace OrderService.Presentation.Configurations
             WebApplicationBuilder builder)
         {
             string hangfireConnectionString = builder.Configuration
-                .GetConnectionString(DbConnectionString)!;
+                .GetConnectionString("SqlConnection")!;
 
             services.AddHangfire(globalConfiguration =>
                     globalConfiguration.UseSqlServerStorage(

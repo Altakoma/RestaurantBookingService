@@ -5,7 +5,7 @@ namespace CatalogService.Application.Interfaces.Repositories
 {
     public interface IRestaurantRepository : IRepository<Restaurant>
     {
-        Task<bool> IsWorksAtRestaurantAsync(int employeeId, int restaurantId,
+        Task<bool> IsWorkingAtRestaurantAsync(int employeeId, int restaurantId,
             CancellationToken cancellationToken);
     }
 }

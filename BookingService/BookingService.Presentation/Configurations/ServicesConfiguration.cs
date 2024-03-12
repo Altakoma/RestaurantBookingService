@@ -13,6 +13,7 @@ using BookingService.Infrastructure.Data;
 using BookingService.Infrastructure.Data.Repositories;
 using BookingService.Infrastructure.KafkaMessageBroker.Consumers;
 using BookingService.Infrastructure.SignalR.Services;
+using Serilog;
 
 namespace BookingService.Presentation.Configurations
 {
@@ -21,6 +22,10 @@ namespace BookingService.Presentation.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
+            LoggingConfiguration.ConfigureLogging();
+
+            builder.Host.UseSerilog();
+
             services.AddControllers();
 
             builder.Services.AddGrpc();
@@ -65,16 +70,13 @@ namespace BookingService.Presentation.Configurations
             services.AddAuthorization();
 
             services.AddScoped<ITableRepository, TableRepository>();
-            services.AddScoped<IClientRepository, ClientRepository>();
-            services.AddScoped<IRepository<Client>, ClientRepository>();
             services.AddScoped<IRestaurantRepository, RestaurantRepository>();
             services.AddScoped<IRepository<Restaurant>, RestaurantRepository>();
             services.AddScoped<IBookingRepository, BookingRepository>();
 
             services.AddScoped<ITableService, TableService>();
-            services.AddScoped<IClientService, ClientService>();
             services.AddScoped<IRestaurantService, RestaurantService>();
-            services.AddScoped<IBookService, BookService>();
+            services.AddScoped<IBookingService, Application.Services.BookingService>();
 
             services.AddScoped<IBookingHubService, BookingHubService>();
 

@@ -1,8 +1,9 @@
-﻿namespace BookingService.Application.DTOs.Table
+﻿using BookingService.Domain.Entities;
+
+namespace BookingService.Application.DTOs.Table
 {
-    public class ReadTableDTO
+    public class ReadTableDTO : BaseEntity
     {
-        public int Id { get; set; }
         public int RestaurantId { get; set; }
         public int SeatsCount { get; set; }
         public string RestaurantName { get; set; } = null!;

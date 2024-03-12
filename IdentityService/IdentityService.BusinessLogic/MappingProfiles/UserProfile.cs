@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IdentityService.BusinessLogic.DTOs.Base.Messages;
 using IdentityService.BusinessLogic.DTOs.User;
 using IdentityService.BusinessLogic.DTOs.User.Messages;
 using IdentityService.DataAccess.Entities;
@@ -30,7 +31,10 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 configuration => configuration.MapFrom(user => user.Id))
                 .ForMember(
                 updateUserDTO => updateUserDTO.Name,
-                configuration => configuration.MapFrom(user => user.Name));
+                configuration => configuration.MapFrom(user => user.Name))
+                .ForMember(
+                updateUserDTO => updateUserDTO.Type,
+                configuration => configuration.MapFrom(user => MessageType.Update));
 
             CreateMap<User, InsertUserMessageDTO>()
                 .ForMember(
@@ -38,7 +42,10 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 configuration => configuration.MapFrom(user => user.Id))
                 .ForMember(
                 updateUserDTO => updateUserDTO.Name,
-                configuration => configuration.MapFrom(user => user.Name));
+                configuration => configuration.MapFrom(user => user.Name))
+                .ForMember(
+                updateUserDTO => updateUserDTO.Type,
+                configuration => configuration.MapFrom(user => MessageType.Insert));
 
             CreateMap<InsertUserDTO, User>()
                 .ForMember(
@@ -52,7 +59,13 @@ namespace IdentityService.BusinessLogic.MappingProfiles
                 configuration => configuration.MapFrom(insertUserDTO => insertUserDTO.Login))
                 .ForMember(
                 user => user.Password,
-                configuration => configuration.MapFrom(insertUserDTO => insertUserDTO.Password));
+                configuration => configuration.MapFrom(insertUserDTO => insertUserDTO.Password))
+                .ForMember(
+                user => user.Id,
+                configuration => configuration.MapFrom(insertUserDTO => default(int)))
+                .ForMember(
+                user => user.UserRole,
+                configuration => configuration.MapFrom(insertUserDTO => default(UserRole)));
 
             CreateMap<User, ReadUserDTO>()
                 .ForMember(

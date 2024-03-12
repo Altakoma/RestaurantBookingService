@@ -11,8 +11,7 @@ namespace IdentityService.BusinessLogic.Services
     {
         private readonly IUserRoleRepository _userRoleRepository;
 
-        public UserRoleService(IUserRoleRepository userRoleRepository,
-            IMapper mapper)
+        public UserRoleService(IUserRoleRepository userRoleRepository)
         {
             _userRoleRepository = userRoleRepository;
         }

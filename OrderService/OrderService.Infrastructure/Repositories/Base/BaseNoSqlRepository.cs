@@ -17,6 +17,11 @@ namespace OrderService.Infrastructure.Repositories.Base
             _collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         }
 
+        public BaseNoSqlRepository(IMongoCollection<T> collection)
+        {
+            _collection = collection;
+        }
+
         protected string GetCollectionName(Type documentType)
         {
             return documentType.Name.ToLower();

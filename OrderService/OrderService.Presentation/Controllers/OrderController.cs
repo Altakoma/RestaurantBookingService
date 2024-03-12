@@ -28,12 +28,12 @@ namespace OrderService.Presentation.Controllers
         public async Task<IActionResult> GetAllOrderAsync([FromQuery] int skipCount,
             [FromQuery] int selectionAmount, CancellationToken cancellationToken)
         {
-            ICollection<ReadOrderDTO> orderDTOs =
-                await _mediator.Send(new GetAllOrdersQuery
-                                    {
-                                        SelectionAmount = selectionAmount,
-                                        SkipCount = skipCount
-                                    }, cancellationToken);
+            ICollection<ReadOrderDTO> orderDTOs = await _mediator.Send(
+                new GetAllOrdersQuery
+                {
+                    SelectionAmount = selectionAmount,
+                    SkipCount = skipCount
+                }, cancellationToken);
 
             return Ok(orderDTOs);
         }
@@ -62,7 +62,7 @@ namespace OrderService.Presentation.Controllers
             ReadOrderDTO readOrderDTO = await _mediator.Send(insertOrderCommand, cancellationToken);
 
             return CreatedAtAction(nameof(GetOrderAsync),
-                                   new { id = readOrderDTO }, orderDTO);
+                                   new { id = readOrderDTO }, readOrderDTO);
         }
 
         [HttpPut("{id}")]

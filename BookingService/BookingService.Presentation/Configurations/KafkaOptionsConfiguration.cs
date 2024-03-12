@@ -9,9 +9,9 @@ namespace BookingService.Presentation.Configurations
         public static IServiceCollection ConfigureKafkaOptions(this IServiceCollection services,
             IConfiguration configuration)
         {
-            string bootstrapServer = configuration[BootstrapServerString]!;
+            string bootstrapServer = configuration.GetConnectionString("BootstrapServer")!;
 
-            string groupName = configuration[GroupNameString]!;
+            string groupName = configuration["GroupName"]!;
 
             IOptions<KafkaOptions> options = Options.Create(new KafkaOptions
             {

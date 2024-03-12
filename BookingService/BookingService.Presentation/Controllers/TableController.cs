@@ -51,7 +51,7 @@ namespace BookingService.Presentation.Controllers
                 .InsertAsync<ReadTableDTO>(tableDTO, cancellationToken);
 
             return CreatedAtAction(nameof(GetTableAsync),
-                                   new { id = readTableDTO }, tableDTO);
+                                   new { id = readTableDTO }, readTableDTO);
         }
 
         [HttpPut("{id}")]

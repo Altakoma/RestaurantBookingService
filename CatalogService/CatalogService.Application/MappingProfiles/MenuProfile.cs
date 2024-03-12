@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CatalogService.Application.DTOs.Base.Messages;
 using CatalogService.Application.DTOs.Menu;
 using CatalogService.Application.DTOs.Menu.Messages;
 using CatalogService.Domain.Entities;
@@ -35,7 +36,10 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(menu => menu.Id))
                 .ForMember(
                 insertMenuDTO => insertMenuDTO.FoodName,
-                configuration => configuration.MapFrom(menu => menu.FoodName));
+                configuration => configuration.MapFrom(menu => menu.FoodName))
+                .ForMember(
+                insertMenuDTO => insertMenuDTO.Type,
+                configuration => configuration.MapFrom(menu => MessageType.Insert));
 
             CreateMap<ReadMenuDTO, UpdateMenuMessageDTO>()
                 .ForMember(
@@ -46,7 +50,11 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(menu => menu.Id))
                 .ForMember(
                 updateMenuDTO => updateMenuDTO.FoodName,
-                configuration => configuration.MapFrom(menu => menu.FoodName));
+                configuration => configuration.MapFrom(menu => menu.FoodName))
+                .ForMember(
+                insertMenuDTO => insertMenuDTO.Type,
+                configuration => configuration.MapFrom(menu => MessageType.Update))
+            .ReverseMap();
 
             CreateMap<UpdateMenuDTO, Menu>()
                 .ForMember(
@@ -60,7 +68,17 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.Cost))
                 .ForMember(
                 menu => menu.FoodTypeId,
-                configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.FoodTypeId));
+                configuration => configuration.MapFrom(updateMenuDTO => updateMenuDTO.FoodTypeId))
+                .ForMember(
+                menu => menu.Id,
+                configuration => configuration.Ignore())
+                .ForMember(
+                menu => menu.FoodType,
+                configuration => configuration.Ignore())
+                .ForMember(
+                menu => menu.Restaurant,
+                configuration => configuration.Ignore())
+            .ReverseMap();
 
             CreateMap<InsertMenuDTO, Menu>()
                 .ForMember(
@@ -74,7 +92,17 @@ namespace CatalogService.Application.MappingProfiles
                 configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.Cost))
                 .ForMember(
                 menu => menu.FoodTypeId,
-                configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.FoodTypeId));
+                configuration => configuration.MapFrom(insertMenuDTO => insertMenuDTO.FoodTypeId))
+                .ForMember(
+                menu => menu.Id,
+                configuration => configuration.Ignore())
+                .ForMember(
+                menu => menu.FoodType,
+                configuration => configuration.Ignore())
+                .ForMember(
+                menu => menu.Restaurant,
+                configuration => configuration.Ignore())
+            .ReverseMap();
 
             CreateMap<Menu, Menu>();
 

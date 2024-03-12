@@ -6,10 +6,14 @@ namespace IdentityService.DataAccess.DatabaseContext
 {
     public class IdentityDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
 
         public IdentityDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
+        public IdentityDbContext() : base()
         {
         }
 
