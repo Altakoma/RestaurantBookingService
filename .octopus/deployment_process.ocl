@@ -1,14 +1,3 @@
-step "eksctl-create-cluster-bash" {
-    name = "eksctl - Create Cluster (bash)"
-
-    action {
-        properties = {
-            Octopus.Action.Template.Id = "ActionTemplates-1"
-            Octopus.Action.Template.Version = "3"
-        }
-    }
-}
-
 step "run-a-kubectl-cli-script" {
     name = "Run a kubectl CLI Script"
 
