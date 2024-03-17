@@ -23,3 +23,15 @@ step "databases-deployment" {
         }
     }
 }
+
+step "run-a-kubectl-cli-script" {
+    name = "Run a kubectl CLI Script"
+
+    action {
+        action_type = "Octopus.KubernetesRunScript"
+        properties = {
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+    }
+}
