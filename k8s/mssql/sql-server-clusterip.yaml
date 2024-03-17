@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: restaurant-booking-service-mssql-db
+spec:
+  type: ClusterIP
+  selector:
+    app: restaurant-booking-service-mssql-db
+  ports:
+  - name: sql-port
+    port: 9070
+    targetPort: 1433

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: redis-deployment
+  labels:
+    app: restaurant-redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-redis-deployment
+  template:
+    metadata:
+      labels:
+        app: restaurant-redis-deployment
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2.3
+          ports:
+          - containerPort: 6379
+          env:
+          - name: REDIS_PASSWORD
+            value: redispwd
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 200m
+              memory: 100Mi
+            

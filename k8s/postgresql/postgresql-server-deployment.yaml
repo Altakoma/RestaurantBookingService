@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: postgre-sql-deployment
+  labels:
+    app: restaurant-postgre-sql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-postgre-sql-deployment
+  template:
+    metadata:
+      labels:
+        app: restaurant-postgre-sql-deployment
+    spec:
+      containers:
+        - name: postgre-sql
+          image: postgres:12.16-bullseye
+          ports:
+          - containerPort: 5432
+          env:
+          - name: POSTGRES_DB
+            value: RestaurantBookingServiceDb
+          - name: POSTGRES_USER
+            value: altakomauser
+          - name: POSTGRES_PASSWORD
+            value: mypwd
+          resources:
+            requests:
+              cpu: 512m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data/"
+              name: "postgre-sql"
+      volumes:
+        - name: "postgre-sql"
+          persistentVolumeClaim:
+            claimName: "postgresql-server-pvc"

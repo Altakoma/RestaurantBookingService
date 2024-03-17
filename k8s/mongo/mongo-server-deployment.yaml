@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: mongo-db-deployment
+  labels:
+    app: restaurant-mongo-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-mongo-db-deployment
+  template:
+    metadata:
+      labels:
+        app: restaurant-mongo-db-deployment
+    spec:
+      containers:
+        - name: mongo-db
+          image: mongo:7.0.6
+          ports:
+          - containerPort: 27017
+          env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: root
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: pwdpwddwp
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 200m
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: "/data/db/"
+              name: "mongo-db"
+      volumes:
+        - name: "mongo-db"
+          persistentVolumeClaim:
+            claimName: "mongo-server-pvc"

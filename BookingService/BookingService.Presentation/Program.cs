@@ -28,11 +28,11 @@ namespace BookingService.Presentation
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHub<BookingHub>(BookingHub.HubPattern);
+            //app.MapHub<BookingHub>(BookingHub.HubPattern);
 
             app.UseMiddleware<ExceptionHandlerMiddleware>();
 
-            app.MapGrpcService<GrpcServerBookingService>();
+            //app.MapGrpcService<GrpcServerBookingService>();
 
             app.MapControllers();
 

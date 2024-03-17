@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Testcontainers.MsSql;
 using Testcontainers.Redis;
 

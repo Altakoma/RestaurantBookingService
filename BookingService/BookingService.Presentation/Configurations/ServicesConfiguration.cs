@@ -24,11 +24,11 @@ namespace BookingService.Presentation.Configurations
         {
             LoggingConfiguration.ConfigureLogging();
 
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
 
             services.AddControllers();
 
-            builder.Services.AddGrpc();
+            //builder.Services.AddGrpc();
 
             services.AddHttpContextAccessor();
 
@@ -41,7 +41,7 @@ namespace BookingService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
-            services.ConfigureKafkaOptions(builder.Configuration);
+            //services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddEndpointsApiExplorer();
 
@@ -61,7 +61,7 @@ namespace BookingService.Presentation.Configurations
 
             services.AddMapper();
 
-            services.AddSignalR();
+            //services.AddSignalR();
 
             services.AddFluentValidation();
 
@@ -80,15 +80,15 @@ namespace BookingService.Presentation.Configurations
 
             services.AddScoped<IBookingHubService, BookingHubService>();
 
-            services.AddGrpcClients(builder.Configuration);
+            //services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 
-            services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
-            services.AddSingleton<IRestaurantMessageConsumer, RestaurantMessageConsumer>();
+            //services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
+            //services.AddSingleton<IRestaurantMessageConsumer, RestaurantMessageConsumer>();
 
-            services.AddHostedService<ClientConsumingMessagesHandlingService>();
-            services.AddHostedService<RestaurantConsumingMessagesHandlingService>();
+            //services.AddHostedService<ClientConsumingMessagesHandlingService>();
+            //services.AddHostedService<RestaurantConsumingMessagesHandlingService>();
 
             return services;
         }
