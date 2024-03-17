@@ -1,0 +1,25 @@
+step "databases-deployment" {
+    name = "databases-deployment"
+
+    action {
+        action_type = "Octopus.KubernetesDeployRawYaml"
+        properties = {
+            Octopus.Action.GitRepository.FilePathFilters = <<-EOT
+                k8s/mssql/*
+                k8s/mongo/*
+                k8s/postgresql/*
+                k8s/redis/*
+                EOT
+            Octopus.Action.GitRepository.Source = "Project"
+            Octopus.Action.Kubernetes.DeploymentTimeout = "180"
+            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
+            Octopus.Action.KubernetesContainers.CustomResourceYamlFileName = <<-EOT
+                k8s/mssql/*
+                k8s/mongo/*
+                k8s/postgresql/*
+                k8s/redis/*
+                EOT
+            Octopus.Action.Script.ScriptSource = "GitRepository"
+        }
+    }
+}
