@@ -1,0 +1,12 @@
+﻿namespace CatalogService.Application.DTOs.Base.Messages
+{
+    public class MessageDTO
+    {
+        public MessageType Type { get; set; }
+
+        public MessageDTO(MessageType messageType)
+        {
+            Type = messageType;
+        }
+    }
+}

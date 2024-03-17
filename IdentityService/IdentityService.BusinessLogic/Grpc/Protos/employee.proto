@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IdentityService.BusinessLogic";
+
+package employeeGrpcService;
+
+service EmployeeGrpcService {
+	rpc UserExists (IsUserExistingRequest) returns (IsUserExistingReply);
+}
+
+message IsUserExistingRequest{
+	int32 user_id = 1;
+}
+
+message IsUserExistingReply{
+	bool is_user_existing = 1;
+	string user_name = 2;
+}

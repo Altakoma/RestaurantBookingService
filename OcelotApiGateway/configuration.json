@@ -1,0 +1,54 @@
+﻿{
+	"Routes": [
+		{
+			"DownstreamPathTemplate": "/api/{path}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "catalog-service-api",
+					"Port": 80
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/{path}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{path}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "booking-service-api",
+					"Port": 80
+				}
+			],
+			"UpstreamPathTemplate": "/api/booking/{path}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{path}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "order-service-api",
+					"Port": 80
+				}
+			],
+			"UpstreamPathTemplate": "/api/order/{path}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{path}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "identity-service-api",
+					"Port": 80
+				}
+			],
+			"UpstreamPathTemplate": "/api/identity/{path}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET", "DELETE" ]
+		}
+	],
+	"GlobalConfiguration": {
+	}
+}

@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "BookingService.Application";
+
+package employeeGrpcService;
+
+service EmployeeGrpcService {
+	rpc IsEmployeeWorkingAtRestaurant (IsWorkingAtRestaurantRequest) returns (IsWorkingAtRestaurantReply);
+}
+
+message IsWorkingAtRestaurantRequest{
+	int32 employee_id = 1;
+	int32 restaurant_id = 2;
+}
+
+message IsWorkingAtRestaurantReply{
+	bool is_employee_working_at_restaurant = 1;
+}

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.58.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.24.4" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.58.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.59.0" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.18" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatalogService.Domain\CatalogService.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Grpc\Protos\employee.proto" GrpcServices="Server,Client" />
+  </ItemGroup>
+
+</Project>
