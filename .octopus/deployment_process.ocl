@@ -1,3 +1,15 @@
+step "run-a-kubectl-cli-script" {
+    name = "Run a kubectl CLI Script"
+
+    action {
+        action_type = "Octopus.KubernetesRunScript"
+        properties = {
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+    }
+}
+
 step "databases-deployment" {
     name = "databases-deployment"
 
@@ -20,18 +32,6 @@ step "databases-deployment" {
                 k8s/redis/*
                 EOT
             Octopus.Action.Script.ScriptSource = "GitRepository"
-        }
-    }
-}
-
-step "run-a-kubectl-cli-script" {
-    name = "Run a kubectl CLI Script"
-
-    action {
-        action_type = "Octopus.KubernetesRunScript"
-        properties = {
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
         }
     }
 }
