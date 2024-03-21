@@ -13,6 +13,21 @@ step "run-gcloud-auth" {
     }
 }
 
+step "select-a-project" {
+    name = "Select a project"
+
+    action {
+        action_type = "Octopus.GoogleCloudScripting"
+        properties = {
+            Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
+            Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
+            Octopus.Action.Script.ScriptBody = "gcloud config set project restaurant-api-417519"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+    }
+}
+
 step "run-dbs-deployments" {
     name = "Run dbs deployments"
 
@@ -21,10 +36,7 @@ step "run-dbs-deployments" {
         properties = {
             Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
             Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
-            Octopus.Action.Script.ScriptBody = <<-EOT
-                gcloud config set project restaurant-api-417519;
-                kubectl apply -f E:\Code\RestaurantBookingService\k8s\mssql
-                EOT
+            Octopus.Action.Script.ScriptBody = "kubectl apply -f E:\\Code\\RestaurantBookingService\\k8s\\mssql"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
