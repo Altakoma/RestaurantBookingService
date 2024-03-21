@@ -28,6 +28,21 @@ step "select-a-project" {
     }
 }
 
+step "install-kubectl" {
+    name = "Install kubectl"
+
+    action {
+        action_type = "Octopus.GoogleCloudScripting"
+        properties = {
+            Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
+            Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
+            Octopus.Action.Script.ScriptBody = "gcloud components install kubectl"
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "PowerShell"
+        }
+    }
+}
+
 step "run-dbs-deployments" {
     name = "Run dbs deployments"
 
