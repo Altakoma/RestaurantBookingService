@@ -21,7 +21,10 @@ step "run-dbs-deployments" {
         properties = {
             Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
             Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
-            Octopus.Action.Script.ScriptBody = "kubectl apply -f E:\\Code\\RestaurantBookingService\\k8s\\mssql"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                gcloud config set project restaurant-api-417519;
+                kubectl apply -f E:\Code\RestaurantBookingService\k8s\mssql
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
