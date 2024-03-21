@@ -6,7 +6,7 @@ step "run-gcloud-auth" {
         properties = {
             Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
             Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
-            Octopus.Action.Script.ScriptBody = "gcloud auth login"
+            Octopus.Action.Script.ScriptBody = "gcloud auth login --cred-file=E:\\restaurant-api-417519-ed39b38c6a4b.json"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
