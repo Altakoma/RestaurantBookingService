@@ -1,37 +1,14 @@
-step "run-a-kubectl-cli-script" {
-    name = "Run a kubectl CLI Script"
+step "run-gcloud-auth" {
+    name = "Run gcloud auth"
 
     action {
-        action_type = "Octopus.KubernetesRunScript"
+        action_type = "Octopus.GoogleCloudScripting"
         properties = {
+            Octopus.Action.GoogleCloud.ImpersonateServiceAccount = "False"
+            Octopus.Action.GoogleCloud.UseVMServiceAccount = "True"
+            Octopus.Action.Script.ScriptBody = "gcloud auth login"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
-        }
-    }
-}
-
-step "databases-deployment" {
-    name = "databases-deployment"
-
-    action {
-        action_type = "Octopus.KubernetesDeployRawYaml"
-        properties = {
-            Octopus.Action.GitRepository.FilePathFilters = <<-EOT
-                k8s/mssql/*
-                k8s/mongo/*
-                k8s/postgresql/*
-                k8s/redis/*
-                EOT
-            Octopus.Action.GitRepository.Source = "Project"
-            Octopus.Action.Kubernetes.DeploymentTimeout = "180"
-            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
-            Octopus.Action.KubernetesContainers.CustomResourceYamlFileName = <<-EOT
-                k8s/mssql/*
-                k8s/mongo/*
-                k8s/postgresql/*
-                k8s/redis/*
-                EOT
-            Octopus.Action.Script.ScriptSource = "GitRepository"
         }
     }
 }
