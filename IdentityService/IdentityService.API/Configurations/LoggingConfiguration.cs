@@ -10,7 +10,7 @@ namespace IdentityService.API.Configurations
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!;
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile( $"appsettings.{environment}.json", optional: false)
+                .AddJsonFile($"appsettings.{environment}.json", optional: false)
                 .Build();
 
             Log.Logger = new LoggerConfiguration()

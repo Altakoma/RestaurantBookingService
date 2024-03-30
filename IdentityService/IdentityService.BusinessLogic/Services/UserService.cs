@@ -17,29 +17,30 @@ namespace IdentityService.BusinessLogic.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly ITokenGenerator _tokenGenerator;
-        private readonly IRefreshTokenService _refreshTokenService;
-        private readonly IUserMessageProducer _userMessageProducer;
+        //private readonly IRefreshTokenService _refreshTokenService;
+        //private readonly IUserMessageProducer _userMessageProducer;
         private readonly ICookieService _cookieService;
 
         public UserService(IUserRepository userRepository,
             IMapper mapper, ICookieService cookieService,
-            ITokenGenerator tokenGenerator,
-            IRefreshTokenService refreshTokenService,
-            IUserMessageProducer userMessageProducer)
+            ITokenGenerator tokenGenerator//,
+            //IRefreshTokenService refreshTokenService,
+            //IUserMessageProducer userMessageProducer
+            )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _cookieService = cookieService;
             _tokenGenerator = tokenGenerator;
-            _refreshTokenService = refreshTokenService;
-            _userMessageProducer = userMessageProducer;
+            //_refreshTokenService = refreshTokenService;
+            //_userMessageProducer = userMessageProducer;
         }
 
         public async Task DeleteAsync(int id,
             CancellationToken cancellationToken)
         {
-            await _refreshTokenService.DeleteByIdAsync(id.ToString(),
-                                                       cancellationToken);
+            //await _refreshTokenService.DeleteByIdAsync(id.ToString(),
+            //                                           cancellationToken);
 
             await _userRepository.DeleteAsync(id, cancellationToken);
 
@@ -48,8 +49,8 @@ namespace IdentityService.BusinessLogic.Services
 
             var message = new DeleteUserMessageDTO { Id = id };
 
-            await _userMessageProducer.ProduceMessageAsync(message,
-                cancellationToken);
+            //await _userMessageProducer.ProduceMessageAsync(message,
+            //   cancellationToken);
 
             if (!isDeleted)
             {
@@ -96,8 +97,8 @@ namespace IdentityService.BusinessLogic.Services
                 .GenerateTokens(readUserDTO.Name, readUserDTO.UserRoleName,
                                 readUserDTO.Id.ToString());
 
-            await _refreshTokenService.SetAsync(readUserDTO.Id.ToString(),
-                refreshToken, RefreshTokenService.ExpirationTime, cancellationToken);
+            //await _refreshTokenService.SetAsync(readUserDTO.Id.ToString(),
+            //    refreshToken, RefreshTokenService.ExpirationTime, cancellationToken);
 
             SetUsersCookie(refreshToken, readUserDTO);
 
@@ -122,8 +123,8 @@ namespace IdentityService.BusinessLogic.Services
 
             var message = _mapper.Map<InsertUserMessageDTO>(user);
 
-            await _userMessageProducer.ProduceMessageAsync(message,
-                cancellationToken);
+            //await _userMessageProducer.ProduceMessageAsync(message,
+            //    cancellationToken);
 
             ReadUserDTO readUserDTO = (await _userRepository
                 .GetByIdAsync<ReadUserDTO>(user.Id, cancellationToken))!;
@@ -134,8 +135,8 @@ namespace IdentityService.BusinessLogic.Services
         public async Task<ReadUserDTO> UpdateAsync(int id,
             UpdateUserDTO item, CancellationToken cancellationToken)
         {
-            await _refreshTokenService.DeleteByIdAsync(id.ToString(), 
-                cancellationToken);
+            //await _refreshTokenService.DeleteByIdAsync(id.ToString(), 
+            //    cancellationToken);
 
             var user = _mapper.Map<User>(item);
 
@@ -154,8 +155,8 @@ namespace IdentityService.BusinessLogic.Services
 
             var message = _mapper.Map<UpdateUserMessageDTO>(user);
 
-            await _userMessageProducer.ProduceMessageAsync(message,
-                cancellationToken);
+            //await _userMessageProducer.ProduceMessageAsync(message,
+            //    cancellationToken);
 
             ReadUserDTO readUserDTO = (await _userRepository
                 .GetByIdAsync<ReadUserDTO>(id, cancellationToken))!;

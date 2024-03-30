@@ -18,9 +18,9 @@ namespace IdentityService.API.Configurations
         public static IServiceCollection ConfigureServices(this IServiceCollection services,
             WebApplicationBuilder builder)
         {
-            LoggingConfiguration.ConfigureLogging();
+            //LoggingConfiguration.ConfigureLogging();
 
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
 
             services.AddControllers();
 
@@ -29,7 +29,7 @@ namespace IdentityService.API.Configurations
                 options.SuppressAsyncSuffixInActionNames = false;
             });
 
-            services.ConfigureRedis(builder.Configuration);
+            //services.ConfigureRedis(builder.Configuration);
 
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
@@ -43,7 +43,7 @@ namespace IdentityService.API.Configurations
 
             services.AddSwagger();
 
-            services.ConfigureKafkaOptions(builder.Configuration);
+            //services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddFluentValidation();
 
@@ -54,11 +54,10 @@ namespace IdentityService.API.Configurations
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", corsPolicyBuilder =>
-                corsPolicyBuilder.SetIsOriginAllowed(origin =>
-                    new Uri(origin).Host == (builder.Configuration["CorsPolicyHost"]))
+                corsPolicyBuilder
+                .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());
+                .AllowAnyHeader());
             });
 
             services.AddSingleton<Seed>();
@@ -76,7 +75,7 @@ namespace IdentityService.API.Configurations
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
             services.AddSingleton<ITokenGenerator, JwtGenerator>();
-            services.AddSingleton<IUserMessageProducer, UserMessageProducer>();
+            //services.AddSingleton<IUserMessageProducer, UserMessageProducer>();
 
             return services;
         }

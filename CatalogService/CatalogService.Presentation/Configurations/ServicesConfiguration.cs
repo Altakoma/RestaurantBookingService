@@ -24,13 +24,13 @@ namespace CatalogService.Presentation.Configurations
         {
             LoggingConfiguration.ConfigureLogging();
 
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
 
             services.AddHttpContextAccessor();
 
             services.AddControllers();
 
-            builder.Services.AddGrpc();
+            //builder.Services.AddGrpc();
 
             services.AddMvc(options =>
             {
@@ -43,7 +43,7 @@ namespace CatalogService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
-            services.ConfigureKafkaOptions(builder.Configuration);
+            //services.ConfigureKafkaOptions(builder.Configuration);
 
             services.AddEndpointsApiExplorer();
 
@@ -81,11 +81,11 @@ namespace CatalogService.Presentation.Configurations
             services.AddScoped<IBaseRestaurantService, RestaurantService>();
             services.AddScoped<IBaseFoodTypeService, FoodTypeService>();
 
-            services.AddGrpcClients(builder.Configuration);
+            //services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
-            services.AddSingleton<IMenuMessageProducer, MenuMessageProducer>();
-            services.AddSingleton<IRestaurantMessageProducer, RestaurantMessageProducer>();
+            //services.AddSingleton<IMenuMessageProducer, MenuMessageProducer>();
+            //services.AddSingleton<IRestaurantMessageProducer, RestaurantMessageProducer>();
 
             return services;
         }

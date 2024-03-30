@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using BookingService.Domain.Entities;
+using FluentAssertions.Extensions;
 
 namespace BookingService.Tests.Fakers
 {
@@ -23,6 +24,21 @@ namespace BookingService.Tests.Fakers
             booking.TableId = table.Id;
 
             return booking;
+        }
+
+        public static Booking GetFakedBookingForInsert(int restaurantId, int clientId)
+        {
+            Table table = TableDataFaker.GetFakedTableForInsert(restaurantId);
+
+            var faker = new Faker<Booking>()
+                .RuleFor(booking => booking.Table,
+                faker => table)
+                .RuleFor(booking => booking.ClientId,
+                faker => clientId)
+                .RuleFor(booking => booking.BookingTime,
+                faker => faker.Date.Recent().AsUtc());
+
+            return faker.Generate();
         }
     }
 }

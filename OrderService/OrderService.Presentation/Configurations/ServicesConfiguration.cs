@@ -22,7 +22,7 @@ namespace OrderService.Presentation.Configurations
         {
             LoggingConfiguration.ConfigureLogging();
 
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
 
             services.AddControllers();
 
@@ -37,9 +37,9 @@ namespace OrderService.Presentation.Configurations
 
             services.AddDatabaseContext(builder);
 
-            services.ConfigureKafkaOptions(builder.Configuration);
+            //services.ConfigureKafkaOptions(builder.Configuration);
 
-            services.AddHangfire(builder);
+            //services.AddHangfire(builder);
 
             services.AddEndpointsApiExplorer();
 
@@ -64,15 +64,15 @@ namespace OrderService.Presentation.Configurations
 
             services.AddSingleton<ITokenParser, JwtTokenParser>();
 
-            services.AddGrpcClients(builder.Configuration);
+            //services.AddGrpcClients(builder.Configuration);
 
             services.AddSingleton<Seed>();
 
-            services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
-            services.AddSingleton<IMenuMessageConsumer, MenuMessageConsumer>();
+            //services.AddSingleton<IClientMessageConsumer, ClientMessageConsumer>();
+            //services.AddSingleton<IMenuMessageConsumer, MenuMessageConsumer>();
 
-            services.AddHostedService<ClientConsumingMessagesHandlingService>();
-            services.AddHostedService<MenuConsumingMessagesHandlingService>();
+            //services.AddHostedService<ClientConsumingMessagesHandlingService>();
+            //services.AddHostedService<MenuConsumingMessagesHandlingService>();
 
             return services;
         }

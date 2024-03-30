@@ -6,12 +6,12 @@ using IdentityService.DataAccess.Entities;
 
 namespace IdentityService.API.Tests.Fakers
 {
-    internal static class UserDataFaker
+    public static class UserDataFaker
     {
         public const int StandartMaximumId = 15;
         public const int StandartMinimumId = 1;
 
-        internal static User GetFakedUser(int id)
+        public static User GetFakedUser(int id)
         {
             var faker = new Faker<User>()
                 .RuleFor(user => user.Id,
@@ -19,11 +19,11 @@ namespace IdentityService.API.Tests.Fakers
                 .RuleFor(user => user.UserRoleId,
                         faker => 2)
                 .RuleFor(user => user.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(user => user.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(user => user.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             var user = faker.Generate();
 
@@ -32,37 +32,52 @@ namespace IdentityService.API.Tests.Fakers
             return user;
         }
 
-        internal static InsertUserDTO GetFakedInsertUserDTO()
+        public static User GetFakedUser()
+        {
+            var faker = new Faker<User>()
+                .RuleFor(user => user.UserRoleId,
+                        faker => 2)
+                .RuleFor(user => user.Password,
+                        faker => faker.Random.Words(1).ToLower())
+                .RuleFor(user => user.Name,
+                        faker => faker.Name.FirstName())
+                .RuleFor(user => user.Login,
+                        faker => faker.Random.Words(1).ToLower());
+
+            return faker.Generate();
+        }
+
+        public static InsertUserDTO GetFakedInsertUserDTO()
         {
             var faker = new Faker<InsertUserDTO>()
                 .RuleFor(insertUserDTO => insertUserDTO.UserRoleId,
                         faker => 2)
                 .RuleFor(insertUserDTO => insertUserDTO.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(insertUserDTO => insertUserDTO.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(insertUserDTO => insertUserDTO.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             return faker.Generate();
         }
 
-        internal static UpdateUserDTO GetFakedUpdateUserDTO()
+        public static UpdateUserDTO GetFakedUpdateUserDTO()
         {
             var faker = new Faker<UpdateUserDTO>()
                 .RuleFor(updateUserDTO => updateUserDTO.UserRoleId,
                         faker => 2)
                 .RuleFor(updateUserDTO => updateUserDTO.Password,
-                        faker => faker.Random.Words(3).ToLower())
+                        faker => faker.Random.Words(1).ToLower())
                 .RuleFor(updateUserDTO => updateUserDTO.Name,
                         faker => faker.Name.FirstName())
                 .RuleFor(updateUserDTO => updateUserDTO.Login,
-                        faker => faker.Random.Words(2).ToLower());
+                        faker => faker.Random.Words(1).ToLower());
 
             return faker.Generate();
         }
 
-        internal static ReadUserDTO GetFakedReadUserDTO(int id, string login)
+        public static ReadUserDTO GetFakedReadUserDTO(int id, string login)
         {
             var faker = new Faker<ReadUserDTO>()
                 .RuleFor(readUserDTO => readUserDTO.UserRoleName,
@@ -77,14 +92,14 @@ namespace IdentityService.API.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadUserDTO GetFakedReadUserDTO(string login)
+        public static ReadUserDTO GetFakedReadUserDTO(string login)
         {
             int id = GetRandomNumber(10);
 
             return GetFakedReadUserDTO(id, login);
         }
 
-        internal static ReadUserDTO GetFakedReadUserDTO(int id)
+        public static ReadUserDTO GetFakedReadUserDTO(int id)
         {
             var faker = new Faker<ReadUserDTO>()
                 .RuleFor(readUserDTO => readUserDTO.Login,
@@ -95,14 +110,14 @@ namespace IdentityService.API.Tests.Fakers
             return GetFakedReadUserDTO(id, readUserDTO.Login);
         }
 
-        internal static ReadUserDTO GetFakedReadUserDTO()
+        public static ReadUserDTO GetFakedReadUserDTO()
         {
             int id = GetRandomNumber(10);
 
             return GetFakedReadUserDTO(id);
         }
 
-        internal static ReadUserRoleDTO GetFakedReadUserRoleDTO(int id)
+        public static ReadUserRoleDTO GetFakedReadUserRoleDTO(int id)
         {
             var faker = new Faker<ReadUserRoleDTO>()
                 .RuleFor(readUserRoleDTO => readUserRoleDTO.Name,
@@ -111,7 +126,7 @@ namespace IdentityService.API.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static ReadUserRoleDTO GetFakedReadUserRoleDTO()
+        public static ReadUserRoleDTO GetFakedReadUserRoleDTO()
         {
             Random random = new Random();
             int id = random.Next(10);
@@ -119,7 +134,7 @@ namespace IdentityService.API.Tests.Fakers
             return GetFakedReadUserRoleDTO(id);
         }
 
-        internal static AccessTokenDTO GetFakedAccessTokenDTO()
+        public static AccessTokenDTO GetFakedAccessTokenDTO()
         {
             var faker = new Faker<AccessTokenDTO>()
                 .RuleFor(accessTokenDTO => accessTokenDTO.EncodedToken,
@@ -128,14 +143,14 @@ namespace IdentityService.API.Tests.Fakers
             return faker.Generate();
         }
 
-        internal static string FakeRandomString(int maximum)
+        public static string FakeRandomString(int maximum)
         {
             var word = new Faker().Random.Words(maximum);
 
             return word;
         }
 
-        internal static int GetRandomNumber(int maximum)
+        public static int GetRandomNumber(int maximum)
         {
             Random random = new Random();
 

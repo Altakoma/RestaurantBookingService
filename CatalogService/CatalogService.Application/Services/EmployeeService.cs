@@ -13,18 +13,18 @@ namespace CatalogService.Application.Services
     public class EmployeeService : BaseService<Employee>, IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IGrpcEmployeeClientService _grpcEmployeeClientService;
+        //private readonly IGrpcEmployeeClientService _grpcEmployeeClientService;
 
         private readonly IEmployeeCacheAccessor _employeeCacheAccessor;
 
         public EmployeeService(IEmployeeRepository employeeRepository,
-            IGrpcEmployeeClientService grpcEmployeeClientService,
+            //IGrpcEmployeeClientService grpcEmployeeClientService,
             IEmployeeCacheAccessor employeeCacheAccessor,
             IMapper mapper)
             : base(employeeRepository, mapper)
         {
             _employeeRepository = employeeRepository;
-            _grpcEmployeeClientService = grpcEmployeeClientService;
+           // _grpcEmployeeClientService = grpcEmployeeClientService;
             _employeeCacheAccessor = employeeCacheAccessor;
         }
 
@@ -54,18 +54,18 @@ namespace CatalogService.Application.Services
                 UserId = insertEmployeeDTO.Id,
             };
 
-            IsUserExistingReply reply = await _grpcEmployeeClientService
-                .IsUserExisting(request, cancellationToken);
+            //IsUserExistingReply reply = await _grpcEmployeeClientService
+            //    .IsUserExisting(request, cancellationToken);
 
-            if (!reply.IsUserExisting)
-            {
-                throw new NotFoundException(nameof(Employee),
-                    insertEmployeeDTO.Id.ToString(), typeof(Employee));
-            }
+            //if (!reply.IsUserExisting)
+            //{
+            //    throw new NotFoundException(nameof(Employee),
+            //        insertEmployeeDTO.Id.ToString(), typeof(Employee));
+            //}
 
             var employee = _mapper.Map<Employee>(insertEmployeeDTO);
 
-            employee.Name = reply.UserName;
+            //employee.Name = reply.UserName;
 
             T readEmployeeDTO = await InsertAsync<Employee, T>(
                                    employee, cancellationToken);

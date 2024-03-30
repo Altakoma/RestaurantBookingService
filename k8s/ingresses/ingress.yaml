@@ -1,0 +1,68 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: restaurant-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: local.depl
+    http:
+      paths:
+      - path: /identity(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-identity-ci-api
+            port:
+              number: 80
+      - path: /catalog(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-catalog-ci-api
+            port:
+              number: 80
+      - path: /booking(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-booking-ci-api
+            port:
+              number: 80
+      - path: /order(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-order-ci-api
+            port:
+              number: 80
+      - path: /identity(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-identity-ci-api
+            port:
+              number: 443
+      - path: /catalog(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-catalog-ci-api
+            port:
+              number: 443
+      - path: /booking(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-booking-ci-api
+            port:
+              number: 443
+      - path: /order(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: restaurant-order-ci-api
+            port:
+              number: 443

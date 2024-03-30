@@ -21,7 +21,7 @@ namespace OrderService.Presentation
 
             seed.SeedData();
 
-            app.UseHangfireDashboard();
+            //app.UseHangfireDashboard();
 
             app.UseSwagger();
             app.UseSwaggerUI();

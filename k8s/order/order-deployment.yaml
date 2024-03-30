@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment
+  labels:
+    app: restaurant-order-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: restaurant-order-api
+  template:
+    metadata:
+      labels:
+        app: restaurant-order-api
+    spec:
+      containers:
+      - name: restaurant-order-api
+        image: docker.io/altakoma/restaurant-order-api:1.01
+        volumeMounts:
+          - name: secret-volume
+            mountPath: "/var/certificate.pfx"
+            subPath: certificate.pfx
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Production"
+        - name: "ASPNETCORE_URLS"
+          value: "https://+:443;http://+:80"
+        - name: "JWTSecret"
+          value: "7SDA9d34as8oiog5ASVNNde8pioFDSG3gJ6sLNU1YE5RD"
+        - name: "JWTExpirationTime"
+          value: "00:09:59"
+        - name: "ASPNETCORE_Kestrel__Certificates__Default__Path"
+          value: "/var/certificate.pfx"
+        - name: "ASPNETCORE_Kestrel__Certificates__Default__Password"
+          value: "123456789"
+        resources:
+          requests:
+            cpu: 512m
+            memory: 512Mi
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: tls-secret

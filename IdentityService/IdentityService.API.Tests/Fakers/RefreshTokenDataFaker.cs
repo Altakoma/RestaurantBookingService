@@ -1,12 +1,12 @@
 ﻿namespace IdentityService.API.Tests.Fakers
 {
-    internal static class RefreshTokenDataFaker
+    public static class RefreshTokenDataFaker
     {
         public const int StandartMaximumRefreshTokenLength = 15;
 
         private const string CharsForGeneration = "XCVBNMASDFGHJKLQWERTYUIOP123456789zxcvbnmmasdfghjklqwertyuiop_";
 
-        internal static string GetRandomRefreshToken(int length)
+        public static string GetRandomRefreshToken(int length)
         {
             var random = new Random();
 
